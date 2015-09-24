@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>parameter_handler</name>
+  <version>0.0.0</version>
+  <description>The parameter_handler package</description>
+  <maintainer email="gehrinch@ethz.ch">Christian Gehring</maintainer>
+  <license>BSD</license>
+  <url type="website">https://bitbucket.org/ethz-asl-lr/parameter_handler</url>
+  <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
+  <author email="gehrinch@ethz.ch">Christian Gehring</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roco</depend>
+</package>
