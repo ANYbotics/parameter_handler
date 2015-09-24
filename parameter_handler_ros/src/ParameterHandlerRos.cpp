@@ -84,16 +84,22 @@ bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterL
 
 bool ParameterHandlerRos::setParameter(parameter_handler_msgs::SetParameter::Request &req,
                                        parameter_handler_msgs::SetParameter::Response &res) {
-  return setParamValue(req.name, req.value);
+
+  parameter_handler::ParameterDouble* param;
+  if (!getParam(req.name, *param)) {
+    return false;
+  }
+  param->setCurrentValue(req.value);
+  return true;
 }
 
 
 bool ParameterHandlerRos::getParameter(parameter_handler_msgs::GetParameter::Request &req,
                                        parameter_handler_msgs::GetParameter::Response &res) {
 
-  ParameterInterface<double>* param;
+  parameter_handler::ParameterDouble* param;
 
-  if(getParam(req.name, param)) {
+  if(getParam(req.name, *param)) {
     std::lock_guard<std::mutex> lock(mutexParams_);
     res.value_current = param->getCurrentValue();
     res.value_min = param->getMinValue();

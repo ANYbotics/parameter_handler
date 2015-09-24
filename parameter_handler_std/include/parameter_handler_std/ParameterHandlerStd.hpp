@@ -73,42 +73,6 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     params_.insert( { name, &param });
     return true;
   }
-//
-//  template <typename ValueType_>
-//  bool setParamValue(std::string name, const ValueType_& value) {
-//    std::lock_guard<std::mutex> lock(mutexParams_);
-//
-//    auto paramIterator = params_.find(name);
-//
-//    if (paramIterator == params_.end()) {
-//      ROCO_WARN_STREAM("Key '" << name << "' was not found in ParameterInterface list.");
-//      return false;
-//    }
-//
-//    boost::any_cast<parameter_handler::ParameterInterface<ValueType_>*>(paramIterator->second)->setCurrentValue(value);
-//
-//    return true;
-//  }
-//
-//
-//  template <typename ValueType_>
-//  bool getParamValue(std::string name, ValueType_& value) {
-//    std::lock_guard<std::mutex> lock(mutexParams_);
-//
-//    auto paramIterator = params_.find(name);
-//
-//    if (paramIterator == params_.end()) {
-//      ROCO_WARN_STREAM("Key '" << name << "' was not found in ParameterInterface list.");
-//      return false;
-//    }
-//
-//    value = boost::any_cast<parameter_handler::ParameterInterface<ValueType_>*>(paramIterator->second)->getCurrentValue();
-//
-//    return true;
-//  }
-//
-//
-
 
   virtual bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
 
