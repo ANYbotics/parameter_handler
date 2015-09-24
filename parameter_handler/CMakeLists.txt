@@ -27,3 +27,16 @@ add_dependencies(parameter_handler ${catkin_EXPORTED_TARGETS})
 target_link_libraries(parameter_handler
    ${catkin_LIBRARIES}
 )
+
+
+catkin_add_gtest(test_parameter_handler
+    test/test_main.cpp
+    test/Parameter_tests.cpp
+)
+add_dependencies(test_parameter_handler ${catkin_EXPORTED_TARGETS})
+
+
+target_link_libraries(test_parameter_handler
+    parameter_handler
+    ${catkin_LIBRARIES}
+)

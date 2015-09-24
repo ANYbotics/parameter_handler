@@ -7,28 +7,48 @@
 
 #pragma once
 
+#include <parameter_handler/ParameterValue.hpp>
+#include <parameter_handler/ParameterValueImpl.hpp>
 #include <string>
+#include <memory>
 
 namespace parameter_handler {
 
-template<typename ValueType_>
+
 class ParameterInterface {
+ public:
+  typedef std::shared_ptr<ParameterValue> ParameterValuePtr;
  public:
   ParameterInterface() {}
   virtual ~ParameterInterface() {}
 
+  const std::string& getName() const {
+    return name_;
+  }
+  void setName(const std::string& name) {
+    name_ = name;
+  }
 
-  virtual const std::string& getName() const = 0;
-  virtual const ValueType_& getCurrentValue() const = 0;
-  virtual const ValueType_& getMinValue() const = 0;
-  virtual const ValueType_& getMaxValue() const = 0;
-  virtual const ValueType_& getDefaultValue() const = 0;
+  template<typename ValueType_>
+  const ValueType_& getCurrentValue() const;
+  template<typename ValueType_>
+  const ValueType_& getMinValue() const;
+  template<typename ValueType_>
+  const ValueType_& getMaxValue() const;
+  template<typename ValueType_>
+  const ValueType_& getDefaultValue() const;
+  template<typename ValueType_>
+  void setCurrentValue(const ValueType_& value);
+  template<typename ValueType_>
+  void setMinValue(const ValueType_& value);
+  template<typename ValueType_>
+  void setMaxValue(const ValueType_& value);
+  template<typename ValueType_>
+  void setDefaultValue(const ValueType_& value);
 
-  virtual void setName(const std::string& name) = 0;
-  virtual void setCurrentValue(const ValueType_& value) = 0;
-  virtual void setMinValue(const ValueType_& value) = 0;
-  virtual void setMaxValue(const ValueType_& value) = 0;
-  virtual void setDefaultValue(const ValueType_& value) = 0;
+ protected:
+  ParameterValuePtr value_;
+  std::string name_;
 
 };
 

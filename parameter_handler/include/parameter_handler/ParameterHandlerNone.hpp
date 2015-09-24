@@ -52,18 +52,11 @@ class ParameterHandlerNone : public ParameterHandlerBase {
   ParameterHandlerNone() {}
   virtual ~ParameterHandlerNone() {}
 
-  template<typename ParamType_>
-  bool addParam(const std::string& name, ParamType_* param) {
+
+  virtual bool addParam(const std::string& name, ParameterInterface& param) {
     return true;
   }
-
-  template <typename ValueType_>
-  bool setParamValue(std::string name, const ValueType_& value) {
-    return true;
-  }
-
-  template<typename ParamType_>
-  bool getParam(const std::string& name, ParamType_& param) {
+  virtual bool getParam(const std::string& name, ParameterInterface& param) {
     return true;
   }
 

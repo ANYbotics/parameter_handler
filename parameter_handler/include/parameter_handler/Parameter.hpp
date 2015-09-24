@@ -42,97 +42,78 @@
 #pragma once
 
 #include "parameter_handler/ParameterInterface.hpp"
+#include "parameter_handler/ParameterValueImpl.hpp"
 #include "parameter_handler/parameter_traits.hpp"
 #include <limits>
 
 namespace parameter_handler {
 
-template<typename ValueType_>
-class Parameter : public ParameterInterface<ValueType_>
+template<typename ParamType_>
+class Parameter : public ParameterInterface
 {
- public:
-  typedef ParameterInterface<ValueType_> Base;
-  typedef ValueType_ ValueType;
+public:
+  typedef typename ParamType_::ValueType ValueType;
 
-  using traits = internal::parameter_traits<ValueType_>;
-
-  Parameter()
-      : param_(std::numeric_limits<ValueType_>::min()),
-        paramMin_(-std::numeric_limits<ValueType_>::max()),
-        paramMax_(std::numeric_limits<ValueType_>::max()),
-        default_(std::numeric_limits<ValueType_>::min())
-  { }
-  Parameter(const Parameter& other) = default;
-
-  Parameter(const ValueType_& param)
-      : param_(param),
-        default_(param)
-  { }
-
-  Parameter(const ValueType_& param, const ValueType_& min, const ValueType_& max)
-      : param_(param),
-        paramMin_(min),
-        paramMax_(max),
-        default_(param)
-  { }
-
-  virtual ~Parameter()
-  { }
-
-  virtual const std::string& getName() const {
-    return name_;
+  Parameter(const ParamType_& value = ParamType_()) {
+    value_ = ParameterInterface::ParameterValuePtr(value.clone());
   }
-  virtual const ValueType_& getMinValue() const
+
+  Parameter(const ValueType& value, const ValueType& min, const ValueType& max)
   {
-    return paramMin_;
-  }
-  virtual const ValueType_& getMaxValue() const
-  {
-    return paramMax_;
-  }
-  virtual const ValueType_& getDefaultValue() const
-  {
-    return default_;
-  }
-  virtual const ValueType_& getCurrentValue() const
-  {
-    return param_;
+    value_ = ParameterInterface::ParameterValuePtr(ParamType_().clone());
+    getValuePtr()->setCurrentValue(value);
+    getValuePtr()->setDefaultValue(value);
+    getValuePtr()->setMinValue(min);
+    getValuePtr()->setMaxValue(max);
   }
 
+  virtual ~Parameter()  { }
 
-  virtual void setName(const std::string& name) {
-    name_ = name;
-  }
-  virtual void setCurrentValue(const ValueType_& value)
-  {
-    param_ = value;
-  }
-  virtual void setMinValue(const ValueType_& value)
-  {
-    paramMin_ = value;
-  }
-  virtual void setMaxValue(const ValueType_& value)
-  {
-    paramMax_ = value;
-  }
-  virtual void setDefaultValue(const ValueType_& value)
-  {
-    default_ = value;
+
+  const ValueType& getCurrentValue() const {
+    return getValuePtr()->getCurrentValue();
   }
 
- protected:
-  ValueType_ param_;
-  ValueType_ default_;
-  ValueType_ paramMin_;
-  ValueType_ paramMax_;
-  std::string name_;
+  const ValueType& getDefaultValue() const {
+    return getValuePtr()->getDefaultValue();
+  }
+
+  const ValueType& getMinValue() const {
+    return getValuePtr()->getMinValue();
+  }
+
+  const ValueType& getMaxValue() const {
+    return getValuePtr()->getMaxValue();
+  }
+
+  void setCurrentValue(const ValueType& value) {
+    getValuePtr()->setCurrentValue(value);
+  }
+
+  void setDefaultValue(const ValueType& value) {
+    getValuePtr()->setDefaultValue(value);
+  }
+
+  void setMinValue(const ValueType& value) {
+    getValuePtr()->setMinValue(value);
+  }
+
+  void setMaxValue(const ValueType& value) {
+    getValuePtr()->setMaxValue(value);
+  }
+
+protected:
+  ParamType_* getValuePtr() const {
+    return static_cast<ParamType_*>(value_.get());
+  }
 
 };
 
-using ParameterDouble = Parameter<double>;
-using ParameterFloat = Parameter<float>;
-using ParameterInt = Parameter<int>;
-using ParameterBool = Parameter<bool>;
+using ParameterDouble = Parameter<ParameterValueImpl<double>>;
+using ParameterInt = Parameter<ParameterValueImpl<int>>;
+//using ParameterFloat = Parameter<float>;
+//using ParameterInt = Parameter<int>;
+//using ParameterBool = Parameter<bool>;
 
 }
 
