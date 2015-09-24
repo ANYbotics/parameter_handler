@@ -10,6 +10,7 @@ add_service_files(
   FILES
    SetParameter.srv
    GetParameter.srv
+   GetParameterList.srv
 )
 
 generate_messages(

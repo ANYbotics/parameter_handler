@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace parameter_handler {
+
 template<typename ValueType_>
 class ParameterInterface {
  public:
@@ -29,3 +31,5 @@ class ParameterInterface {
   virtual void setDefaultValue(const ValueType_& value) = 0;
 
 };
+
+} // namespace

@@ -33,26 +33,46 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 */
 /*
- * ParameterHandlerStd.cpp
+ * ParameterHandlerRos.hpp
  *
- *  Created on: Jul 3, 2015
- *      Author: Dario Bellicoso, Christian Gehring
+ *  Created on: Sep 24, 2015
+ *      Author: Christian Gehring
  */
 
-#include "parameter_handler_std/ParameterHandlerStd.hpp"
+#pragma once
 
-namespace parameter_handler_std {
+#include <ros/ros.h>
+#include <parameter_handler_msgs/SetParameter.h>
+#include <parameter_handler_msgs/GetParameter.h>
+#include <parameter_handler_msgs/GetParameterList.h>
 
-ParameterHandlerStd::ParameterHandlerStd()
-    : params_()
+#include <parameter_handler_std/ParameterHandlerStd.hpp>
+#include <mutex>
+
+namespace parameter_handler_ros {
+
+class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
 {
+ public:
+  ParameterHandlerRos();
+  virtual ~ParameterHandlerRos();
+  void initializeServices();
+  void shutdown();
+  void setNodeHandle(ros::NodeHandle& nodeHandle);
+  bool getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
+                        parameter_handler_msgs::GetParameterList::Response &res);
 
-}
+  bool setParameter(parameter_handler_msgs::SetParameter::Request &req,
+                    parameter_handler_msgs::SetParameter::Response &res);
 
-ParameterHandlerStd::~ParameterHandlerStd()
-{
+  bool getParameter(parameter_handler_msgs::GetParameter::Request &req,
+                    parameter_handler_msgs::GetParameter::Response &res);
+ protected:
+  ros::NodeHandle nodeHandle_;
+  ros::ServiceServer getParameterListService_;
+  ros::ServiceServer getParameterService_;
+  ros::ServiceServer setParameterService_;
+};
 
-}
+} /* namespace parameter_handler */
 
-
-} /* namespace */

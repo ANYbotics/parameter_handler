@@ -41,26 +41,30 @@
 
 #pragma once
 
-#include "parameter_handler/ParameterInterface.hpp"
+#include <parameter_handler/ParameterHandlerBase.hpp>
+#include <parameter_handler/ParameterInterface.hpp>
 #include <roco/log/log_messages.hpp>
 
 #include <vector>
 #include <unordered_map>
 #include <iostream>
 #include <boost/any.hpp>
+#include <mutex>
 
-namespace parameter_handler {
+namespace parameter_handler_std {
 
-class ParameterHandlerStd {
+class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
  public:
-  typedef std::unordered_map<std::string, boost::any> ParameterInterfaceList;
+  typedef std::unordered_map<std::string, boost::any> ParameterList;
  public:
   ParameterHandlerStd();
   virtual ~ParameterHandlerStd();
 
 
   template <typename ValueType_>
-  bool addParam(const std::string& name, ParameterInterface<ValueType_>& param) {
+  bool addParam(const std::string& name, parameter_handler::ParameterInterface<ValueType_>& param) {
+    std::lock_guard<std::mutex> lock(mutexParams_);
+
     auto paramIterator = params_.find(name);
 
     if (!(paramIterator == params_.end())) {
@@ -74,6 +78,8 @@ class ParameterHandlerStd {
 
   template <typename ValueType_>
   bool setParamValue(std::string name, const ValueType_& value) {
+    std::lock_guard<std::mutex> lock(mutexParams_);
+
     auto paramIterator = params_.find(name);
 
     if (paramIterator == params_.end()) {
@@ -81,7 +87,7 @@ class ParameterHandlerStd {
       return false;
     }
 
-    boost::any_cast<ParameterInterface<ValueType_>*>(paramIterator->second)->setCurrentValue(value);
+    boost::any_cast<parameter_handler::ParameterInterface<ValueType_>*>(paramIterator->second)->setCurrentValue(value);
 
     return true;
   }
@@ -89,6 +95,8 @@ class ParameterHandlerStd {
 
   template <typename ValueType_>
   bool getParamValue(std::string name, ValueType_& value) {
+    std::lock_guard<std::mutex> lock(mutexParams_);
+
     auto paramIterator = params_.find(name);
 
     if (paramIterator == params_.end()) {
@@ -96,14 +104,16 @@ class ParameterHandlerStd {
       return false;
     }
 
-    value = boost::any_cast<ParameterInterface<ValueType_>*>(paramIterator->second)->getCurrentValue();
+    value = boost::any_cast<parameter_handler::ParameterInterface<ValueType_>*>(paramIterator->second)->getCurrentValue();
 
     return true;
   }
 
 
   template <typename ValueType_>
-  bool getParam(const std::string& name,  ParameterInterface<ValueType_>*& param) {
+  bool getParam(const std::string& name,  parameter_handler::ParameterInterface<ValueType_>*& param) {
+    std::lock_guard<std::mutex> lock(mutexParams_);
+
     auto paramIterator = params_.find(name);
 
     if (paramIterator == params_.end()) {
@@ -111,24 +121,20 @@ class ParameterHandlerStd {
       return false;
     }
     try {
-      param = boost::any_cast<ParameterInterface<ValueType_>*>(paramIterator->second);
+      param = boost::any_cast<parameter_handler::ParameterInterface<ValueType_>*>(paramIterator->second);
     }
     catch (...) {
-      std::cout << "catch param name: " << boost::any_cast<std::shared_ptr<ParameterInterface<ValueType_>>>(paramIterator->second)->getName() << std::endl;
       const std::type_info &ti = paramIterator->second.type();
-      ROCO_WARN_STREAM("Requested ParameterInterface '" << name << "' has type " << ti.name() << " instead of " << typeid(ParameterInterface<ValueType_>).name());
+      ROCO_WARN_STREAM("Requested ParameterInterface '" << name << "' has type " << ti.name() << " instead of " << typeid(parameter_handler::ParameterInterface<ValueType_>).name());
       return false;
     }
     return true;
 
   }
 
-  const ParameterInterfaceList getList() {
-    return params_;
-  }
-
- private:
-  ParameterInterfaceList params_;
+ protected:
+  ParameterList params_;
+  std::mutex mutexParams_;
 
 };
 
