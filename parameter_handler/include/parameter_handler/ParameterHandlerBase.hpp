@@ -21,14 +21,6 @@ class ParameterHandlerBase
 
   }
 
-  template<typename ParamType_>
-  bool addParam(const std::string& name, ParamType_* param);
-
-  template <typename ValueType_>
-  bool setParamValue(std::string name, const ValueType_& value);
-
-  template<typename ParamType_>
-  bool getParam(const std::string& name, ParamType_& param);
 };
 
 } /* namespace parameter_handler */
