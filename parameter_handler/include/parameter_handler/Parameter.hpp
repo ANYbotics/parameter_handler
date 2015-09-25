@@ -74,6 +74,13 @@ public:
   {
   }
 
+  Parameter(const ParameterInterface& other) :
+    ParameterInterface(other)
+  {
+    if (type_ != typeid(ValueType_))
+      throw std::runtime_error("Parameter value type mismatch");
+  }
+
   virtual ~Parameter()  { }
 
 

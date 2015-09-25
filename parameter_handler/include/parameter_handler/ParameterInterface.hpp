@@ -56,9 +56,15 @@ class ParameterInterface {
     name_(name)
   {
   }
+ public:
+  ParameterInterface() :
+    type_(typeid(void))
+  {
+  }
+
   ParameterInterface(const ParameterInterface& other) :
     type_(other.type_),
-    value_(other.value_->clone()),
+    value_(other.value_),
     name_(other.name_)
   {
   }
@@ -162,6 +168,17 @@ class ParameterInterface {
     }
   }
 
+  ParameterInterface clone() const {
+    return ParameterInterface(type_, value_->clone(), name_);
+  }
+
+  ParameterInterface& operator=(const ParameterInterface& other) {
+    type_ = other.type_;
+    value_ = other.value_;
+    name_ = other.name_;
+
+    return *this;
+  }
  protected:
   std::type_index type_;
   internal::ParameterValuePtr value_;

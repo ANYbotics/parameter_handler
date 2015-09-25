@@ -55,7 +55,7 @@ namespace parameter_handler_std {
 
 class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
  public:
-  typedef std::unordered_map<std::string, parameter_handler::ParameterInterface*> ParameterList;
+  typedef std::unordered_map<std::string, parameter_handler::ParameterInterface> ParameterList;
  public:
   ParameterHandlerStd();
   virtual ~ParameterHandlerStd();
@@ -70,7 +70,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
       return false;
     }
 
-    params_.insert( { name, &param });
+    params_.insert( { name, param });
     return true;
   }
 
@@ -85,14 +85,9 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
       ROCO_INFO_STREAM("Key '" << name << "' was not found.");
       return false;
     }
-    try {
-      param = *paramIterator->second;
-    }
-    catch (...) {
-      //const std::type_info &ti = paramIterator->second.type();
-      //ROCO_WARN_STREAM("Requested ParameterInterface '" << name << "' has type " << ti.name() << " instead of " << typeid(parameter_handler::ParameterInterface<ValueType_>).name());
-      return false;
-    }
+
+    param = paramIterator->second;
+
     return true;
 
   }
