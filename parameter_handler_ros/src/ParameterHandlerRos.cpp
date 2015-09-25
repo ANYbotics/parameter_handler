@@ -85,11 +85,21 @@ bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterL
 bool ParameterHandlerRos::setParameter(parameter_handler_msgs::SetParameter::Request &req,
                                        parameter_handler_msgs::SetParameter::Response &res) {
 
-  parameter_handler::ParameterDouble* param;
+
+
+  parameter_handler::ParameterInterface* param;
   if (!getParam(req.name, *param)) {
     return false;
   }
-  param->setCurrentValue(req.value);
+
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  if (param->getType() == typeid(double)) {
+    param->setValue(req.value);
+  }
+  else {
+    ROS_ERROR("Parameter type is not supported");
+  }
   return true;
 }
 
@@ -97,16 +107,23 @@ bool ParameterHandlerRos::setParameter(parameter_handler_msgs::SetParameter::Req
 bool ParameterHandlerRos::getParameter(parameter_handler_msgs::GetParameter::Request &req,
                                        parameter_handler_msgs::GetParameter::Response &res) {
 
-  parameter_handler::ParameterDouble* param;
 
-
+  parameter_handler::ParameterInterface* param;
 
   if(getParam(req.name, *param)) {
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.value_current = param->getCurrentValue();
-    res.value_min = param->getMinValue();
-    res.value_max = param->getMaxValue();
-    res.value_default = param->getDefaultValue();
+
+    if (param->getType() == typeid(double)) {
+      res.value_current = param->getValue<double>();
+      res.value_min = param->getMinValue<double>();
+      res.value_max = param->getMaxValue<double>();
+      res.value_default = param->getDefaultValue<double>();
+    }
+    else {
+      ROS_ERROR("Parameter type is not supported");
+    }
+
+
     return true;
   }
 
