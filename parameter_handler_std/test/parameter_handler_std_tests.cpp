@@ -13,13 +13,13 @@
 
 TEST (ParameterTest, testDouble) {
   using namespace parameter_handler;
-  ParameterDouble param;
-  param.setCurrentValue(3.0);
-  EXPECT_EQ(3.0, param.getCurrentValue());
+  Parameter<double> param;
+  param.setValue(3.0);
+  EXPECT_EQ(3.0, param.getValue());
 
-  ParameterInt paramInt;
-  paramInt.setCurrentValue(4);
-  EXPECT_EQ(4, paramInt.getCurrentValue());
+  Parameter<int> paramInt;
+  paramInt.setValue(4);
+  EXPECT_EQ(4, paramInt.getValue());
 
 }
 TEST(ParameterHandlerStd, test) {
@@ -28,16 +28,16 @@ TEST(ParameterHandlerStd, test) {
   ParameterHandlerStd handler;
   ParameterHandlerBase* baseHandler = &handler;
 
-  ParameterDouble paramA;
-  paramA.setCurrentValue(3.0);
+  Parameter<double> paramA;
+  paramA.setValue(3.0);
   baseHandler->addParam("paramA", paramA);
 
-  ParameterDouble paramB;
+  Parameter<double> paramB;
   baseHandler->getParam("paramA", paramB);
-  EXPECT_EQ(3.0, paramB.getCurrentValue());
+  EXPECT_EQ(3.0, paramB.getValue());
 
-  paramA.setCurrentValue(4.0);
-  EXPECT_EQ(4.0, paramB.getCurrentValue());
+  paramA.setValue(4.0);
+  EXPECT_EQ(4.0, paramB.getValue());
 
 
 //  handler.addParam("paramA", param);

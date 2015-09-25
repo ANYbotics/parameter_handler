@@ -1,7 +1,7 @@
 /**
 * Software License Agreement (BSD License)
 *
-* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring
+* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring, Ralf Kaestner
 * All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without

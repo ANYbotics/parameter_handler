@@ -1,7 +1,7 @@
 /**
 * Software License Agreement (BSD License)
 *
-* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring
+* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring, Ralf Kaestner
 * All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -36,84 +36,89 @@
  * ParameterImpl.hpp
  *
  *  Created on: Jul 3, 2015
- *      Author: Dario Bellicoso, Christian Gehring
+ *      Author: Dario Bellicoso, Christian Gehring, Ralf Kaestner
  */
 
 #pragma once
 
 #include "parameter_handler/ParameterInterface.hpp"
-#include "parameter_handler/ParameterValueImpl.hpp"
-#include "parameter_handler/parameter_traits.hpp"
-#include <limits>
+#include "parameter_handler/ParameterValue.hpp"
+
+
 
 namespace parameter_handler {
 
-template<typename ParamType_>
+template<typename ValueType_>
 class Parameter : public ParameterInterface
 {
 public:
-  typedef typename ParamType_::ValueType ValueType;
-
-  Parameter(const ParamType_& value = ParamType_()) {
-    value_ = ParameterInterface::ParameterValuePtr(value.clone());
+  Parameter(const ValueType_& value = ValueType_()) :
+    ParameterInterface(typeid(ValueType_),
+                       internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>()))
+  {
   }
 
-  Parameter(const ValueType& value, const ValueType& min, const ValueType& max)
+  Parameter(const ValueType_& value, const ValueType_& min, const ValueType_& max) :
+    ParameterInterface(typeid(ValueType_),
+                       internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>()))
   {
-    value_ = ParameterInterface::ParameterValuePtr(ParamType_().clone());
-    getValuePtr()->setCurrentValue(value);
+    value_ = ParameterValuePtr(ValueType_().clone());
+    getValuePtr()->setValue(value);
     getValuePtr()->setDefaultValue(value);
     getValuePtr()->setMinValue(min);
     getValuePtr()->setMaxValue(max);
   }
 
+  Parameter(const Parameter<ValueType_>& other) :
+    ParameterInterface(other)
+  {
+  }
+
   virtual ~Parameter()  { }
 
 
-  const ValueType& getCurrentValue() const {
-    return getValuePtr()->getCurrentValue();
+  const ValueType_& getValue() const {
+    return getValuePtr()->getValue();
   }
 
-  const ValueType& getDefaultValue() const {
+  const ValueType_& getDefaultValue() const {
     return getValuePtr()->getDefaultValue();
   }
 
-  const ValueType& getMinValue() const {
+  const ValueType_& getMinValue() const {
     return getValuePtr()->getMinValue();
   }
 
-  const ValueType& getMaxValue() const {
+  const ValueType_& getMaxValue() const {
     return getValuePtr()->getMaxValue();
   }
 
-  void setCurrentValue(const ValueType& value) {
-    getValuePtr()->setCurrentValue(value);
+  void setValue(const ValueType_& value) {
+    getValuePtr()->setValue(value);
   }
 
-  void setDefaultValue(const ValueType& value) {
+  void setDefaultValue(const ValueType_& value) {
     getValuePtr()->setDefaultValue(value);
   }
 
-  void setMinValue(const ValueType& value) {
+  void setMinValue(const ValueType_& value) {
     getValuePtr()->setMinValue(value);
   }
 
-  void setMaxValue(const ValueType& value) {
+  void setMaxValue(const ValueType_& value) {
     getValuePtr()->setMaxValue(value);
   }
 
 protected:
-  ParamType_* getValuePtr() const {
-    return static_cast<ParamType_*>(value_.get());
+  std::shared_ptr<internal::ParameterValue<ValueType_> > getValuePtr() {
+    return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_);
+  }
+
+  std::shared_ptr<const internal::ParameterValue<ValueType_> > getValuePtr() const {
+    return std::static_pointer_cast<const internal::ParameterValue<ValueType_> >(value_);
   }
 
 };
-
-using ParameterDouble = Parameter<ParameterValueImpl<double>>;
-using ParameterInt = Parameter<ParameterValueImpl<int>>;
-//using ParameterFloat = Parameter<float>;
-//using ParameterInt = Parameter<int>;
-//using ParameterBool = Parameter<bool>;
 
 }
 

@@ -1,7 +1,7 @@
 /**
 * Software License Agreement (BSD License)
 *
-* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring
+* Copyright (c) 2015, C. Dario Bellicoso, Christian Gehring, Ralf Kaestner
 * All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -33,41 +33,34 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 */
 /*
- * parameter_traits.hpp
+ * ParameterValueInterface.hpp
  *
- *  Created on: Apr 23, 2015
- *      Author: Dario Bellicoso, Christian Gehring
+ *  Created on: Sep 24, 2015
+ *      Author: Christian Gehring, Ralf Kaestner
  */
 
 #pragma once
 
-#include <string>
+#include <memory>
 
 namespace parameter_handler {
 namespace internal {
 
-// generic definition
-template <typename ParamType_> struct parameter_traits;
+class ParameterValueInterface;
 
-template<>
-struct parameter_traits<double> {
+typedef std::shared_ptr<ParameterValueInterface> ParameterValuePtr;
 
+class ParameterValueInterface {
+ public:
+  ParameterValueInterface() {
+
+  }
+  virtual ~ParameterValueInterface() {
+
+  }
+
+  virtual ParameterValuePtr clone() const = 0;
 };
 
-template<>
-struct parameter_traits<float> {
-
-};
-
-template<>
-struct parameter_traits<int> {
-
-};
-
-template<>
-struct parameter_traits<std::string> {
-
-};
-
-}/* namespace internal */
-} /* namespace */
+} // namespace internal
+} // namespace parameter_handler

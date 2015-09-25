@@ -99,6 +99,8 @@ bool ParameterHandlerRos::getParameter(parameter_handler_msgs::GetParameter::Req
 
   parameter_handler::ParameterDouble* param;
 
+
+
   if(getParam(req.name, *param)) {
     std::lock_guard<std::mutex> lock(mutexParams_);
     res.value_current = param->getCurrentValue();
@@ -107,6 +109,7 @@ bool ParameterHandlerRos::getParameter(parameter_handler_msgs::GetParameter::Req
     res.value_default = param->getDefaultValue();
     return true;
   }
+
 
   return false;
 }

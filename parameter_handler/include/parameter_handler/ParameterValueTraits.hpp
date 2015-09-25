@@ -33,31 +33,58 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 */
 /*
- * ParameterHandlerBase.hpp
+ * ParameterValueTraits.hpp
  *
- *  Created on: Sep 23, 2015
+ *  Created on: Apr 23, 2015
  *      Author: Christian Gehring
  */
 
 #pragma once
 
-#include <parameter_handler/ParameterInterface.hpp>
+#include "parameter_handler/ParameterValue.hpp"
 #include <string>
+#include <limits>
 
 namespace parameter_handler {
 
-class ParameterHandlerBase
-{
+namespace internal {
+
+template<typename ValueType_>
+class ParameterValue;
+
+// generic definition
+template <typename ValueType_>
+class ParameterValueTraits;
+
+template<typename ValueType_>
+class ParameterValueTraits<ParameterValue<ValueType_>> {
  public:
-  ParameterHandlerBase() {
-
+  inline static void init(ParameterValue<ValueType_>& param) {
+    param.setValue(std::numeric_limits<ValueType_>::min());
+    param.setDefaultValue(std::numeric_limits<ValueType_>::min());
+    param.setMinValue(-std::numeric_limits<ValueType_>::max());
+    param.setMaxValue(std::numeric_limits<ValueType_>::max());
   }
-  virtual ~ParameterHandlerBase() {
 
+  inline static ValueType_ setValue(ParameterValue<ValueType_>& param, const ValueType_& value) {
+    if (value > param.getMaxValue()) {
+      return param.getMaxValue();
+    }
+    else if (value < param.getMinValue()) {
+      return param.getMinValue();
+    }
+    return value;
   }
-
-  virtual bool addParam(const std::string& name, ParameterInterface& param) = 0;
-  virtual bool getParam(const std::string& name, ParameterInterface& param) = 0;
 };
 
-} /* namespace parameter_handler */
+template<>
+class ParameterValueTraits<bool> {
+public:
+  inline static bool setValue(ParameterValue<bool>& param, const bool& value) {
+    return value;
+  }
+};
+
+
+}/* namespace internal */
+} /* namespace */
