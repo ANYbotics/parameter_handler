@@ -56,8 +56,13 @@ class ParameterHandlerBase
 
   }
 
-  virtual bool addParam(const std::string& name, ParameterInterface& param) = 0;
-  virtual bool getParam(const std::string& name, ParameterInterface& param) = 0;
+  virtual bool addParam(const std::string& name, ParameterInterface& param) {
+    return true;
+  }
+
+  virtual bool getParam(const std::string& name, ParameterInterface& param) {
+    return true;
+  }
 };
 
 } /* namespace parameter_handler */

@@ -4,14 +4,13 @@ project(parameter_handler)
 add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-              roco
+              
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES parameter_handler
   CATKIN_DEPENDS 
-     roco
 #  DEPENDS system_lib
 )
 

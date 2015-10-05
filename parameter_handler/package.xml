@@ -9,6 +9,5 @@
   <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
   <author email="gehrinch@ethz.ch">Christian Gehring</author>
   <buildtool_depend>catkin</buildtool_depend>
-  <depend>roco</depend>
   <depend>gtest</depend>
 </package>
