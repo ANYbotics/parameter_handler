@@ -74,6 +74,10 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     return true;
   }
 
+  virtual bool addParam(parameter_handler::ParameterInterface& param) {
+    return addParam(param.getName(), param);
+  }
+
   virtual bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
 
 

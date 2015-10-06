@@ -42,6 +42,7 @@
 #pragma once
 
 #include "parameter_handler/ParameterInterface.hpp"
+#include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValue.hpp"
 
 
@@ -62,12 +63,25 @@ public:
     ParameterInterface(typeid(ValueType_),
                        internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>()))
   {
-    value_ = ParameterValuePtr(ValueType_().clone());
+//    value_ = ParameterValuePtr(ValueType_().clone());
     getValuePtr()->setValue(value);
     getValuePtr()->setDefaultValue(value);
     getValuePtr()->setMinValue(min);
     getValuePtr()->setMaxValue(max);
   }
+
+  Parameter(const std::string& name, const ValueType_& value, const ValueType_& min, const ValueType_& max) :
+    ParameterInterface(typeid(ValueType_),
+                       internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>()),
+                       name)
+  {
+//    value_ = ParameterValuePtr(ValueType_().clone());
+    getValuePtr()->setValue(value);
+    getValuePtr()->setDefaultValue(value);
+    getValuePtr()->setMinValue(min);
+    getValuePtr()->setMaxValue(max);
+  }
+
 
   Parameter(const Parameter<ValueType_>& other) :
     ParameterInterface(other)
