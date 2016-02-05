@@ -66,8 +66,9 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     auto paramIterator = params_.find(name);
 
     if (!(paramIterator == params_.end())) {
-      ROCO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list.");
-      return false;
+      ROCO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
+      paramIterator->second = param;
+      return true;
     }
 
     params_.insert( { name, param });
