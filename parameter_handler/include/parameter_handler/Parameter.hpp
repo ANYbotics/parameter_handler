@@ -130,6 +130,10 @@ public:
     getValuePtr()->setMaxValue(value);
   }
 
+  void resetToDefault() {
+    getValuePtr()->setValue(getValuePtr()->getDefaultValue());
+  }
+
 protected:
   std::shared_ptr<internal::ParameterValue<ValueType_> > getValuePtr() {
     return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_);
