@@ -35,6 +35,7 @@ set(rqt_parameters_SRCS
 ###########
 set(rqt_parameters_HDRS
     include/rqt_parameters/ParametersPlugin.hpp
+    include/rqt_parameters/DoubleParameter.hpp
 )
 ###########
 
