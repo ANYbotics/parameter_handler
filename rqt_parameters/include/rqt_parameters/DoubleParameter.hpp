@@ -22,6 +22,8 @@
 #include <parameter_handler_msgs/SetParameter.h>
 #include <parameter_handler_msgs/GetParameterList.h>
 
+
+//! This class draws and handles a double parameter.
 class DoubleParameter: public QObject {
   Q_OBJECT
  public:
@@ -122,7 +124,6 @@ class DoubleParameter: public QObject {
   }
 
   void refreshParam() {
-
     parameter_handler_msgs::GetParameterRequest req;
     parameter_handler_msgs::GetParameterResponse res;
 
@@ -140,8 +141,6 @@ class DoubleParameter: public QObject {
         ROS_WARN_STREAM("Could not get parameter " << name_);
       }
     }
-
-
   }
  protected:
   std::string name_;

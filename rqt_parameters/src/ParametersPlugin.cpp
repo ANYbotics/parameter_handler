@@ -5,7 +5,6 @@
  *      Author: Christian Gehring
  */
 
-
 #include <pluginlib/class_list_macros.h>
 #include <QStringList>
 #include <QGridLayout>
@@ -19,29 +18,16 @@
 #include <parameter_handler_msgs/GetParameterList.h>
 
 
-template<typename T>
-T mapInRange (T x, T in_min, T in_max, T out_min, T out_max) {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
-inline double linearlyInterpolate(double v1, double v2, double t1, double t2, double t){
-  if (v1 == v2)
-    return v2;
-  return (t-t1)/(t2-t1) * v2 + (t2-t)/(t2-t1) * v1;
-}
-
-bool compareNoCase( const std::string& s1, const std::string& s2 ) {
+static bool compareNoCase( const std::string& s1, const std::string& s2 ) {
     return strcasecmp( s1.c_str(), s2.c_str() ) <= 0;
 }
 
-struct size_less
-{
+struct size_less {
     template<class T> bool operator()(T const &a, T const &b) const
     { return a.size() < b.size(); }
 };
 
-static size_t getMaxParamNameWidth(std::vector<std::string> const &lines)
-{
+static size_t getMaxParamNameWidth(std::vector<std::string> const &lines) {
   //use QFontMetrics this way;
   QFont font("", 0);
   QFontMetrics fm(font);
@@ -63,7 +49,6 @@ ParametersPlugin::ParametersPlugin() :
   setObjectName("ParametersPlugin");
 }
 
-
 void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
     // access standalone command line arguments
     QStringList argv = context.argv();
@@ -82,10 +67,19 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
     connect(this, SIGNAL(parametersChanged()), this, SLOT(drawParamList()));
     /******************************/
 
+    std::string getParameterServiceName{"/locomotion_controller/get_parameter"};
+    getNodeHandle().getParam("get_parameter_service", getParameterServiceName);
+
+    std::string setParameterServiceName{"/locomotion_controller/set_parameter"};
+    getNodeHandle().getParam("set_parameter_service", setParameterServiceName);
+
+    std::string getParameterListServiceName{"/locomotion_controller/get_parameter_list"};
+    getNodeHandle().getParam("get_parameter_list_service", getParameterListServiceName);
+
     // ROS services
-    getParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameter>("/locomotion_controller/get_parameter");
-    setParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetParameter>("/locomotion_controller/set_parameter");
-    getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>("/locomotion_controller/get_parameter_list");
+    getParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameter>(getParameterServiceName);
+    setParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetParameter>(setParameterServiceName);
+    getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>(getParameterListServiceName);
  }
 
 
@@ -103,10 +97,13 @@ void ParametersPlugin::refreshAll() {
 
 
   if (getParameterListClient_.call(req,res)) {
-    parameters_ = res.parameters;
+    // Update parameter names
+    parameterNames_ = res.parameters;
 
-    // sort alphabetically
-    std::sort(parameters_.begin(), parameters_.end(), compareNoCase );
+    // Sort names alphabetically.
+    std::sort(parameterNames_.begin(), parameterNames_.end(), compareNoCase );
+
+    // Update GUI
     emit parametersChanged();
   }
   else {
@@ -123,7 +120,6 @@ void ParametersPlugin::shutdownPlugin() {
 void ParametersPlugin::saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const {
   plugin_settings.setValue("lineEditFilter", ui_.lineEditFilter->displayText());
 }
-
 
 void ParametersPlugin::restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings) {
   ui_.lineEditFilter->setText(plugin_settings.value("lineEditFilter").toString());
@@ -151,11 +147,11 @@ void ParametersPlugin::drawParamList() {
   paramsGrid_->setSpacing(6);
   paramsGrid_->setObjectName(QString::fromUtf8("paramsGrid"));
 
-  const size_t maxParamNameWidth = getMaxParamNameWidth(parameters_);
+  const size_t maxParamNameWidth = getMaxParamNameWidth(parameterNames_);
 
   // Create a line for each filtered parameter
   std::string filter = ui_.lineEditFilter->text().toStdString();
-  for (auto& name : parameters_) {
+  for (auto& name : parameterNames_) {
     std::size_t found = name.find(filter);
     if (found!=std::string::npos) {
       doubleParams_.push_back(std::shared_ptr<DoubleParameter>(new DoubleParameter(name, widget_, paramsGrid_, &getParameterClient_, &setParameterClient_, maxParamNameWidth)));
@@ -178,19 +174,6 @@ void ParametersPlugin::drawParamList() {
   paramsScrollHelperWidget_->setLayout(paramsGrid_);
 
 }
-
-
-/*bool hasConfiguration() const
-{
-  return true;
-}
-
-
-void triggerConfiguration()
-{
-  // Usually used to open a dialog to offer the user a set of configuration
-}*/
-
 
 PLUGINLIB_DECLARE_CLASS(rqt_parameter_handler, ParametersPlugin, ParametersPlugin, rqt_gui_cpp::Plugin)
 
