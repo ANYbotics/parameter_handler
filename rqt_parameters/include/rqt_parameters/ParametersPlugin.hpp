@@ -5,8 +5,6 @@
  *      Author: Christian Gehring
  */
 
-
-
 #pragma once
 
 #include <rqt_gui_cpp/plugin.h>
@@ -35,42 +33,29 @@ public:
   virtual void shutdownPlugin();
   virtual void saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const;
   virtual void restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings);
-
-protected:
-
-
-  // Comment in to signal that the plugin has a way to configure it
-  //bool hasConfiguration() const;
-  //void triggerConfiguration();
-  private:
+private:
   Ui::ParametersHandler ui_;
   QWidget* widget_;
   QGridLayout* paramsGrid_;
-//  QWidget *client;
-//  QScrollArea *area;
   QWidget* paramsWidget_;
   QWidget* paramsScrollHelperWidget_;
   QVBoxLayout* paramsScrollLayout_;
 
-  // Parameters
+  // ROS services
   ros::ServiceClient getParameterListClient_;
   ros::ServiceClient getParameterClient_;
   ros::ServiceClient setParameterClient_;
 
-
   std::list<std::shared_ptr<DoubleParameter>> doubleParams_;
-  std::vector<std::string> parameters_;
+  std::vector<std::string> parameterNames_;
 
  protected slots:
-
-  // Parameters
   void refreshAll();
   void changeAll();
   void drawParamList();
 
 signals:
   void parametersChanged();
-
 
 };
 
