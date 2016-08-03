@@ -1,8 +1,8 @@
 /*
  * ParametersPlugin.cpp
  *
- *  Created on: Jan 19, 2015
- *      Author: C. Dario Bellicoso
+ *  Created on: August 2016
+ *      Author: Christian Gehring
  */
 
 
@@ -40,7 +40,7 @@ struct size_less
     { return a.size() < b.size(); }
 };
 
-static size_t max_line_length(std::vector<std::string> const &lines)
+static size_t getMaxParamNameWidth(std::vector<std::string> const &lines)
 {
   //use QFontMetrics this way;
   QFont font("", 0);
@@ -48,15 +48,15 @@ static size_t max_line_length(std::vector<std::string> const &lines)
 
   auto it = std::max_element(lines.begin(), lines.end(), size_less());
   QString text = QString::fromStdString(*it);
-  return fm.width(text);;
+  return fm.width(text);
 }
 
 ParametersPlugin::ParametersPlugin() :
     rqt_gui_cpp::Plugin(),
     widget_(0),
-    wScroll_(0),
-    client_(0),
-    layout_(0)
+    paramsWidget_(0),
+    paramsScrollHelperWidget_(0),
+    paramsScrollLayout_(0)
 {
   // Constructor is called first before initPlugin function, needless to say.
   // give QObjects reasonable names
@@ -76,13 +76,13 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
     /******************************
      * Connect ui forms to actions *
      ******************************/
-    connect(ui_.pushButtonRefreshAll, SIGNAL(pressed()), this, SLOT(pushButtonRefreshAllPressed()));
-    connect(ui_.pushButtonChangeAll, SIGNAL(pressed()), this, SLOT(pushButtonChangeAllPressed()));
+    connect(ui_.pushButtonRefreshAll, SIGNAL(pressed()), this, SLOT(refreshAll()));
+    connect(ui_.lineEditFilter, SIGNAL(returnPressed()), this ,SLOT(refreshAll()));
+    connect(ui_.pushButtonChangeAll, SIGNAL(pressed()), this, SLOT(changeAll()));
     connect(this, SIGNAL(parametersChanged()), this, SLOT(drawParamList()));
     /******************************/
 
-
-
+    // ROS services
     getParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameter>("/locomotion_controller/get_parameter");
     setParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetParameter>("/locomotion_controller/set_parameter");
     getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>("/locomotion_controller/get_parameter_list");
@@ -90,13 +90,13 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
 
 
 
-void ParametersPlugin::pushButtonChangeAllPressed() {
+void ParametersPlugin::changeAll() {
   for (auto& param : doubleParams_) {
     param->pushButtonChangeParamPressed();
   }
 }
 
-void ParametersPlugin::pushButtonRefreshAllPressed() {
+void ParametersPlugin::refreshAll() {
 
   parameter_handler_msgs::GetParameterList::Request req;
   parameter_handler_msgs::GetParameterList::Response res;
@@ -133,48 +133,49 @@ void ParametersPlugin::drawParamList() {
 
   doubleParams_.clear();
 
-  if (wScroll_) {
+  if (paramsWidget_) {
     // delete widget
-    delete wScroll_->layout();
-    delete client_->layout();
-    ui_.gridLayout->removeWidget(wScroll_);
-    delete wScroll_;
+    delete paramsWidget_->layout();
+    delete paramsScrollHelperWidget_->layout();
+    ui_.gridLayout->removeWidget(paramsWidget_);
+    delete paramsWidget_;
   }
 
-  wScroll_ = new QWidget();
-  wScroll_->setObjectName(QString::fromUtf8("wScroll"));
+  paramsWidget_ = new QWidget();
+  paramsWidget_->setObjectName(QString::fromUtf8("paramsWidget"));
+  ui_.gridLayout->addWidget(paramsWidget_, 10, 1, 1, 1);
 
-  ui_.gridLayout->addWidget(wScroll_, 10, 1, 1, 1);
 
+  paramsScrollHelperWidget_ = new QWidget(paramsWidget_);
+  paramsGrid_= new QGridLayout(paramsScrollHelperWidget_);
+  paramsGrid_->setSpacing(6);
+  paramsGrid_->setObjectName(QString::fromUtf8("paramsGrid"));
 
-  client_ = new QWidget(wScroll_);
-  newGridParams_= new QGridLayout(client_);
-  newGridParams_->setSpacing(6);
-  newGridParams_->setObjectName(QString::fromUtf8("newGridParams"));
+  const size_t maxParamNameWidth = getMaxParamNameWidth(parameters_);
 
-  size_t maxParamNameSize = max_line_length(parameters_);
-
+  // Create a line for each filtered parameter
   std::string filter = ui_.lineEditFilter->text().toStdString();
   for (auto& name : parameters_) {
-    if (name.compare(0, filter.length(), filter) == 0) {
-      doubleParams_.push_back(std::shared_ptr<DoubleParameter>(new DoubleParameter(name, widget_, newGridParams_, &getParameterClient_, &setParameterClient_, maxParamNameSize)));
+    std::size_t found = name.find(filter);
+    if (found!=std::string::npos) {
+      doubleParams_.push_back(std::shared_ptr<DoubleParameter>(new DoubleParameter(name, widget_, paramsGrid_, &getParameterClient_, &setParameterClient_, maxParamNameWidth)));
     }
   }
   // This needs to be done after everthing is setup.
-  client_->setLayout(newGridParams_);
+  paramsScrollHelperWidget_->setLayout(paramsGrid_);
 
   // Put it into a scroll area
-  QScrollArea* area = new QScrollArea();
-  area->setWidget(client_);
+  QScrollArea* paramsScrollArea = new QScrollArea();
+  paramsScrollArea->setWidget(paramsScrollHelperWidget_);
 
   // Make the scroll step the same width as the fixed widgets in the grid
-  area->horizontalScrollBar()->setSingleStep(client_->width() / 24);
+  paramsScrollArea->horizontalScrollBar()->setSingleStep(paramsScrollHelperWidget_->width() / 24);
 
-  layout_ = new QVBoxLayout(wScroll_);
-  layout_->addWidget(area);
+  paramsScrollLayout_ = new QVBoxLayout(paramsWidget_);
+  paramsScrollLayout_->addWidget(paramsScrollArea);
 
-  wScroll_->setLayout(layout_);
-  client_->setLayout(newGridParams_);
+  paramsWidget_->setLayout(paramsScrollLayout_);
+  paramsScrollHelperWidget_->setLayout(paramsGrid_);
 
 }
 

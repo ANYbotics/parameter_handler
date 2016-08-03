@@ -1,9 +1,11 @@
 /*
  * ParametersPlugin.hpp
  *
- *  Created on: Jan 19, 2015
- *      Author: C. Dario Bellicoso
+ *  Created on: August 2016
+ *      Author: Christian Gehring
  */
+
+
 
 #pragma once
 
@@ -43,12 +45,12 @@ protected:
   private:
   Ui::ParametersHandler ui_;
   QWidget* widget_;
-  QGridLayout* newGridParams_;
+  QGridLayout* paramsGrid_;
 //  QWidget *client;
 //  QScrollArea *area;
-  QWidget* wScroll_;
-  QWidget* client_;
-  QVBoxLayout* layout_;
+  QWidget* paramsWidget_;
+  QWidget* paramsScrollHelperWidget_;
+  QVBoxLayout* paramsScrollLayout_;
 
   // Parameters
   ros::ServiceClient getParameterListClient_;
@@ -62,8 +64,8 @@ protected:
  protected slots:
 
   // Parameters
-  void pushButtonRefreshAllPressed();
-  void pushButtonChangeAllPressed();
+  void refreshAll();
+  void changeAll();
   void drawParamList();
 
 signals:
