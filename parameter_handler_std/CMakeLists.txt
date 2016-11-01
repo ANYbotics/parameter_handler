@@ -4,14 +4,14 @@ project(parameter_handler_std)
 add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
-                roco
+                message_logger
                 parameter_handler
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES parameter_handler_std
-  CATKIN_DEPENDS roco parameter_handler
+  CATKIN_DEPENDS message_logger parameter_handler
 #  DEPENDS system_lib
 )
 

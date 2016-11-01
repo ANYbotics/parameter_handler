@@ -43,7 +43,7 @@
 
 #include <parameter_handler/ParameterHandlerBase.hpp>
 #include <parameter_handler/ParameterInterface.hpp>
-#include <roco/log/log_messages.hpp>
+#include <message_logger/message_logger.hpp>
 
 #include <vector>
 #include <unordered_map>
@@ -66,7 +66,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     auto paramIterator = params_.find(name);
 
     if (!(paramIterator == params_.end())) {
-      ROCO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
+      MELO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
       paramIterator->second = param;
       return true;
     }
@@ -87,7 +87,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     auto paramIterator = params_.find(name);
 
     if (paramIterator == params_.end()) {
-      ROCO_INFO_STREAM("Key '" << name << "' was not found.");
+      MELO_INFO_STREAM("Key '" << name << "' was not found.");
       return false;
     }
 
