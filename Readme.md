@@ -10,4 +10,4 @@ Dependencies
 ----------------------------------------------------------------------------
 * [kindr](https://github.com/ethz-asl/kindr) - Kinematics and Dynamics for Robotics
 * [kindr_ros](https://github.com/ethz-asl/kindr_ros) - kindr ROS wrapper
-* [roco](https://bitbucket.org/ethz-asl-lr/roco) - common interface for robot controllers
+* [message_logger](https://bitbucket.org/ethz-asl-lr/message_logger) - message logging utility
