@@ -43,7 +43,10 @@
 
 #include "parameter_handler/ParameterValue.hpp"
 #include <string>
+#include <iostream>
 #include <limits>
+#include <type_traits>
+#include <Eigen/Core>
 
 namespace parameter_handler {
 
@@ -53,11 +56,11 @@ template<typename ValueType_>
 class ParameterValue;
 
 // generic definition
-template <typename ValueType_>
+template <typename ValueType_, typename Enable_ = void>
 class ParameterValueTraits;
 
 template<typename ValueType_>
-class ParameterValueTraits<ParameterValue<ValueType_>> {
+class ParameterValueTraits<ParameterValue<ValueType_>, typename std::enable_if<std::is_arithmetic<ValueType_>::value>::type> {
  public:
   inline static void init(ParameterValue<ValueType_>& param) {
     param.setValue(std::numeric_limits<ValueType_>::min());
@@ -77,6 +80,42 @@ class ParameterValueTraits<ParameterValue<ValueType_>> {
   }
 };
 
+template<typename ValueType_>
+class ParameterValueTraits<ParameterValue<ValueType_>, typename std::enable_if< std::is_base_of< Eigen::MatrixBase<ValueType_>, ValueType_ >::value>::type> {
+public:
+  inline static void init(ParameterValue<ValueType_>& param) {
+	param.setValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
+	param.setDefaultValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
+	param.setMinValue(-ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
+	param.setMaxValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
+  }
+
+  inline static ValueType_ setValue(ParameterValue<ValueType_>& param, const ValueType_& value) {
+    // Test consistency
+    if(param.getValue().rows() != value.rows() || param.getValue().cols() != value.cols()) {
+      std::cout << "Trying to set value to eigen parameter which has wrong size. Using default value."<<std::endl;
+      return param.getDefaultValue();
+    }
+
+    // Loop and set values
+    ValueType_ boundedValue = value;
+    for(unsigned int r = 0; r < value.rows(); ++r)
+    {
+      for(unsigned int c = 0; c < value.cols(); ++c)
+      {
+        if (value(r,c) > param.getMaxValue()(r,c) ) {
+          boundedValue(r,c) = param.getMaxValue()(r,c);
+        }
+        else if (value(r,c) < param.getMinValue()(r,c)) {
+          boundedValue(r,c) = param.getMinValue()(r,c);
+        }
+      }
+    }
+
+    return boundedValue;
+  }
+};
+
 template<>
 class ParameterValueTraits<bool> {
 public:
@@ -84,6 +123,7 @@ public:
     return value;
   }
 };
+
 
 
 }/* namespace internal */

@@ -3,19 +3,22 @@ project(parameter_handler)
 
 add_definitions(-std=c++11)
 
+find_package(Eigen3 REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
               
 )
 
 catkin_package(
-  INCLUDE_DIRS include
+  INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
   LIBRARIES parameter_handler
   CATKIN_DEPENDS 
 #  DEPENDS system_lib
 )
 
-include_directories(include)
-include_directories(${catkin_INCLUDE_DIRS})
+include_directories(include
+					${catkin_INCLUDE_DIRS}
+					${EIGEN3_INCLUDE_DIR})
 
 add_library(parameter_handler
   src/parameter_handler.cpp
