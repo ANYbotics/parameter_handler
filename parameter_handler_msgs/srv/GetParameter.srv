@@ -1,6 +1,0 @@
-string name
----
-float64 value_current
-float64 value_min
-float64 value_max
-float64 value_default

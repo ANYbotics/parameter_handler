@@ -8,8 +8,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_service_files(
   FILES
-   SetParameter.srv
-   GetParameter.srv
+   SetIntegralParameter.srv
+   SetFloatingPointParameter.srv
+   GetIntegralParameter.srv
+   GetFloatingPointParameter.srv
    GetParameterList.srv
 )
 

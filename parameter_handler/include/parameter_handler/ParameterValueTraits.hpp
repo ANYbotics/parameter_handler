@@ -84,10 +84,10 @@ template<typename ValueType_>
 class ParameterValueTraits<ParameterValue<ValueType_>, typename std::enable_if< std::is_base_of< Eigen::MatrixBase<ValueType_>, ValueType_ >::value>::type> {
 public:
   inline static void init(ParameterValue<ValueType_>& param) {
-	param.setValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
-	param.setDefaultValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
-	param.setMinValue(-ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
-	param.setMaxValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
+    param.setValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
+    param.setDefaultValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::min()));
+    param.setMinValue(-ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
+    param.setMaxValue(ValueType_::Constant(param.getValue().rows(), param.getValue().cols(), std::numeric_limits<typename ValueType_::Scalar>::max()));
   }
 
   inline static ValueType_ setValue(ParameterValue<ValueType_>& param, const ValueType_& value) {
@@ -117,7 +117,7 @@ public:
 };
 
 template<>
-class ParameterValueTraits<bool> {
+class ParameterValueTraits< ParameterValue<bool> > {
 public:
   inline static bool setValue(ParameterValue<bool>& param, const bool& value) {
     return value;
