@@ -11,11 +11,8 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <rqt_parameters/ParametersPlugin.hpp>
+#include <rqt_parameters/FloatingPointParameter.hpp>
 #include <ros/package.h>
-
-#include <parameter_handler_msgs/GetParameter.h>
-#include <parameter_handler_msgs/SetParameter.h>
-#include <parameter_handler_msgs/GetParameterList.h>
 
 
 static bool compareNoCase( const std::string& s1, const std::string& s2 ) {
@@ -40,6 +37,7 @@ static size_t getMaxParamNameWidth(std::vector<std::string> const &lines) {
 ParametersPlugin::ParametersPlugin() :
     rqt_gui_cpp::Plugin(),
     widget_(0),
+    paramsGrid_(),
     paramsWidget_(0),
     paramsScrollHelperWidget_(0),
     paramsScrollLayout_(0)
@@ -67,25 +65,33 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
     connect(this, SIGNAL(parametersChanged()), this, SLOT(drawParamList()));
     /******************************/
 
-    std::string getParameterServiceName{"/locomotion_controller/get_parameter"};
-    getNodeHandle().getParam("get_parameter_service", getParameterServiceName);
+    std::string getIntegralParameterServiceName{"/rocoma_example/get_integral_parameter"};
+    getNodeHandle().getParam("get_integral_parameter_service", getIntegralParameterServiceName);
 
-    std::string setParameterServiceName{"/locomotion_controller/set_parameter"};
-    getNodeHandle().getParam("set_parameter_service", setParameterServiceName);
+    std::string setIntegralParameterServiceName{"/rocoma_example/set_integral_parameter"};
+    getNodeHandle().getParam("set_integral_parameter_service", setIntegralParameterServiceName);
 
-    std::string getParameterListServiceName{"/locomotion_controller/get_parameter_list"};
+    std::string getFloatingPointParameterServiceName{"/rocoma_example/get_floating_point_parameter"};
+    getNodeHandle().getParam("get_floating_point_parameter_service", getFloatingPointParameterServiceName);
+
+    std::string setFloatingPointParameterServiceName{"/rocoma_example/set_floating_point_parameter"};
+    getNodeHandle().getParam("set_floating_point_parameter_service", setFloatingPointParameterServiceName);
+
+    std::string getParameterListServiceName{"/rocoma_example/get_parameter_list"};
     getNodeHandle().getParam("get_parameter_list_service", getParameterListServiceName);
 
     // ROS services
-    getParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameter>(getParameterServiceName);
-    setParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetParameter>(setParameterServiceName);
     getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>(getParameterListServiceName);
+    getIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetIntegralParameter>(getIntegralParameterServiceName);
+    setIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetIntegralParameter>(setIntegralParameterServiceName);
+    getFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetFloatingPointParameter>(getFloatingPointParameterServiceName);
+    setFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetFloatingPointParameter>(setFloatingPointParameterServiceName);
  }
 
 
 
 void ParametersPlugin::changeAll() {
-  for (auto& param : doubleParams_) {
+  for (auto& param : params_) {
     param->pushButtonChangeParamPressed();
   }
 }
@@ -113,8 +119,10 @@ void ParametersPlugin::refreshAll() {
 
 void ParametersPlugin::shutdownPlugin() {
   getParameterListClient_.shutdown();
-  getParameterClient_.shutdown();
-  setParameterClient_.shutdown();
+  getIntegralParameterClient_.shutdown();
+  setIntegralParameterClient_.shutdown();
+  getFloatingPointParameterClient_.shutdown();
+  setFloatingPointParameterClient_.shutdown();
 }
 
 void ParametersPlugin::saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const {
@@ -127,7 +135,7 @@ void ParametersPlugin::restoreSettings(const qt_gui_cpp::Settings& plugin_settin
 
 void ParametersPlugin::drawParamList() {
 
-  doubleParams_.clear();
+  params_.clear();
 
   if (paramsWidget_) {
     // delete widget
@@ -154,7 +162,8 @@ void ParametersPlugin::drawParamList() {
   for (auto& name : parameterNames_) {
     std::size_t found = name.find(filter);
     if (found!=std::string::npos) {
-      doubleParams_.push_back(std::shared_ptr<DoubleParameter>(new DoubleParameter(name, widget_, paramsGrid_, &getParameterClient_, &setParameterClient_, maxParamNameWidth)));
+      params_.push_back(std::shared_ptr<ParameterBase>(new FloatingPointParameter(name, widget_, paramsGrid_, &getFloatingPointParameterClient_, &setFloatingPointParameterClient_, maxParamNameWidth)));
+      params_.back()->refreshParam();
     }
   }
   // This needs to be done after everthing is setup.

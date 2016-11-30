@@ -16,11 +16,12 @@
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
 
-#include <parameter_handler_msgs/GetParameter.h>
-#include <parameter_handler_msgs/SetParameter.h>
+#include <parameter_handler_msgs/GetIntegralParameter.h>
+#include <parameter_handler_msgs/GetFloatingPointParameter.h>
+#include <parameter_handler_msgs/SetIntegralParameter.h>
+#include <parameter_handler_msgs/SetFloatingPointParameter.h>
 #include <parameter_handler_msgs/GetParameterList.h>
-
-#include <rqt_parameters/DoubleParameter.hpp>
+#include <rqt_parameters/FloatingPointParameter.hpp>
 
 #include <list>
 #include <memory>
@@ -43,10 +44,12 @@ private:
 
   // ROS services
   ros::ServiceClient getParameterListClient_;
-  ros::ServiceClient getParameterClient_;
-  ros::ServiceClient setParameterClient_;
+  ros::ServiceClient getIntegralParameterClient_;
+  ros::ServiceClient setIntegralParameterClient_;
+  ros::ServiceClient getFloatingPointParameterClient_;
+  ros::ServiceClient setFloatingPointParameterClient_;
 
-  std::list<std::shared_ptr<DoubleParameter>> doubleParams_;
+  std::list<std::shared_ptr<ParameterBase>> params_;
   std::vector<std::string> parameterNames_;
 
  protected slots:
