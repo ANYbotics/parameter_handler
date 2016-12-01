@@ -80,10 +80,14 @@ void ParameterHandlerRos::setNodeHandle(ros::NodeHandle& nodeHandle) {
 
 bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                                            parameter_handler_msgs::GetParameterList::Response &res) {
-
-
   for (auto& parameter : params_) {
-    res.parameters.push_back(parameter.first);
+    bool integralType = isIntegralType(parameter.second);
+
+    // Only integral and floating point types are supported
+    if(integralType || isFloatingPointType(parameter.second)) {
+      res.parameters.push_back(parameter.first);
+      res.isIntegral.push_back(integralType);
+    }
   }
   return true;
 }

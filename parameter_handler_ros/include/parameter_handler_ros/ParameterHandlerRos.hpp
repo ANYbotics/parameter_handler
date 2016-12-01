@@ -77,9 +77,32 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
                                  parameter_handler_msgs::GetFloatingPointParameterResponse &res);
 
 
+  bool isIntegralType(const parameter_handler::ParameterInterface & param) {
+    return (  param.getType() == typeid(bool) ||
+              param.getType() == typeid(char) ||
+              param.getType() == typeid(char16_t) ||
+              param.getType() == typeid(char32_t) ||
+              param.getType() == typeid(wchar_t) ||
+              param.getType() == typeid(signed char) ||
+              param.getType() == typeid(short int) ||
+              param.getType() == typeid(int) ||
+              param.getType() == typeid(long int) ||
+              param.getType() == typeid(long long int) ||
+              param.getType() == typeid(unsigned char) ||
+              param.getType() == typeid(unsigned short int) ||
+              param.getType() == typeid(Eigen::Vector3i) );
+  }
+
+  bool isFloatingPointType(const parameter_handler::ParameterInterface & param) {
+    return (  param.getType() == typeid(float) ||
+              param.getType() == typeid(double) ||
+              param.getType() == typeid(Eigen::Vector3d) );
+  }
+
   template <typename ScalarType_, typename MultiArrayMsg_>
   void readScalarParamFromMessage(parameter_handler::ParameterInterface & param, const MultiArrayMsg_ & msg) {
-    if(msg.layout.dim.size() == 1 && msg.layout.dim[0].size == 1) {
+    if( (msg.layout.dim.size() == 1 && msg.layout.dim[0].size == 1) ||
+        (msg.layout.dim.size() == 2 && msg.layout.dim[0].size == 1 && msg.layout.dim[1].size == 1 ) ) {
       param.setValue(static_cast<ScalarType_>(msg.data[0]));
     }
     else {
@@ -100,6 +123,7 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
             m(r,c) = static_cast<typename MatrixType_::Scalar>(msg.data[r*cols + c]);
           }
         }
+        param.setValue(m);
       }
       else {
         ROS_ERROR_STREAM("Wrong matrix size for parameter " << param.getName());

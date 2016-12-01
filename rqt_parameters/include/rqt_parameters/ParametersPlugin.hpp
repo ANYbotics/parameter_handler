@@ -7,24 +7,34 @@
 
 #pragma once
 
-#include <rqt_gui_cpp/plugin.h>
-#include <ui_parameters_plugin.h>
-#include <QWidget>
-#include <QDoubleSpinBox>
-#include <QScrollArea>
+// rqt_parameters
+#include <rqt_parameters/ParameterBase.hpp>
 
-#include <ros/ros.h>
-#include <std_srvs/Empty.h>
-
+// parameter_handler_msgs
 #include <parameter_handler_msgs/GetIntegralParameter.h>
 #include <parameter_handler_msgs/GetFloatingPointParameter.h>
 #include <parameter_handler_msgs/SetIntegralParameter.h>
 #include <parameter_handler_msgs/SetFloatingPointParameter.h>
 #include <parameter_handler_msgs/GetParameterList.h>
-#include <rqt_parameters/FloatingPointParameter.hpp>
 
+// Qt
+#include <QWidget>
+#include <QDoubleSpinBox>
+#include <QScrollArea>
+
+// Rqt
+#include <rqt_gui_cpp/plugin.h>
+#include <ui_parameters_plugin.h>
+
+// ros
+#include <ros/ros.h>
+#include <std_srvs/Empty.h>
+
+// Stl
 #include <list>
 #include <memory>
+
+namespace rqt_parameters {
 
 class ParametersPlugin : public rqt_gui_cpp::Plugin {
   Q_OBJECT
@@ -62,4 +72,4 @@ signals:
 
 };
 
-
+}

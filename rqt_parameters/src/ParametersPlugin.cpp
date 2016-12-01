@@ -5,15 +5,23 @@
  *      Author: Christian Gehring
  */
 
-#include <pluginlib/class_list_macros.h>
+// rqt_parameters
+#include <rqt_parameters/ParametersPlugin.hpp>
+#include <rqt_parameters/ParameterFloat64Matrix.hpp>
+
+// Qt
 #include <QStringList>
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QScrollBar>
-#include <rqt_parameters/ParametersPlugin.hpp>
-#include <rqt_parameters/FloatingPointParameter.hpp>
+
+// Rqt
+#include <pluginlib/class_list_macros.h>
+
+// ros
 #include <ros/package.h>
 
+namespace rqt_parameters {
 
 static bool compareNoCase( const std::string& s1, const std::string& s2 ) {
     return strcasecmp( s1.c_str(), s2.c_str() ) <= 0;
@@ -162,8 +170,9 @@ void ParametersPlugin::drawParamList() {
   for (auto& name : parameterNames_) {
     std::size_t found = name.find(filter);
     if (found!=std::string::npos) {
-      params_.push_back(std::shared_ptr<ParameterBase>(new FloatingPointParameter(name, widget_, paramsGrid_, &getFloatingPointParameterClient_, &setFloatingPointParameterClient_, maxParamNameWidth)));
-      params_.back()->refreshParam();
+      params_.push_back(std::shared_ptr<ParameterBase>(
+          new ParameterFloat64Matrix(name, paramsGrid_, &getFloatingPointParameterClient_, &setFloatingPointParameterClient_)));
+      params_.back()->setupGUI(widget_, maxParamNameWidth);
     }
   }
   // This needs to be done after everthing is setup.
@@ -186,4 +195,5 @@ void ParametersPlugin::drawParamList() {
 
 PLUGINLIB_DECLARE_CLASS(rqt_parameter_handler, ParametersPlugin, ParametersPlugin, rqt_gui_cpp::Plugin)
 
+}
 
