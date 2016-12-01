@@ -8,8 +8,6 @@
 // rqt_parameters
 #include <rqt_parameters/ParametersPlugin.hpp>
 #include <rqt_parameters/ParameterFloat64Matrix.hpp>
-
-// Qt
 #include <QStringList>
 #include <QGridLayout>
 #include <QScrollArea>
@@ -20,25 +18,26 @@
 
 // ros
 #include <ros/package.h>
+#include <rqt_parameters/ParameterInt32Matrix.hpp>
 
 namespace rqt_parameters {
 
-static bool compareNoCase( const std::string& s1, const std::string& s2 ) {
-    return strcasecmp( s1.c_str(), s2.c_str() ) <= 0;
+static bool compareNoCase( const std::pair<std::string, bool> & s1, const std::pair<std::string, bool> & s2 ) {
+    return strcasecmp( s1.first.c_str(), s2.first.c_str() ) <= 0;
 }
 
 struct size_less {
     template<class T> bool operator()(T const &a, T const &b) const
-    { return a.size() < b.size(); }
+    { return a.first.size() < b.first.size(); }
 };
 
-static size_t getMaxParamNameWidth(std::vector<std::string> const &lines) {
+static size_t getMaxParamNameWidth(std::vector<std::pair<std::string, bool>> const &lines) {
   //use QFontMetrics this way;
   QFont font("", 0);
   QFontMetrics fm(font);
 
   auto it = std::max_element(lines.begin(), lines.end(), size_less());
-  QString text = QString::fromStdString(*it);
+  QString text = QString::fromStdString(it->first);
   return fm.width(text);
 }
 
@@ -112,13 +111,23 @@ void ParametersPlugin::refreshAll() {
 
   if (getParameterListClient_.call(req,res)) {
     // Update parameter names
-    parameterNames_ = res.parameters;
+    parameterInfos_.clear();
 
-    // Sort names alphabetically.
-    std::sort(parameterNames_.begin(), parameterNames_.end(), compareNoCase );
+    if(res.parameters.size() == res.isIntegral.size()) {
+      for(unsigned int i = 0; i < res.parameters.size(); i++)
+      {
+        parameterInfos_.push_back(std::pair<std::string, bool>(res.parameters.at(i), res.isIntegral.at(i)));
+      }
 
-    // Update GUI
-    emit parametersChanged();
+      // Sort names alphabetically.
+      std::sort(parameterInfos_.begin(), parameterInfos_.end(), compareNoCase );
+
+      // Update GUI
+      emit parametersChanged();
+    }
+    else {
+      ROS_WARN("Parameter list is not consistent!");
+    }
   }
   else {
     ROS_WARN("Could not get parameter list!");
@@ -163,15 +172,20 @@ void ParametersPlugin::drawParamList() {
   paramsGrid_->setSpacing(6);
   paramsGrid_->setObjectName(QString::fromUtf8("paramsGrid"));
 
-  const size_t maxParamNameWidth = getMaxParamNameWidth(parameterNames_);
+  const size_t maxParamNameWidth = getMaxParamNameWidth(parameterInfos_);
 
   // Create a line for each filtered parameter
   std::string filter = ui_.lineEditFilter->text().toStdString();
-  for (auto& name : parameterNames_) {
-    std::size_t found = name.find(filter);
+  for (auto& info : parameterInfos_) {
+    std::size_t found = info.first.find(filter);
     if (found!=std::string::npos) {
-      params_.push_back(std::shared_ptr<ParameterBase>(
-          new ParameterFloat64Matrix(name, paramsGrid_, &getFloatingPointParameterClient_, &setFloatingPointParameterClient_)));
+      if(info.second) {
+        params_.push_back(std::shared_ptr<ParameterBase>(
+            new ParameterInt32Matrix(info.first, paramsGrid_, &getIntegralParameterClient_, &setIntegralParameterClient_)));
+      } else {
+        params_.push_back(std::shared_ptr<ParameterBase>(
+            new ParameterFloat64Matrix(info.first, paramsGrid_, &getFloatingPointParameterClient_, &setFloatingPointParameterClient_)));
+      }
       params_.back()->setupGUI(widget_, maxParamNameWidth);
     }
   }

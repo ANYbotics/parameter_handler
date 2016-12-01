@@ -41,6 +41,7 @@
 
 #pragma once
 
+
 #include <ros/ros.h>
 #include <parameter_handler_msgs/SetIntegralParameter.h>
 #include <parameter_handler_msgs/GetIntegralParameter.h>
@@ -49,6 +50,10 @@
 #include <parameter_handler_msgs/GetParameterList.h>
 
 #include <parameter_handler_std/ParameterHandlerStd.hpp>
+#include <parameter_handler_ros/type_macros.hpp>
+#include <parameter_handler_ros/helper_methods.hpp>
+
+
 #include <mutex>
 
 namespace parameter_handler_ros {
@@ -75,115 +80,6 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
 
   bool getFloatingPointParameter(parameter_handler_msgs::GetFloatingPointParameterRequest &req,
                                  parameter_handler_msgs::GetFloatingPointParameterResponse &res);
-
-
-  bool isIntegralType(const parameter_handler::ParameterInterface & param) {
-    return (  param.getType() == typeid(bool) ||
-              param.getType() == typeid(char) ||
-              param.getType() == typeid(char16_t) ||
-              param.getType() == typeid(char32_t) ||
-              param.getType() == typeid(wchar_t) ||
-              param.getType() == typeid(signed char) ||
-              param.getType() == typeid(short int) ||
-              param.getType() == typeid(int) ||
-              param.getType() == typeid(long int) ||
-              param.getType() == typeid(long long int) ||
-              param.getType() == typeid(unsigned char) ||
-              param.getType() == typeid(unsigned short int) ||
-              param.getType() == typeid(Eigen::Vector3i) );
-  }
-
-  bool isFloatingPointType(const parameter_handler::ParameterInterface & param) {
-    return (  param.getType() == typeid(float) ||
-              param.getType() == typeid(double) ||
-              param.getType() == typeid(Eigen::Vector3d) );
-  }
-
-  template <typename ScalarType_, typename MultiArrayMsg_>
-  void readScalarParamFromMessage(parameter_handler::ParameterInterface & param, const MultiArrayMsg_ & msg) {
-    if( (msg.layout.dim.size() == 1 && msg.layout.dim[0].size == 1) ||
-        (msg.layout.dim.size() == 2 && msg.layout.dim[0].size == 1 && msg.layout.dim[1].size == 1 ) ) {
-      param.setValue(static_cast<ScalarType_>(msg.data[0]));
-    }
-    else {
-      ROS_ERROR_STREAM("Wrong dimension for scalar parameter " << param.getName());
-    }
-  }
-
-  template <typename MatrixType_, typename MultiArrayMsg_>
-  void readMatrixParamFromMessage(parameter_handler::ParameterInterface & param, const MultiArrayMsg_ & msg) {
-    if(msg.layout.dim.size() == 1 || msg.layout.dim.size() == 2) {
-      int rows = msg.layout.dim[0].size;
-      int cols = (msg.layout.dim.size() == 2) ? msg.layout.dim[1].size : 1;
-      if(param.getValue<MatrixType_>().rows() == rows  && param.getValue<MatrixType_>().cols() == cols )
-      {
-        MatrixType_ m;
-        for( int r = 0; r < rows; ++r ) {
-          for( int c = 0; c < cols; ++c ) {
-            m(r,c) = static_cast<typename MatrixType_::Scalar>(msg.data[r*cols + c]);
-          }
-        }
-        param.setValue(m);
-      }
-      else {
-        ROS_ERROR_STREAM("Wrong matrix size for parameter " << param.getName());
-      }
-    }
-    else {
-      ROS_ERROR_STREAM("Wrong dimension for matrix parameter " << param.getName());
-    }
-  }
-
-  template <typename ScalarType_, typename MultiArrayMsg_>
-  void writeScalarToMessage(const ScalarType_ & scalar, MultiArrayMsg_ & msg) {
-    // Add scalar data dimension
-    msg.layout.dim.resize(1);
-    msg.layout.dim[0].label = "data";
-    msg.layout.dim[0].size = 1;
-    msg.layout.dim[0].stride = 1;
-    msg.data.resize(1);
-    msg.data[0] = static_cast<std::int64_t>(scalar);
-  }
-
-  template <typename MatrixType_, typename MultiArrayMsg_>
-  void writeMatrixToMessage(const MatrixType_ & matrix, MultiArrayMsg_ & msg) {
-    // Add matrix data dimension
-    if(matrix.size() > 0) {
-      msg.layout.dim.resize(2);
-      msg.layout.dim[0].label = "rows";
-      msg.layout.dim[0].size = matrix.rows();
-      msg.layout.dim[0].stride = matrix.size();
-      msg.layout.dim[1].label = "cols";
-      msg.layout.dim[1].size = matrix.cols();
-      msg.layout.dim[1].stride = matrix.cols();
-
-      msg.data.resize(matrix.size());
-      for( int r = 0; r < matrix.rows(); ++r ) {
-        for( int c = 0; c < matrix.cols(); ++c ) {
-          msg.data[r*matrix.cols() + c] = static_cast<std::int64_t>(matrix(r,c));
-        }
-      }
-    }
-    else {
-      ROS_ERROR_STREAM("Matrix size is zero.");
-    }
-  }
-
-  template <typename ScalarType_, typename GetParamResponse_>
-  void writeScalarParamToMessage(const parameter_handler::ParameterInterface & param, GetParamResponse_ & msg) {
-    writeScalarToMessage(param.getValue<ScalarType_>(), msg.value_current);
-    writeScalarToMessage(param.getMinValue<ScalarType_>(), msg.value_min);
-    writeScalarToMessage(param.getMaxValue<ScalarType_>(), msg.value_max);
-    writeScalarToMessage(param.getDefaultValue<ScalarType_>(), msg.value_default);
-  }
-
-  template <typename MatrixType_, typename GetParamResponse_>
-  void writeMatrixParamToMessage(const parameter_handler::ParameterInterface & param, GetParamResponse_ & msg) {
-    writeMatrixToMessage(param.getValue<MatrixType_>(), msg.value_current);
-    writeMatrixToMessage(param.getMinValue<MatrixType_>(), msg.value_min);
-    writeMatrixToMessage(param.getMaxValue<MatrixType_>(), msg.value_max);
-    writeMatrixToMessage(param.getDefaultValue<MatrixType_>(), msg.value_default);
-  }
 
  protected:
   ros::NodeHandle nodeHandle_;

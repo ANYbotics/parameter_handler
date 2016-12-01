@@ -26,11 +26,11 @@
 namespace rqt_parameters {
 
 //! This class draws and handles multi array parameters
-class ParameterInt64Matrix: public ParameterBase {
+class ParameterInt32Matrix: public ParameterBase {
  Q_OBJECT;
  public:
   //! Constructor
-  ParameterInt64Matrix( const std::string& name,
+  ParameterInt32Matrix( const std::string& name,
                         QGridLayout* grid,
                         ros::ServiceClient* getParameterClient,
                         ros::ServiceClient* setParameterClient):
@@ -40,7 +40,7 @@ class ParameterInt64Matrix: public ParameterBase {
   }
 
   //! Destructor
-  virtual ~ParameterInt64Matrix() {
+  virtual ~ParameterInt32Matrix() {
 
   };
 

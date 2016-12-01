@@ -44,6 +44,7 @@ public:
   virtual void shutdownPlugin();
   virtual void saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const;
   virtual void restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings);
+
 private:
   Ui::ParametersHandler ui_;
   QWidget* widget_;
@@ -60,7 +61,7 @@ private:
   ros::ServiceClient setFloatingPointParameterClient_;
 
   std::list<std::shared_ptr<ParameterBase>> params_;
-  std::vector<std::string> parameterNames_;
+  std::vector<std::pair<std::string, bool>> parameterInfos_;
 
  protected slots:
   void refreshAll();

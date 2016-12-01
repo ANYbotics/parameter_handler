@@ -81,10 +81,10 @@ void ParameterHandlerRos::setNodeHandle(ros::NodeHandle& nodeHandle) {
 bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                                            parameter_handler_msgs::GetParameterList::Response &res) {
   for (auto& parameter : params_) {
-    bool integralType = isIntegralType(parameter.second);
+    bool integralType = isType<PH_ROS_INTEGRAL_TYPES>(parameter.second);
 
     // Only integral and floating point types are supported
-    if(integralType || isFloatingPointType(parameter.second)) {
+    if(integralType || isType<PH_ROS_FLOATING_POINT_TYPES>(parameter.second)) {
       res.parameters.push_back(parameter.first);
       res.isIntegral.push_back(integralType);
     }
@@ -100,26 +100,11 @@ bool ParameterHandlerRos::setIntegralParameter(parameter_handler_msgs::SetIntegr
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = true;
+    res.success = readScalarParamFromMessage<std_msgs::Int64MultiArray, PH_ROS_INTEGRAL_SCALAR_TYPES>(param, req.value) ||
+                  readMatrixParamFromMessage<std_msgs::Int64MultiArray, PH_ROS_INTEGRAL_MATRIX_TYPES>(param, req.value);
 
-    if( param.getType() == typeid(bool) ) { readScalarParamFromMessage<bool, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(char) ) { readScalarParamFromMessage<char, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(char16_t) ) { readScalarParamFromMessage<char16_t, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(char32_t) ) { readScalarParamFromMessage<char32_t, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(wchar_t) ) { readScalarParamFromMessage<wchar_t, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(signed char) ) { readScalarParamFromMessage<signed char, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(short int) ) { readScalarParamFromMessage<short int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(int) ) { readScalarParamFromMessage<int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(long int) ) { readScalarParamFromMessage<long int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(long long int) ) { readScalarParamFromMessage<long long int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(unsigned char) ) { readScalarParamFromMessage<unsigned char, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(unsigned short int) ) { readScalarParamFromMessage<unsigned short int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(unsigned int) ) { readScalarParamFromMessage<unsigned int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(unsigned long int) ) { readScalarParamFromMessage<unsigned long int, std_msgs::Int64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(Eigen::Vector3i) ) { readMatrixParamFromMessage<Eigen::Vector3i, std_msgs::Int64MultiArray>(param, req.value); }
-    else {
-      ROS_ERROR("Parameter type is not supported");
-      res.success = false;
+    if(!res.success) {
+      ROS_ERROR("Reading parameter from msg failed.");
     }
   }
   else {
@@ -137,27 +122,13 @@ bool ParameterHandlerRos::getIntegralParameter(parameter_handler_msgs::GetIntegr
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = true;
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_ROS_INTEGRAL_SCALAR_TYPES>(param, res) ||
+                  writeMatrixParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_ROS_INTEGRAL_MATRIX_TYPES>(param, res);
 
-    if( param.getType() == typeid(bool) ) { writeScalarParamToMessage<bool, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(char) ) { writeScalarParamToMessage<char, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(char16_t) ) { writeScalarParamToMessage<char16_t, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(char32_t) ) { writeScalarParamToMessage<char32_t, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(wchar_t) ) { writeScalarParamToMessage<wchar_t, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(signed char) ) { writeScalarParamToMessage<signed char, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(short int) ) { writeScalarParamToMessage<short int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(int) ) { writeScalarParamToMessage<int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(long int) ) { writeScalarParamToMessage<long int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(long long int) ) { writeScalarParamToMessage<long long int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(unsigned char) ) { writeScalarParamToMessage<unsigned char, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(unsigned short int) ) { writeScalarParamToMessage<unsigned short int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(unsigned int) ) { writeScalarParamToMessage<unsigned int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(unsigned long int) ) { writeScalarParamToMessage<unsigned long int, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else if( param.getType() == typeid(Eigen::Vector3i) ) { writeMatrixParamToMessage<Eigen::Vector3i, parameter_handler_msgs::GetIntegralParameterResponse>(param, res); }
-    else {
-      ROS_ERROR("Parameter type is not supported");
-      res.success = false;
+    if(!res.success) {
+      ROS_ERROR("Writing integral parameter to msg failed.");
     }
+
   }
   else {
     ROS_ERROR("Parameter not found.");
@@ -174,15 +145,13 @@ bool ParameterHandlerRos::setFloatingPointParameter(parameter_handler_msgs::SetF
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = true;
+    res.success = readScalarParamFromMessage<std_msgs::Float64MultiArray, PH_ROS_FLOATING_POINT_SCALAR_TYPES>(param, req.value) ||
+                  readMatrixParamFromMessage<std_msgs::Float64MultiArray, PH_ROS_FLOATING_POINT_MATRIX_TYPES>(param, req.value);
 
-    if( param.getType() == typeid(float) ) { readScalarParamFromMessage<float, std_msgs::Float64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(double) ) { readScalarParamFromMessage<double, std_msgs::Float64MultiArray>(param, req.value); }
-    else if( param.getType() == typeid(Eigen::Vector3d) ) { readMatrixParamFromMessage<Eigen::Vector3d, std_msgs::Float64MultiArray>(param, req.value); }
-    else {
-      ROS_ERROR("Parameter type is not supported.");
-      res.success = false;
+    if(!res.success) {
+      ROS_ERROR("Reading parameter from msg failed.");
     }
+
   }
   else {
     ROS_ERROR("Parameter not found.");
@@ -199,15 +168,13 @@ bool ParameterHandlerRos::getFloatingPointParameter(parameter_handler_msgs::GetF
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = true;
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_ROS_FLOATING_POINT_SCALAR_TYPES>(param, res) ||
+                  writeMatrixParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_ROS_FLOATING_POINT_MATRIX_TYPES>(param, res);
 
-    if( param.getType() == typeid(float) ) { writeScalarParamToMessage<float, parameter_handler_msgs::GetFloatingPointParameterResponse>(param, res); }
-    else if( param.getType() == typeid(double) ) { writeScalarParamToMessage<double, parameter_handler_msgs::GetFloatingPointParameterResponse>(param, res); }
-    else if( param.getType() == typeid(Eigen::Vector3d) ) { writeMatrixParamToMessage<Eigen::Vector3d, parameter_handler_msgs::GetFloatingPointParameterResponse>(param, res); }
-    else {
-      ROS_ERROR("Parameter type is not supported");
-      res.success = false;
+    if(!res.success) {
+      ROS_ERROR("Writing floating point parameter to msg failed.");
     }
+
   }
   else {
     ROS_ERROR("Parameter not found.");
