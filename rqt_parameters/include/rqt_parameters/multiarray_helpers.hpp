@@ -15,11 +15,22 @@
 #include <QSpinBox>
 #include <QDoubleSpinBox>
 
+// ros
 #include <ros/ros.h>
+
+// stl
+#include <type_traits>
 
 namespace rqt_parameters {
 
 namespace multi_array_helpers {
+
+namespace internal {
+  template<typename T> void setDecimals(T & sb, std::false_type /* is_double_spinbox */ ) {}
+  template<typename T> void setDecimals(T & sb, std::true_type /* is_double_spinbox */ ) {
+    sb->setDecimals(4);
+  }
+}
 
 template <typename MatrixSpinBoxType_, typename GetParamService_>
 bool refreshParam( const std::string & paramName,
@@ -52,11 +63,10 @@ bool refreshParam( const std::string & paramName,
             double max = res.value_max.data[r*cols + c];
             QString tooltip = QString("Min: ") + QString::number(min, 'f', 2) + QString(" / Max: ") + QString::number(max, 'f', 2);
             m->getSpinbox(r,c)->setToolTip(tooltip);
-            m->getSpinbox(r,c)->setMinimum(min);
-            m->getSpinbox(r,c)->setMaximum(max);
             m->getSpinbox(r,c)->setValue(val);
             m->getSpinbox(r,c)->setRange(min, max);
             m->getSpinbox(r,c)->setSingleStep(std::fabs( (max - min) / 10.0) );
+            internal::setDecimals(m->getSpinbox(r,c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>() );
           }
         }
       }

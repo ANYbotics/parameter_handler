@@ -114,7 +114,7 @@ bool writeMatrixParamToMessage(const parameter_handler::ParameterInterface & par
     return success;
   }
 
-  return writeScalarParamToMessage<GetParamResponse_, Tn...>(param, msg);
+  return writeMatrixParamToMessage<GetParamResponse_, Tn...>(param, msg);
 }
 
 template<typename MultiArrayMsg_>
