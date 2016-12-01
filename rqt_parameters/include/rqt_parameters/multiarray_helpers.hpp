@@ -26,9 +26,11 @@ namespace rqt_parameters {
 namespace multi_array_helpers {
 
 namespace internal {
-  template<typename T> void setDecimals(T & sb, std::false_type /* is_double_spinbox */ ) {}
-  template<typename T> void setDecimals(T & sb, std::true_type /* is_double_spinbox */ ) {
-    sb->setDecimals(4);
+  template<typename T> unsigned int setDecimals(T & sb, std::false_type /* is_double_spinbox */ ) { return 0; }
+  template<typename T> unsigned int setDecimals(T & sb, std::true_type /* is_double_spinbox */ ) {
+    unsigned int decimals = 4;
+    sb->setDecimals(decimals);
+    return decimals;
   }
 }
 
@@ -37,6 +39,8 @@ bool refreshParam( const std::string & paramName,
                    ros::ServiceClient* getParamClient,
                    QWidget * matrix)
 {
+  using PrimType = typename GetParamService_::Response::_value_current_type::_data_type::value_type;
+
   typename GetParamService_::Request req;
   typename GetParamService_::Response res;
 
@@ -58,15 +62,16 @@ bool refreshParam( const std::string & paramName,
         {
           for( int c = 0; c < cols; ++c )
           {
-            double val = res.value_current.data[r*cols + c];
-            double min = res.value_min.data[r*cols + c];
-            double max = res.value_max.data[r*cols + c];
-            QString tooltip = QString("Min: ") + QString::number(min, 'f', 2) + QString(" / Max: ") + QString::number(max, 'f', 2);
+            PrimType val = res.value_current.data[r*cols + c];
+            PrimType min = res.value_min.data[r*cols + c];
+            PrimType max = res.value_max.data[r*cols + c];
+            unsigned int decimals = internal::setDecimals(m->getSpinbox(r,c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>() );
+
+            QString tooltip = QString("Min: ") + QString::number(min, 'f', decimals) + QString(" / Max: ") + QString::number(max, 'f', decimals);
             m->getSpinbox(r,c)->setToolTip(tooltip);
             m->getSpinbox(r,c)->setValue(val);
             m->getSpinbox(r,c)->setRange(min, max);
             m->getSpinbox(r,c)->setSingleStep(std::fabs( (max - min) / 10.0) );
-            internal::setDecimals(m->getSpinbox(r,c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>() );
           }
         }
       }
