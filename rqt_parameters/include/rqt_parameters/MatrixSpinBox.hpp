@@ -74,6 +74,7 @@ class MatrixSpinBox: public QWidget {
       for(auto & sb : spinboxes_) {
         sb.reset(new SpinBoxType_(this));
         sb->setAlignment(Qt::AlignTop);
+        sb->setMaximumWidth(100);
       }
 
       // Add them to the grid
