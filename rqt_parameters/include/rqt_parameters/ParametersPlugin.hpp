@@ -45,6 +45,10 @@ public:
   virtual void saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const;
   virtual void restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings);
 
+protected:
+  virtual void shutdownServices();
+  bool checkNamespace(const QString & text);
+
 private:
   Ui::ParametersHandler ui_;
   QWidget* widget_;
@@ -59,6 +63,11 @@ private:
   ros::ServiceClient setIntegralParameterClient_;
   ros::ServiceClient getFloatingPointParameterClient_;
   ros::ServiceClient setFloatingPointParameterClient_;
+  std::string getIntegralParameterServiceName_;
+  std::string setIntegralParameterServiceName_;
+  std::string getFloatingPointParameterServiceName_;
+  std::string setFloatingPointParameterServiceName_;
+  std::string getParameterListServiceName_;
 
   std::list<std::shared_ptr<ParameterBase>> params_;
   std::vector<std::pair<std::string, bool>> parameterInfos_;
@@ -67,6 +76,8 @@ private:
   void refreshAll();
   void changeAll();
   void drawParamList();
+  void setNamespace(const QString & text);
+  void addNamespace();
 
 signals:
   void parametersChanged();

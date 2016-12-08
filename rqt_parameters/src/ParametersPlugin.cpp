@@ -12,6 +12,7 @@
 #include <QGridLayout>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QComboBox>
 
 // Rqt
 #include <pluginlib/class_list_macros.h>
@@ -70,32 +71,74 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
     connect(ui_.lineEditFilter, SIGNAL(returnPressed()), this ,SLOT(refreshAll()));
     connect(ui_.pushButtonChangeAll, SIGNAL(pressed()), this, SLOT(changeAll()));
     connect(this, SIGNAL(parametersChanged()), this, SLOT(drawParamList()));
+    connect(ui_.namespaceComboBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setNamespace(const QString&)));
+    connect(ui_.namespaceComboBox->lineEdit(), SIGNAL(returnPressed()), this, SLOT(addNamespace()));
+
     /******************************/
 
-    std::string getIntegralParameterServiceName{"/rocoma_example/get_integral_parameter"};
-    getNodeHandle().getParam("get_integral_parameter_service", getIntegralParameterServiceName);
+    getIntegralParameterServiceName_= "/get_integral_parameter";
+    getNodeHandle().getParam("get_integral_parameter_service", getIntegralParameterServiceName_);
 
-    std::string setIntegralParameterServiceName{"/rocoma_example/set_integral_parameter"};
-    getNodeHandle().getParam("set_integral_parameter_service", setIntegralParameterServiceName);
+    setIntegralParameterServiceName_  = "/set_integral_parameter";
+    getNodeHandle().getParam("set_integral_parameter_service", setIntegralParameterServiceName_);
 
-    std::string getFloatingPointParameterServiceName{"/rocoma_example/get_floating_point_parameter"};
-    getNodeHandle().getParam("get_floating_point_parameter_service", getFloatingPointParameterServiceName);
+    getFloatingPointParameterServiceName_ = "/get_floating_point_parameter";
+    getNodeHandle().getParam("get_floating_point_parameter_service", getFloatingPointParameterServiceName_);
 
-    std::string setFloatingPointParameterServiceName{"/rocoma_example/set_floating_point_parameter"};
-    getNodeHandle().getParam("set_floating_point_parameter_service", setFloatingPointParameterServiceName);
+    setFloatingPointParameterServiceName_ = "/set_floating_point_parameter";
+    getNodeHandle().getParam("set_floating_point_parameter_service", setFloatingPointParameterServiceName_);
 
-    std::string getParameterListServiceName{"/rocoma_example/get_parameter_list"};
-    getNodeHandle().getParam("get_parameter_list_service", getParameterListServiceName);
+    getParameterListServiceName_ = "/get_parameter_list";
+    getNodeHandle().getParam("get_parameter_list_service", getParameterListServiceName_);
 
-    // ROS services
-    getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>(getParameterListServiceName);
-    getIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetIntegralParameter>(getIntegralParameterServiceName);
-    setIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetIntegralParameter>(setIntegralParameterServiceName);
-    getFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetFloatingPointParameter>(getFloatingPointParameterServiceName);
-    setFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetFloatingPointParameter>(setFloatingPointParameterServiceName);
- }
+    setNamespace(QString(""));
+}
+
+void ParametersPlugin::shutdownServices()
+{
+  getParameterListClient_.shutdown();
+  getIntegralParameterClient_.shutdown();
+  setIntegralParameterClient_.shutdown();
+  getFloatingPointParameterClient_.shutdown();
+  setFloatingPointParameterClient_.shutdown();
+}
+
+bool ParametersPlugin::checkNamespace(const QString & text) {
+  return (ros::service::exists(text.toStdString() + getParameterListServiceName_,false) &&
+          ros::service::exists(text.toStdString() + getIntegralParameterServiceName_,false) &&
+          ros::service::exists(text.toStdString() + setIntegralParameterServiceName_,false) &&
+          ros::service::exists(text.toStdString() + getFloatingPointParameterServiceName_,false) &&
+          ros::service::exists(text.toStdString() + setFloatingPointParameterServiceName_,false) );
+}
+
+void ParametersPlugin::addNamespace() {
+  QString text = ui_.namespaceComboBox->lineEdit()->text();
+
+  if(text == QString("clear")) {
+    ui_.namespaceComboBox->clear();
+    ui_.namespaceComboBox->lineEdit()->clear();
+    return;
+  }
+
+  if(!checkNamespace(text)) {
+    ui_.namespaceComboBox->removeItem(ui_.namespaceComboBox->findText(text));
+  }
+
+}
 
 
+void ParametersPlugin::setNamespace(const QString & text) {
+  shutdownServices();
+  if(checkNamespace(text))
+  {
+    getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>(text.toStdString() + getParameterListServiceName_);
+    getIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetIntegralParameter>(text.toStdString() + getIntegralParameterServiceName_);
+    setIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetIntegralParameter>(text.toStdString() + setIntegralParameterServiceName_);
+    getFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetFloatingPointParameter>(text.toStdString() + getFloatingPointParameterServiceName_);
+    setFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetFloatingPointParameter>(text.toStdString() + setFloatingPointParameterServiceName_);
+    refreshAll();
+  }
+}
 
 void ParametersPlugin::changeAll() {
   for (auto& param : params_) {
@@ -144,10 +187,23 @@ void ParametersPlugin::shutdownPlugin() {
 
 void ParametersPlugin::saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const {
   plugin_settings.setValue("lineEditFilter", ui_.lineEditFilter->displayText());
+  plugin_settings.setValue("nrNamespaces", ui_.namespaceComboBox->count());
+  plugin_settings.setValue("currentNamespace", ui_.namespaceComboBox->currentIndex());
+
+  for(int i = 0; i<ui_.namespaceComboBox->count(); ++i) {
+    plugin_settings.setValue(QString::fromStdString("ns" + std::to_string(i)), ui_.namespaceComboBox->itemText(i));
+  }
+
 }
 
 void ParametersPlugin::restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings) {
   ui_.lineEditFilter->setText(plugin_settings.value("lineEditFilter").toString());
+  for(int i = 0; i<plugin_settings.value("nrNamespaces").toInt(); ++i) {
+    ui_.namespaceComboBox->insertItem(i, plugin_settings.value(QString::fromStdString("ns" + std::to_string(i))).toString());
+  }
+  int currIdx = plugin_settings.value("currentNamespace").toInt();
+  ui_.namespaceComboBox->setCurrentIndex(currIdx);
+  setNamespace(ui_.namespaceComboBox->itemText(currIdx));
 }
 
 void ParametersPlugin::drawParamList() {
@@ -210,4 +266,3 @@ void ParametersPlugin::drawParamList() {
 PLUGINLIB_DECLARE_CLASS(rqt_parameter_handler, ParametersPlugin, ParametersPlugin, rqt_gui_cpp::Plugin)
 
 }
-

@@ -61,6 +61,7 @@ set(rqt_parameters_INCLUDE_DIRECTORIES
 )
 
 catkin_package(
+    INCLUDE_DIRS ${rqt_parameters_INCLUDE_DIRECTORIES}
     LIBRARIES rqt_parameters
     CATKIN_DEPENDS roscpp rqt_gui rqt_gui_cpp parameter_handler_msgs
 )
