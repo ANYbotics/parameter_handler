@@ -6,13 +6,13 @@ add_definitions(-std=c++11)
 find_package(Eigen3 REQUIRED)
 
 find_package(catkin REQUIRED COMPONENTS
-              
+  message_logger
 )
 
 catkin_package(
   INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
   LIBRARIES parameter_handler
-  CATKIN_DEPENDS 
+  CATKIN_DEPENDS message_logger
 #  DEPENDS system_lib
 )
 

@@ -8,7 +8,8 @@
   <url type="website">https://bitbucket.org/ethz-asl-lr/parameter_handler</url>
   <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
   <author email="gehrinch@ethz.ch">Christian Gehring</author>
-  <buildtool_depend>catkin</buildtool_depend>  
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>message_logger</depend>
   <depend>gtest</depend>
   <build_export_depend>eigen</build_export_depend>
 </package>

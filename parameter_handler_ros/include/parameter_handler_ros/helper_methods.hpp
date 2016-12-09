@@ -154,7 +154,7 @@ bool readMatrixParamFromMessage(parameter_handler::ParameterInterface & param, c
       int cols = (msg.layout.dim.size() == 2) ? msg.layout.dim[1].size : 1;
       if(param.getValue<T1>().rows() == rows  && param.getValue<T1>().cols() == cols )
       {
-        T1 m;
+        T1 m = Eigen::Matrix<typename T1::Scalar, Eigen::Dynamic, Eigen::Dynamic>::Zero(rows, cols);
         for( int r = 0; r < rows; ++r ) {
           for( int c = 0; c < cols; ++c ) {
             m(r,c) = static_cast<typename T1::Scalar>(msg.data[r*cols + c]);

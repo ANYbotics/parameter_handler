@@ -121,6 +121,7 @@ void ParametersPlugin::addNamespace() {
   }
 
   if(!checkNamespace(text)) {
+    ROS_WARN_STREAM("Namespace: " << text.toStdString() << " does not provide necessary services!");
     ui_.namespaceComboBox->removeItem(ui_.namespaceComboBox->findText(text));
   }
 

@@ -41,6 +41,7 @@
 
 #pragma once
 
+#include "message_logger/message_logger.hpp"
 #include "parameter_handler/ParameterValue.hpp"
 #include <string>
 #include <iostream>
@@ -92,8 +93,9 @@ public:
 
   inline static ValueType_ setValue(ParameterValue<ValueType_>& param, const ValueType_& value) {
     // Test consistency
-    if(param.getValue().rows() != value.rows() || param.getValue().cols() != value.cols()) {
-      std::cout << "Trying to set value to eigen parameter which has wrong size. Using default value."<<std::endl;
+    if(param.getMaxValue().rows() != value.rows() || param.getMaxValue().cols() != value.cols() ||
+       param.getMinValue().rows() != value.rows() || param.getMinValue().cols() != value.cols() ) {
+      MELO_WARN("Trying to set value to eigen parameter which has wrong size. Using default value.");
       return param.getDefaultValue();
     }
 
