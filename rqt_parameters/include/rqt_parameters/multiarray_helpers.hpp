@@ -69,8 +69,8 @@ bool refreshParam( const std::string & paramName,
 
             QString tooltip = QString("Min: ") + QString::number(min, 'f', decimals) + QString(" / Max: ") + QString::number(max, 'f', decimals);
             m->getSpinbox(r,c)->setToolTip(tooltip);
-            m->getSpinbox(r,c)->setValue(val);
             m->getSpinbox(r,c)->setRange(min, max);
+            m->getSpinbox(r,c)->setValue(val);
             m->getSpinbox(r,c)->setSingleStep(std::fabs( (max - min) / 10.0) );
           }
         }
