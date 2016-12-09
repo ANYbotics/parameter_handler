@@ -50,4 +50,7 @@ namespace parameter_handler {
 //! Reference to the parameter list
 extern std::shared_ptr<ParameterHandlerBase> handler;
 
+//! Set handler none
+void setParameterHandlerNone();
+
 } // end namespace
