@@ -2,7 +2,7 @@
  * helper_methods.hpp
  *
  *  Created on: Dec 1, 2016
- *      Author: gabrielhottiger
+ *      Author: Gabriel Hottiger
  */
 
 #include <parameter_handler_ros/type_macros.hpp>

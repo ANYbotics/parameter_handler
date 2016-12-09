@@ -36,7 +36,7 @@
  * ParameterHandlerRos.hpp
  *
  *  Created on: Sep 24, 2015
- *      Author: Christian Gehring
+ *      Author: Christian Gehring, Gabriel Hottiger
  */
 
 #pragma once
@@ -91,4 +91,3 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
 };
 
 } /* namespace parameter_handler */
-
