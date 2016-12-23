@@ -46,4 +46,8 @@ namespace parameter_handler {
 
 std::shared_ptr<ParameterHandlerBase> handler(new ParameterHandlerNone);
 
+void setParameterHandlerNone() {
+  handler.reset(new ParameterHandlerNone);
+}
+
 } /* namespace */

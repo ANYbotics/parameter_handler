@@ -35,7 +35,11 @@ set(rqt_parameters_SRCS
 ###########
 set(rqt_parameters_HDRS
     include/rqt_parameters/ParametersPlugin.hpp
-    include/rqt_parameters/DoubleParameter.hpp
+    include/rqt_parameters/MatrixSpinBox.hpp
+    include/rqt_parameters/ParameterBase.hpp
+    include/rqt_parameters/ParameterFloat64Matrix.hpp
+    include/rqt_parameters/ParameterInt32Matrix.hpp
+    include/rqt_parameters/multiarray_helpers.hpp
 )
 ###########
 
@@ -57,6 +61,7 @@ set(rqt_parameters_INCLUDE_DIRECTORIES
 )
 
 catkin_package(
+    INCLUDE_DIRS ${rqt_parameters_INCLUDE_DIRECTORIES}
     LIBRARIES rqt_parameters
     CATKIN_DEPENDS roscpp rqt_gui rqt_gui_cpp parameter_handler_msgs
 )

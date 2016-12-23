@@ -64,10 +64,10 @@ public:
                        internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>()))
   {
 //    value_ = ParameterValuePtr(ValueType_().clone());
-    getValuePtr()->setValue(value);
-    getValuePtr()->setDefaultValue(value);
     getValuePtr()->setMinValue(min);
     getValuePtr()->setMaxValue(max);
+    getValuePtr()->setValue(value);
+    getValuePtr()->setDefaultValue(value);
   }
 
   Parameter(const std::string& name, const ValueType_& value, const ValueType_& min, const ValueType_& max) :
@@ -76,10 +76,10 @@ public:
                        name)
   {
 //    value_ = ParameterValuePtr(ValueType_().clone());
-    getValuePtr()->setValue(value);
-    getValuePtr()->setDefaultValue(value);
     getValuePtr()->setMinValue(min);
     getValuePtr()->setMaxValue(max);
+    getValuePtr()->setValue(value);
+    getValuePtr()->setDefaultValue(value);
   }
 
 
@@ -146,4 +146,3 @@ protected:
 };
 
 }
-

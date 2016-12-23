@@ -7,23 +7,34 @@
 
 #pragma once
 
-#include <rqt_gui_cpp/plugin.h>
-#include <ui_parameters_plugin.h>
+// rqt_parameters
+#include <rqt_parameters/ParameterBase.hpp>
+
+// parameter_handler_msgs
+#include <parameter_handler_msgs/GetIntegralParameter.h>
+#include <parameter_handler_msgs/GetFloatingPointParameter.h>
+#include <parameter_handler_msgs/SetIntegralParameter.h>
+#include <parameter_handler_msgs/SetFloatingPointParameter.h>
+#include <parameter_handler_msgs/GetParameterList.h>
+
+// Qt
 #include <QWidget>
 #include <QDoubleSpinBox>
 #include <QScrollArea>
 
+// Rqt
+#include <rqt_gui_cpp/plugin.h>
+#include <ui_parameters_plugin.h>
+
+// ros
 #include <ros/ros.h>
 #include <std_srvs/Empty.h>
 
-#include <parameter_handler_msgs/GetParameter.h>
-#include <parameter_handler_msgs/SetParameter.h>
-#include <parameter_handler_msgs/GetParameterList.h>
-
-#include <rqt_parameters/DoubleParameter.hpp>
-
+// Stl
 #include <list>
 #include <memory>
+
+namespace rqt_parameters {
 
 class ParametersPlugin : public rqt_gui_cpp::Plugin {
   Q_OBJECT
@@ -33,6 +44,11 @@ public:
   virtual void shutdownPlugin();
   virtual void saveSettings(qt_gui_cpp::Settings& plugin_settings, qt_gui_cpp::Settings& instance_settings) const;
   virtual void restoreSettings(const qt_gui_cpp::Settings& plugin_settings, const qt_gui_cpp::Settings& instance_settings);
+
+protected:
+  virtual void shutdownServices();
+  bool checkNamespace(const QString & text);
+
 private:
   Ui::ParametersHandler ui_;
   QWidget* widget_;
@@ -43,20 +59,29 @@ private:
 
   // ROS services
   ros::ServiceClient getParameterListClient_;
-  ros::ServiceClient getParameterClient_;
-  ros::ServiceClient setParameterClient_;
+  ros::ServiceClient getIntegralParameterClient_;
+  ros::ServiceClient setIntegralParameterClient_;
+  ros::ServiceClient getFloatingPointParameterClient_;
+  ros::ServiceClient setFloatingPointParameterClient_;
+  std::string getIntegralParameterServiceName_;
+  std::string setIntegralParameterServiceName_;
+  std::string getFloatingPointParameterServiceName_;
+  std::string setFloatingPointParameterServiceName_;
+  std::string getParameterListServiceName_;
 
-  std::list<std::shared_ptr<DoubleParameter>> doubleParams_;
-  std::vector<std::string> parameterNames_;
+  std::list<std::shared_ptr<ParameterBase>> params_;
+  std::vector<std::pair<std::string, bool>> parameterInfos_;
 
  protected slots:
   void refreshAll();
   void changeAll();
   void drawParamList();
+  void setNamespace(const QString & text);
+  void addNamespace();
 
 signals:
   void parametersChanged();
 
 };
 
-
+}
