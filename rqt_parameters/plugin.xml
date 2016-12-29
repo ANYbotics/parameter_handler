@@ -1,5 +1,5 @@
 <library path="lib/librqt_parameters">
-    <class name="ParametersPlugin" type="ParametersPlugin" base_class_type="rqt_gui_cpp::Plugin">
+    <class name="ParametersPlugin" type="rqt_parameters::ParametersPlugin" base_class_type="rqt_gui_cpp::Plugin">
         <description>
             An interface for parameter_handler.
         </description>

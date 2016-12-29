@@ -7,6 +7,7 @@
 
 // rqt_parameters
 #include <rqt_parameters/ParametersPlugin.hpp>
+#include <rqt_parameters/ParameterInt32Matrix.hpp>
 #include <rqt_parameters/ParameterFloat64Matrix.hpp>
 #include <QStringList>
 #include <QGridLayout>
@@ -19,7 +20,8 @@
 
 // ros
 #include <ros/package.h>
-#include <rqt_parameters/ParameterInt32Matrix.hpp>
+
+PLUGINLIB_EXPORT_CLASS(rqt_parameters::ParametersPlugin, rqt_gui_cpp::Plugin)
 
 namespace rqt_parameters {
 
@@ -263,7 +265,5 @@ void ParametersPlugin::drawParamList() {
   paramsScrollHelperWidget_->setLayout(paramsGrid_);
 
 }
-
-PLUGINLIB_DECLARE_CLASS(rqt_parameter_handler, ParametersPlugin, ParametersPlugin, rqt_gui_cpp::Plugin)
 
 }
