@@ -21,6 +21,7 @@
 #include <QWidget>
 #include <QDoubleSpinBox>
 #include <QScrollArea>
+#include <QStringList>
 
 // Rqt
 #include <rqt_gui_cpp/plugin.h>
@@ -56,7 +57,8 @@ private:
   QWidget* paramsWidget_;
   QWidget* paramsScrollHelperWidget_;
   QVBoxLayout* paramsScrollLayout_;
-
+  QStringList namespaceList_;
+  
   // ROS services
   ros::ServiceClient getParameterListClient_;
   ros::ServiceClient getIntegralParameterClient_;
@@ -76,8 +78,7 @@ private:
   void refreshAll();
   void changeAll();
   void drawParamList();
-  void setNamespace(const QString & text);
-  void addNamespace();
+  void setNamespace();
 
 signals:
   void parametersChanged();
