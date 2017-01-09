@@ -4,7 +4,9 @@ Parameter Handler
 These packages provide an interface for a parameter handler and some default parameter handlers.
 A parameter handler is a tool to tune parameters defined in other classes.
 
-Author(s): Dario Bellicoso, Christian Gehring
+**Author(s):** Dario Bellicoso, Christian Gehring
+
+[Documentation](http://docs.leggedrobotics.com/parameter_handler_doc/)
 
 Dependencies
 ----------------------------------------------------------------------------
