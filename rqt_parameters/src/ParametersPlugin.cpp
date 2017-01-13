@@ -41,8 +41,11 @@ static size_t getMaxParamNameWidth(std::vector<std::pair<std::string, bool>> con
   QFontMetrics fm(font);
 
   auto it = std::max_element(lines.begin(), lines.end(), size_less());
-  QString text = QString::fromStdString(it->first);
-  return fm.width(text);
+  if(it != lines.end()) {
+    QString text = QString::fromStdString(it->first);
+    return fm.width(text);
+  }
+  return 10;
 }
 
 ParametersPlugin::ParametersPlugin() :
@@ -97,7 +100,7 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
       }
     }
     else {
-      ROS_WARN_STREAM("Ros parameter: " << namespaceParameterName << "not found. Set last used namespace.");
+      ROS_WARN_STREAM("Ros parameter: " << namespaceParameterName << " not found. Set last used namespace.");
     }
 }
 
@@ -125,7 +128,6 @@ bool ParametersPlugin::checkNamespace(const QString & text) {
 }
 
 void ParametersPlugin::setNamespace() {
-  shutdownServices();
   QString text = ui_.namespaceEdit->displayText();
 
   if(checkNamespace(text))
@@ -133,12 +135,14 @@ void ParametersPlugin::setNamespace() {
     if( !namespaceList_.contains(text, Qt::CaseSensitive) ) {
       namespaceList_.append(text);
     }
+    shutdownServices();
     getParameterListClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetParameterList>(text.toStdString() + getParameterListServiceName_);
     getIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetIntegralParameter>(text.toStdString() + getIntegralParameterServiceName_);
     setIntegralParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetIntegralParameter>(text.toStdString() + setIntegralParameterServiceName_);
     getFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::GetFloatingPointParameter>(text.toStdString() + getFloatingPointParameterServiceName_);
     setFloatingPointParameterClient_ = getNodeHandle().serviceClient<parameter_handler_msgs::SetFloatingPointParameter>(text.toStdString() + setFloatingPointParameterServiceName_);
     refreshAll();
+    ROS_INFO("[rqt_parameters]: Set namespace %s ", text.toStdString().c_str());
   }
   QCompleter *completer = new QCompleter(namespaceList_, this);
   completer->setCaseSensitivity(Qt::CaseSensitive);
