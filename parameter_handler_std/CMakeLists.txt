@@ -39,3 +39,13 @@ target_link_libraries(test_parameter_handler_std
     parameter_handler_std 
     ${catkin_LIBRARIES}
 )
+
+install(TARGETS parameter_handler_std
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
