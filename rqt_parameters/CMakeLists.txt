@@ -13,13 +13,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
   find_package(Qt5Widgets REQUIRED)
-  find_package(Qt5OpenGL REQUIRED)
 else()
-  find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGL REQUIRED)
+  find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
   include(${QT_USE_FILE})
 endif()
-
-find_package(OpenGL REQUIRED)
 
 catkin_python_setup()
 
@@ -96,15 +93,13 @@ add_dependencies(rqt_parameters ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(rqt_parameters
     ${catkin_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    glut GL GLU GLEW
 )
 
 if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
-  qt5_use_modules(${PROJECT_NAME} Widgets OpenGL)
-  target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${OPENGL_LIBRARIES})
+  qt5_use_modules(${PROJECT_NAME} Widgets)
+  target_link_libraries(${PROJECT_NAME} Qt5::Widgets)
 else()
-  target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY})
+  target_link_libraries(${PROJECT_NAME} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
 endif()
 
 
