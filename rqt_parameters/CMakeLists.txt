@@ -27,7 +27,7 @@ catkin_python_setup()
 # sources #
 ###########
 set(rqt_parameters_SRCS
-    src/ParametersPlugin.cpp
+    src/rqt_parameters/ParametersPlugin.cpp
 )
 ###########
 
