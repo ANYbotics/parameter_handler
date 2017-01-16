@@ -5,7 +5,7 @@
   <description>The parameter_handler package</description>
   <maintainer email="gehrinch@ethz.ch">Christian Gehring</maintainer>
   <license>BSD</license>
-  <url type="website">https://bitbucket.org/ethz-asl-lr/parameter_handler</url>
+  <url type="website">https://bitbucket.org/leggedrobotics/parameter_handler</url>
   <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
   <author email="gehrinch@ethz.ch">Christian Gehring</author>
   <buildtool_depend>catkin</buildtool_depend>

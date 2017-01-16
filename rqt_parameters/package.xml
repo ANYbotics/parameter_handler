@@ -6,7 +6,7 @@
 
   <maintainer email="gehrinch@ethz.ch">Christian Gehring</maintainer>
   <author email="gehrinch@ethz.ch">Christian Gehring</author>
-  
+  <url type="website">https://bitbucket.org/leggedrobotics/parameter_handler</url>
   <license>BSD</license>
   
   <buildtool_depend>catkin</buildtool_depend>
