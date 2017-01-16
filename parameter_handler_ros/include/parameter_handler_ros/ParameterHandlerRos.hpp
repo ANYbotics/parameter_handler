@@ -66,6 +66,9 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   void initializeServices();
   void shutdown();
   void setNodeHandle(ros::NodeHandle& nodeHandle);
+
+  virtual bool cleanup();
+
   bool getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                         parameter_handler_msgs::GetParameterList::Response &res);
 
