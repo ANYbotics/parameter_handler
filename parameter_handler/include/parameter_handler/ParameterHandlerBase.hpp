@@ -56,6 +56,10 @@ class ParameterHandlerBase
 
   }
 
+  virtual bool cleanup() {
+    return true;
+  }
+
   virtual bool addParam(const std::string& name, ParameterInterface& param) {
     return false;
   }

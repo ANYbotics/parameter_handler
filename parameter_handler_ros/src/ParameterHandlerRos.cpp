@@ -77,6 +77,10 @@ void ParameterHandlerRos::setNodeHandle(ros::NodeHandle& nodeHandle) {
   nodeHandle_ = nodeHandle;
 }
 
+bool ParameterHandlerRos::cleanup() {
+  this->shutdown();
+  return parameter_handler_std::ParameterHandlerStd::cleanup();
+}
 
 bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                                            parameter_handler_msgs::GetParameterList::Response &res) {
