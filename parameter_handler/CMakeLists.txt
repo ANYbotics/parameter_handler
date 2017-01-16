@@ -16,9 +16,11 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-include_directories(include
-					${catkin_INCLUDE_DIRS}
-					${EIGEN3_INCLUDE_DIR})
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${EIGEN3_INCLUDE_DIR}
+)
 
 add_library(parameter_handler
   src/parameter_handler.cpp
@@ -27,20 +29,21 @@ add_library(parameter_handler
 add_dependencies(parameter_handler ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(parameter_handler
-   ${catkin_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
-
 
 catkin_add_gtest(test_parameter_handler
-    test/test_main.cpp
-    test/Parameter_tests.cpp
+  test/test_main.cpp
+  test/Parameter_tests.cpp
 )
-add_dependencies(test_parameter_handler ${catkin_EXPORTED_TARGETS})
 
+add_dependencies(test_parameter_handler 
+  ${catkin_EXPORTED_TARGETS}
+)
 
 target_link_libraries(test_parameter_handler
-    parameter_handler
-    ${catkin_LIBRARIES}
+  parameter_handler
+  ${catkin_LIBRARIES}
 )
 
 install(TARGETS parameter_handler
