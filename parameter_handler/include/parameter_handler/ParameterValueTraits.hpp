@@ -116,15 +116,32 @@ public:
 
     return boundedValue;
   }
+
+  inline static ValueType_ setValue(ParameterValue<ValueType_>& param,
+                                    const typename ValueType_::Scalar& value,
+                                    unsigned int row,
+                                    unsigned int col = 0) {
+    ValueType_ boundedValue = param.getValue();
+    if (value < param.getMaxValue()(row,col) && value > param.getMinValue()(row,col)) { boundedValue(row,col) = value; }
+    return boundedValue;
+  }
+
 };
 
-template<>
-class ParameterValueTraits< ParameterValue<bool> > {
-public:
-  inline static bool setValue(ParameterValue<bool>& param, const bool& value) {
-    return value;
-  }
-};
+//template<>
+//class ParameterValueTraits< ParameterValue<bool> > {
+//public:
+//  inline static void init(ParameterValue<bool>& param) {
+//    param.setValue(std::numeric_limits<bool>::min());
+//    param.setDefaultValue(std::numeric_limits<bool>::min());
+//    param.setMinValue(-std::numeric_limits<bool>::max());
+//    param.setMaxValue(std::numeric_limits<bool>::max());
+//  }
+//
+//  inline static bool setValue(ParameterValue<bool>& param, const bool& value) {
+//    return value;
+//  }
+//};
 
 
 

@@ -44,6 +44,7 @@
 #include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValueTraits.hpp"
 #include <limits>
+#include <type_traits>
 
 namespace parameter_handler {
 namespace internal {
@@ -94,6 +95,14 @@ class ParameterValue: public ParameterValueInterface {
   {
     value_ = internal::ParameterValueTraits<ParameterValue<ValueType_> >::setValue(*this, value);
   }
+
+  template < typename V_ = ValueType_>
+  void setValue(const typename V_::Scalar& value, unsigned int row, unsigned int col = 0,
+                typename std::enable_if< std::is_base_of< Eigen::MatrixBase<V_>, V_ >::value>::type* = 0 /* is_eigen */ )
+  {
+    value_ = internal::ParameterValueTraits<ParameterValue<V_> >::setValue(*this, value, row, col);
+  }
+
   void setMinValue(const ValueType_& value)
   {
     valueMin_ = value;
