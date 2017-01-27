@@ -46,23 +46,29 @@ namespace parameter_handler_ros {
 
 using namespace parameter_handler;
 
-ParameterHandlerRos::ParameterHandlerRos()
+ParameterHandlerRos::ParameterHandlerRos():
+    nodeHandle_(nullptr)
 {
 
 }
 
 ParameterHandlerRos::~ParameterHandlerRos()
 {
-
+  this->shutdown();
 }
+
 void ParameterHandlerRos::initializeServices() {
 
-  getParameterListService_ = nodeHandle_.advertiseService("get_parameter_list", &ParameterHandlerRos::getParameterList, this);
-  getIntegralParameterService_ = nodeHandle_.advertiseService("get_integral_parameter", &ParameterHandlerRos::getIntegralParameter, this);
-  getFloatingPointParameterService_ = nodeHandle_.advertiseService("get_floating_point_parameter", &ParameterHandlerRos::getFloatingPointParameter, this);
-  setIntegralParameterService_ = nodeHandle_.advertiseService("set_integral_parameter", &ParameterHandlerRos::setIntegralParameter, this);
-  setFloatingPointParameterService_ = nodeHandle_.advertiseService("set_floating_point_parameter", &ParameterHandlerRos::setFloatingPointParameter, this);
-
+  if(nodeHandle_) {
+    getParameterListService_ = nodeHandle_->advertiseService("get_parameter_list", &ParameterHandlerRos::getParameterList, this);
+    getIntegralParameterService_ = nodeHandle_->advertiseService("get_integral_parameter", &ParameterHandlerRos::getIntegralParameter, this);
+    getFloatingPointParameterService_ = nodeHandle_->advertiseService("get_floating_point_parameter", &ParameterHandlerRos::getFloatingPointParameter, this);
+    setIntegralParameterService_ = nodeHandle_->advertiseService("set_integral_parameter", &ParameterHandlerRos::setIntegralParameter, this);
+    setFloatingPointParameterService_ = nodeHandle_->advertiseService("set_floating_point_parameter", &ParameterHandlerRos::setFloatingPointParameter, this);
+  }
+  else {
+    MELO_WARN("[ParameterHandlerRos] No nodehandle set.");
+  }
 }
 
 void ParameterHandlerRos::shutdown() {
@@ -73,13 +79,15 @@ void ParameterHandlerRos::shutdown() {
   setFloatingPointParameterService_.shutdown();
 }
 
-void ParameterHandlerRos::setNodeHandle(ros::NodeHandle& nodeHandle) {
+void ParameterHandlerRos::setNodeHandle(ros::NodeHandle* nodeHandle) {
   nodeHandle_ = nodeHandle;
 }
 
 bool ParameterHandlerRos::cleanup() {
+  parameter_handler_std::ParameterHandlerStd::cleanup();
   this->shutdown();
-  return parameter_handler_std::ParameterHandlerStd::cleanup();
+  nodeHandle_ = nullptr;
+  return true;
 }
 
 bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterList::Request &req,

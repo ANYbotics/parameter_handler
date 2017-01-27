@@ -65,7 +65,8 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   virtual ~ParameterHandlerRos();
   void initializeServices();
   void shutdown();
-  void setNodeHandle(ros::NodeHandle& nodeHandle);
+
+  void setNodeHandle(ros::NodeHandle* nodeHandle);
 
   virtual bool cleanup();
 
@@ -85,7 +86,7 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
                                  parameter_handler_msgs::GetFloatingPointParameterResponse &res);
 
  protected:
-  ros::NodeHandle nodeHandle_;
+  ros::NodeHandle* nodeHandle_;
   ros::ServiceServer getParameterListService_;
   ros::ServiceServer getIntegralParameterService_;
   ros::ServiceServer setIntegralParameterService_;
