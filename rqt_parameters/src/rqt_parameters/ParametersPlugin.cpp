@@ -81,17 +81,20 @@ void ParametersPlugin::initPlugin(qt_gui_cpp::PluginContext& context) {
 
     /******************************/
 
-    getIntegralParameterServiceName_= "/get_integral_parameter";
-    setIntegralParameterServiceName_  = "/set_integral_parameter";
-    getFloatingPointParameterServiceName_ = "/get_floating_point_parameter";
-    setFloatingPointParameterServiceName_ = "/set_floating_point_parameter";
-    getParameterListServiceName_ = "/get_parameter_list";
+    getIntegralParameterServiceName_= "/parameter_handler_ros/get_integral_parameter";
+    setIntegralParameterServiceName_  = "/parameter_handler_ros/set_integral_parameter";
+    getFloatingPointParameterServiceName_ = "/parameter_handler_ros/get_floating_point_parameter";
+    setFloatingPointParameterServiceName_ = "/parameter_handler_ros/set_floating_point_parameter";
+    getParameterListServiceName_ = "/parameter_handler_ros/get_parameter_list";
 
     //! Get namespace from rosparam server and add it to the parameter list
     std::string namespaceParameterName = "/user_interface/rqt_parameters/handler_namespace";
     if(getNodeHandle().hasParam(namespaceParameterName)) {
       std::string handlerNamespace;
       getNodeHandle().getParam(namespaceParameterName, handlerNamespace);
+      if(handlerNamespace.size() && handlerNamespace.at(0) != '/') {
+    	  handlerNamespace = std::string("/") + handlerNamespace;
+      }
       if(checkNamespace(QString::fromStdString(handlerNamespace))) {
         ui_.namespaceEdit->setText(QString::fromStdString(handlerNamespace));
       }
@@ -205,6 +208,7 @@ void ParametersPlugin::restoreSettings(const qt_gui_cpp::Settings& plugin_settin
   }
 
   setNamespace();
+  refreshAll();
 }
 
 void ParametersPlugin::drawParamList() {

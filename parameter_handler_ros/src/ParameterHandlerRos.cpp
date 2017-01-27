@@ -60,11 +60,11 @@ ParameterHandlerRos::~ParameterHandlerRos()
 void ParameterHandlerRos::initializeServices() {
 
   if(nodeHandle_) {
-    getParameterListService_ = nodeHandle_->advertiseService("get_parameter_list", &ParameterHandlerRos::getParameterList, this);
-    getIntegralParameterService_ = nodeHandle_->advertiseService("get_integral_parameter", &ParameterHandlerRos::getIntegralParameter, this);
-    getFloatingPointParameterService_ = nodeHandle_->advertiseService("get_floating_point_parameter", &ParameterHandlerRos::getFloatingPointParameter, this);
-    setIntegralParameterService_ = nodeHandle_->advertiseService("set_integral_parameter", &ParameterHandlerRos::setIntegralParameter, this);
-    setFloatingPointParameterService_ = nodeHandle_->advertiseService("set_floating_point_parameter", &ParameterHandlerRos::setFloatingPointParameter, this);
+    getParameterListService_ = nodeHandle_->advertiseService("parameter_handler_ros/get_parameter_list", &ParameterHandlerRos::getParameterList, this);
+    getIntegralParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/get_integral_parameter", &ParameterHandlerRos::getIntegralParameter, this);
+    getFloatingPointParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/get_floating_point_parameter", &ParameterHandlerRos::getFloatingPointParameter, this);
+    setIntegralParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/set_integral_parameter", &ParameterHandlerRos::setIntegralParameter, this);
+    setFloatingPointParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/set_floating_point_parameter", &ParameterHandlerRos::setFloatingPointParameter, this);
   }
   else {
     MELO_WARN("[ParameterHandlerRos] No nodehandle set.");
