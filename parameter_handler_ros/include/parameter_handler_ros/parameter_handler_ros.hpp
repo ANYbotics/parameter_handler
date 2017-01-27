@@ -5,7 +5,7 @@
 
 namespace parameter_handler_ros {
 
-  void setParameterHandlerRos(ros::NodeHandle & nh) {
+  void setParameterHandlerRos(ros::NodeHandle * nh) {
     parameter_handler::handler.reset(new parameter_handler_ros::ParameterHandlerRos());
     parameter_handler_ros::ParameterHandlerRos* parameterHandlerRos = static_cast<parameter_handler_ros::ParameterHandlerRos*>(parameter_handler::handler.get());
     parameterHandlerRos->setNodeHandle(nh);
