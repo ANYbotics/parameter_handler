@@ -17,7 +17,7 @@ The ROS implementation additionally features:
 </ul>
 
 \section source_code Source Code
-The source code is available at <a href="https://bitbucket.org/ethz-asl-lr/parameter_handler">https://bitbucket.org/ethz-asl-lr/parameter_handler</a>.
+The source code is available at <a href="https://bitbucket.org/leggedrobotics/parameter_handler">https://bitbucket.org/leggedrobotics/parameter_handler</a>.
 
 \section license License
 This library is <a href="http://www.gnu.org/philosophy/free-sw.html">Free Software</a> and is licensed under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD 3-Clause</a>.
@@ -44,7 +44,7 @@ This library is written extensively using C++11.
 \section dependencies Dependencies
 The core and std library of the parameter handler are non ROS dependent. And only require the following dependencies:
 <ul>
-  <li><a href="https://bitbucket.org/ethz-asl-lr/message_logger">message_logger</a></li>
+  <li><a href="https://bitbucket.org/leggedrobotics/message_logger">message_logger</a></li>
   <li><a href="http://eigen.tuxfamily.org">Eigen</a></li>
 </ul>
 
@@ -67,7 +67,7 @@ Build parameter_handler with [catkin](wiki.ros.org/catkin):
 
 \code{.sh}
 cd ~/catkin_ws/src
-git clone https://bitbucket.org/ethz-asl-lr/parameter_handler
+git clone https://bitbucket.org/leggedrobotics/parameter_handler
 catkin_make
 \endcode
 
@@ -75,7 +75,7 @@ or with [catkin command line tools](http://catkin-tools.readthedocs.org):
 
 \code{.sh}
 cd ~/catkin_ws/src
-git clone https://bitbucket.org/ethz-asl-lr/parameter_handler
+git clone https://bitbucket.org/leggedrobotics/parameter_handler
 catkin build parameter_handler
 \endcode
 

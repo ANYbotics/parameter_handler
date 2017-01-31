@@ -30,8 +30,8 @@ parameter_handler_std::setParameterHandlerStd();
 The ros implementation of the parameter handler additionally provides services that allow setting/getting the parameters via ros.
 It can be used in combination with the rqt plugin.
 \code{c}
-#include "parameter_handler_std/parameter_handler_std.hpp"
-parameter_handler_std::setParameterHandlerStd();
+#include "parameter_handler_ros/parameter_handler_ros.hpp"
+parameter_handler_ros::setParameterHandlerRos(&nh);
 \endcode
 
 <H3>Add variables to the parameter handler</H3>
@@ -62,6 +62,13 @@ myDoubleParam_.setMaxValue(66.66);
 The parameter can then easily be added to the handler.
 \code{c}
 parameter_handler::handler->addParam(myDoubleParam_);
+\endcode
+
+<H3>Cleanup the parameter handler</H3>
+You should shutdown the parameter handler in the destructor of your main application.
+E.g the parameter handler ros should shutdown all ros communication as long as the nodehandle is still valid.
+\code{c}
+parameter_handler::handler->cleanup();
 \endcode
 
 <H3>Supported types</H3>
