@@ -125,6 +125,13 @@ public:
     getValuePtr()->setValue(value, row, col);
   }
 
+  void resetWithDefaultValueAndRelativeBounds(const ValueType_& value, const ValueType_& relativeUpperBound) {
+    getValuePtr()->setDefaultValue(value);
+    getValuePtr()->setMaxValue(value+relativeUpperBound);
+    getValuePtr()->setMinValue(value-relativeUpperBound);
+    getValuePtr()->setValue(value);
+  }
+
   void setDefaultValue(const ValueType_& value) {
     getValuePtr()->setDefaultValue(value);
   }
