@@ -2,6 +2,7 @@
 
 #include "parameter_handler/parameter_handler.hpp"
 #include "parameter_handler_ros/ParameterHandlerRos.hpp"
+#include "parameter_handler_ros/helper_methods.hpp"
 
 namespace parameter_handler_ros {
 
