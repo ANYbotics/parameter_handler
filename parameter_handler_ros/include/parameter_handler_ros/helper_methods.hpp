@@ -5,7 +5,9 @@
  *      Author: Gabriel Hottiger
  */
 
-#include <parameter_handler_ros/type_macros.hpp>
+#include "parameter_handler_ros/type_macros.hpp"
+#include "parameter_handler/ParameterInterface.hpp"
+
 #include <ros/ros.h>
 #include <Eigen/Core>
 
