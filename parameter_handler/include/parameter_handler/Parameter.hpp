@@ -45,11 +45,11 @@
 #include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValue.hpp"
 
-
+#include "message_logger/message_logger.hpp"
 
 namespace parameter_handler {
 
-template<typename ValueType_>
+template<typename ValueType_, bool Verbose_ = false>
 class Parameter : public ParameterInterface
 {
 public:
@@ -116,6 +116,7 @@ public:
 
   void setValue(const ValueType_& value) {
     getValuePtr()->setValue(value);
+    if(Verbose_) { MELO_INFO_STREAM("Set value of parameter " << getName() << " to " << value << "!"); }
   }
 
   template< typename V_ = ValueType_>
@@ -123,6 +124,8 @@ public:
                 typename std::enable_if< std::is_base_of< Eigen::MatrixBase<V_>, V_ >::value>::type* = 0 /* is_eigen */ )
   {
     getValuePtr()->setValue(value, row, col);
+    if(Verbose_) { MELO_INFO_STREAM("Set value of parameter " << getName() << " at row = " << row
+                                                              << " and col = " << col << " to " << value << "!"); }
   }
 
   void resetWithDefaultValueAndRelativeBounds(const ValueType_& value, const ValueType_& relativeUpperBound) {
@@ -130,22 +133,28 @@ public:
     getValuePtr()->setMaxValue(value+relativeUpperBound);
     getValuePtr()->setMinValue(value-relativeUpperBound);
     getValuePtr()->setValue(value);
+    if(Verbose_) { MELO_INFO_STREAM("Set value of parameter " << getName() << " to " << value << " and relative bounds = "
+                                                              << relativeUpperBound << "!"); }
   }
 
   void setDefaultValue(const ValueType_& value) {
     getValuePtr()->setDefaultValue(value);
+    if(Verbose_) { MELO_INFO_STREAM("Set default value of parameter " << getName() << " to " << value << "!"); }
   }
 
   void setMinValue(const ValueType_& value) {
     getValuePtr()->setMinValue(value);
+    if(Verbose_) { MELO_INFO_STREAM("Set min value of parameter " << getName() << " to " << value << "!"); }
   }
 
   void setMaxValue(const ValueType_& value) {
     getValuePtr()->setMaxValue(value);
+    if(Verbose_) { MELO_INFO_STREAM("Set max value of parameter " << getName() << " to " << value << "!"); }
   }
 
   void resetToDefault() {
     getValuePtr()->setValue(getValuePtr()->getDefaultValue());
+    if(Verbose_) { MELO_INFO_STREAM("Set value of parameter " << getName() << " to default ( " << getValuePtr()->getDefaultValue() << " )!"); }
   }
 
 protected:
