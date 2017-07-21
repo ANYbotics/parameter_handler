@@ -90,7 +90,9 @@ add_library(rqt_parameters
     ${rqt_parameters_UIS_H}
 )
 
-add_dependencies(rqt_parameters ${catkin_EXPORTED_TARGETS})
+add_dependencies(rqt_parameters
+    ${catkin_EXPORTED_TARGETS}
+)
 
 target_link_libraries(rqt_parameters
     ${catkin_LIBRARIES}
