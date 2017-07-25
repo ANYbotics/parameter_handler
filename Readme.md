@@ -23,7 +23,7 @@ In order to install, clone the latest version from this repository into your cat
 ### Dependencies
 * **[kindr](https://github.com/ethz-asl/kindr):** Kinematics and Dynamics for Robotics
 * **[kindr_ros](https://github.com/ethz-asl/kindr_ros):** kindr ROS wrapper
-* **[message_logger](https://bitbucket.org/ethz-asl-lr/message_logger):** Message logging utility
+* **[message_logger](https://bitbucket.org/leggedrobotics/message_logger):** Message logging utility
 * **Eigen3:** Linear alegra library
 * **gtest:** Google's unit testing framework
 
