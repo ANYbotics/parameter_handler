@@ -1,0 +1,9 @@
+# - Config file for the parameter_handler package
+# It defines the following variables
+#  parameter_handler_INCLUDE_DIRS - include directories for parameter_handler
+#  parameter_handler_LIBRARIES    - libraries to link against
+
+# Compute paths
+get_filename_component(parameter_handler_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(parameter_handler_INCLUDE_DIRS "@parameter_handler_include_dirs@")
+set(parameter_handler_LIBRARIES "@parameter_handler_library@;@external_libs@")
