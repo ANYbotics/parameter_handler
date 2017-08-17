@@ -45,19 +45,19 @@
 
 namespace parameter_handler {
 
-class ParameterInterface {
+class ParameterObserverInterface {
 
  public:
   //! Default Constructor
-  ParameterInterface() = default;
+  ParameterObserverInterface() = default;
   //! Default Destructor
-  virtual ~ParameterInterface() = default;
+  virtual ~ParameterObserverInterface() = default;
 
   /**
    * @brief Notify observer of a parameter change
    * @param name Name of the parameter that changed
    */
-  virtual void parameterChanged(const std::string & name);
+  virtual void parameterChanged(const std::string & name) = 0;
 
 };
 

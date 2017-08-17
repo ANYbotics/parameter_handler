@@ -53,16 +53,20 @@ class ParameterHandlerNone : public ParameterHandlerBase {
   virtual ~ParameterHandlerNone() {}
 
 
-  virtual bool addParam(const std::string& name, ParameterInterface& param) {
+  virtual bool addParam(const std::string& name, ParameterInterface& param, bool verbose = false) {
     return true;
   }
 
-  virtual bool addParam(parameter_handler::ParameterInterface& param) {
+  virtual bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) {
     return true;
   }
 
   virtual bool getParam(const std::string& name, ParameterInterface& param) {
     return true;
+  }
+
+  virtual void parameterChanged(const std::string & name) {
+    return;
   }
 
 };

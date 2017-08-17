@@ -42,6 +42,8 @@
 #pragma once
 
 #include <parameter_handler/ParameterValue.hpp>
+#include <parameter_handler/ParameterObserverInterface.hpp>
+
 #include <string>
 #include <memory>
 #include <typeindex>
@@ -179,10 +181,21 @@ class ParameterInterface {
 
     return *this;
   }
+
+  void addObserver(ParameterObserverInterface * observer) {
+    observers_.push_back(observer);
+  }
+
+  void removeObserver(ParameterObserverInterface * observer) {
+    auto it = std::find(observers_.begin(), observers_.end(), observer);
+    if (it != observers_.end()) { observers_.erase(it); }
+  }
+
  protected:
   std::type_index type_;
   internal::ParameterValuePtr value_;
   std::string name_;
+  std::vector<ParameterObserverInterface*> observers_;
 
 };
 

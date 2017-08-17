@@ -42,11 +42,12 @@
 #pragma once
 
 #include <parameter_handler/ParameterInterface.hpp>
+#include <parameter_handler/ParameterObserverInterface.hpp>
 #include <string>
 
 namespace parameter_handler {
 
-class ParameterHandlerBase
+class ParameterHandlerBase : public ParameterObserverInterface
 {
  public:
   ParameterHandlerBase() {
@@ -60,17 +61,22 @@ class ParameterHandlerBase
     return true;
   }
 
-  virtual bool addParam(const std::string& name, ParameterInterface& param) {
+  virtual bool addParam(const std::string& name, ParameterInterface& param, bool verbose = false) {
     return false;
   }
 
-  virtual bool addParam(ParameterInterface& param) {
+  virtual bool addParam(ParameterInterface& param, bool verbose = false) {
     return false;
   }
 
   virtual bool getParam(const std::string& name, ParameterInterface& param) {
     return false;
   }
+
+  virtual void parameterChanged(const std::string & name) {
+    return;
+  }
+
 };
 
 } /* namespace parameter_handler */

@@ -60,8 +60,11 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
   ParameterHandlerStd();
   virtual ~ParameterHandlerStd();
 
-  virtual bool addParam(const std::string& name, parameter_handler::ParameterInterface& param) {
+  virtual bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose = false) {
     std::lock_guard<std::mutex> lock(mutexParams_);
+
+    // Set the name of the parameter
+    param.setName(name);
 
     auto paramIterator = params_.find(name);
 
@@ -75,7 +78,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     return true;
   }
 
-  virtual bool addParam(parameter_handler::ParameterInterface& param) {
+  virtual bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) {
     return addParam(param.getName(), param);
   }
 
