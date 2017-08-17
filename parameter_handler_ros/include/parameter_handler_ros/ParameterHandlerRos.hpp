@@ -49,10 +49,9 @@
 #include <parameter_handler_msgs/GetFloatingPointParameter.h>
 #include <parameter_handler_msgs/GetParameterList.h>
 
+#include <parameter_handler/type_macros.hpp>
 #include <parameter_handler_std/ParameterHandlerStd.hpp>
-#include <parameter_handler_ros/type_macros.hpp>
 #include <parameter_handler_ros/helper_methods.hpp>
-
 
 #include <mutex>
 

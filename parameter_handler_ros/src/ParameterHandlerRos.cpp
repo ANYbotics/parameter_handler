@@ -93,10 +93,10 @@ bool ParameterHandlerRos::cleanup() {
 bool ParameterHandlerRos::getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                                            parameter_handler_msgs::GetParameterList::Response &res) {
   for (auto& parameter : params_) {
-    bool integralType = isType<PH_ROS_INTEGRAL_TYPES>(parameter.second);
+    bool integralType = isType<PH_INTEGRAL_TYPES>(parameter.second);
 
     // Only integral and floating point types are supported
-    if(integralType || isType<PH_ROS_FLOATING_POINT_TYPES>(parameter.second)) {
+    if(integralType || isType<PH_FLOATING_POINT_TYPES>(parameter.second)) {
       res.parameters.push_back(parameter.first);
       res.isIntegral.push_back(integralType);
     }
@@ -112,8 +112,8 @@ bool ParameterHandlerRos::setIntegralParameter(parameter_handler_msgs::SetIntegr
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = readScalarParamFromMessage<std_msgs::Int64MultiArray, PH_ROS_INTEGRAL_SCALAR_TYPES>(param, req.value) ||
-                  readMatrixParamFromMessage<std_msgs::Int64MultiArray, PH_ROS_INTEGRAL_MATRIX_TYPES>(param, req.value);
+    res.success = readScalarParamFromMessage<std_msgs::Int64MultiArray, PH_INTEGRAL_SCALAR_TYPES>(param, req.value) ||
+                  readMatrixParamFromMessage<std_msgs::Int64MultiArray, PH_INTEGRAL_MATRIX_TYPES>(param, req.value);
 
     if(!res.success) {
       ROS_ERROR("Reading parameter from msg failed.");
@@ -134,8 +134,8 @@ bool ParameterHandlerRos::getIntegralParameter(parameter_handler_msgs::GetIntegr
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_ROS_INTEGRAL_SCALAR_TYPES>(param, res) ||
-                  writeMatrixParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_ROS_INTEGRAL_MATRIX_TYPES>(param, res);
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_INTEGRAL_SCALAR_TYPES>(param, res) ||
+                  writeMatrixParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_INTEGRAL_MATRIX_TYPES>(param, res);
 
     if(!res.success) {
       ROS_ERROR("Writing integral parameter to msg failed.");
@@ -157,8 +157,8 @@ bool ParameterHandlerRos::setFloatingPointParameter(parameter_handler_msgs::SetF
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = readScalarParamFromMessage<std_msgs::Float64MultiArray, PH_ROS_FLOATING_POINT_SCALAR_TYPES>(param, req.value) ||
-                  readMatrixParamFromMessage<std_msgs::Float64MultiArray, PH_ROS_FLOATING_POINT_MATRIX_TYPES>(param, req.value);
+    res.success = readScalarParamFromMessage<std_msgs::Float64MultiArray, PH_FLOATING_POINT_SCALAR_TYPES>(param, req.value) ||
+                  readMatrixParamFromMessage<std_msgs::Float64MultiArray, PH_FLOATING_POINT_MATRIX_TYPES>(param, req.value);
 
     if(!res.success) {
       ROS_ERROR("Reading parameter from msg failed.");
@@ -180,8 +180,8 @@ bool ParameterHandlerRos::getFloatingPointParameter(parameter_handler_msgs::GetF
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_ROS_FLOATING_POINT_SCALAR_TYPES>(param, res) ||
-                  writeMatrixParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_ROS_FLOATING_POINT_MATRIX_TYPES>(param, res);
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_FLOATING_POINT_SCALAR_TYPES>(param, res) ||
+                  writeMatrixParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_FLOATING_POINT_MATRIX_TYPES>(param, res);
 
     if(!res.success) {
       ROS_ERROR("Writing floating point parameter to msg failed.");

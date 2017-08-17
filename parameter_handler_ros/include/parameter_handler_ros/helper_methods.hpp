@@ -5,7 +5,8 @@
  *      Author: Gabriel Hottiger
  */
 
-#include "parameter_handler_ros/type_macros.hpp"
+#include "parameter_handler/helper_methods.hpp"
+#include "parameter_handler/type_macros.hpp"
 #include "parameter_handler/ParameterInterface.hpp"
 
 #include <ros/ros.h>
@@ -14,24 +15,6 @@
 #pragma once
 
 namespace parameter_handler_ros {
-
-template<typename T1>
-bool isType(const parameter_handler::ParameterInterface & param) {
-  if( param.getType() == typeid(T1) ){
-    return true;
-  } else {
-    return false;
-  }
-}
-
-template <typename T1, typename T2, typename... Tn>
-bool isType(const parameter_handler::ParameterInterface & param) {
-  if( param.getType() == typeid(T1) ){
-    return true;
-  } else {
-    return isType<T2, Tn...>(param);
-  }
-}
 
 namespace internal {
 
@@ -88,7 +71,7 @@ bool writeScalarParamToMessage(const parameter_handler::ParameterInterface & par
 
 template <typename GetParamResponse_, typename T1, typename... Tn>
 bool writeScalarParamToMessage(const parameter_handler::ParameterInterface & param, GetParamResponse_ & msg) {
-  if(isType<T1>(param)) {
+  if(parameter_handler::isType<T1>(param)) {
     bool success = true;
     success = success && internal::writeScalarToMessage(param.getValue<T1>(), msg.value_current);
     success = success && internal::writeScalarToMessage(param.getMinValue<T1>(), msg.value_min);
@@ -107,7 +90,7 @@ bool writeMatrixParamToMessage(const parameter_handler::ParameterInterface & par
 
 template <typename GetParamResponse_, typename T1, typename... Tn>
 bool writeMatrixParamToMessage(const parameter_handler::ParameterInterface & param, GetParamResponse_ & msg) {
-  if(isType<T1>(param)) {
+  if(parameter_handler::isType<T1>(param)) {
     bool success = true;
     success = success && internal::writeMatrixToMessage(param.getValue<T1>(), msg.value_current);
     success = success && internal::writeMatrixToMessage(param.getMinValue<T1>(), msg.value_min);
@@ -126,7 +109,7 @@ bool readScalarParamFromMessage(parameter_handler::ParameterInterface & param, c
 
 template<typename MultiArrayMsg_, typename T1, typename... Tn>
 bool readScalarParamFromMessage(parameter_handler::ParameterInterface & param, const MultiArrayMsg_ & msg) {
-  if(isType<T1>(param)) {
+  if(parameter_handler::isType<T1>(param)) {
     // Handle scalar types
     if( (msg.layout.dim.size() == 1 && msg.layout.dim[0].size == 1) ||
         (msg.layout.dim.size() == 2 && msg.layout.dim[0].size == 1 && msg.layout.dim[1].size == 1 ) ) {
@@ -149,7 +132,7 @@ bool readMatrixParamFromMessage(parameter_handler::ParameterInterface & param, c
 
 template<typename MultiArrayMsg_, typename T1, typename... Tn>
 bool readMatrixParamFromMessage(parameter_handler::ParameterInterface & param, const MultiArrayMsg_ & msg) {
-  if(isType<T1>(param)) {
+  if(parameter_handler::isType<T1>(param)) {
     // Handle eigen matrices
     if(msg.layout.dim.size() == 1 || msg.layout.dim.size() == 2) {
       int rows = msg.layout.dim[0].size;
