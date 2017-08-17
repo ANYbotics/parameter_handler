@@ -82,9 +82,24 @@ PH_FLOATING_POINT_MATRIX_TYPES
 /*!
 * Supported Types
 */
+#define PH_MATRIX_TYPES \
+PH_INTEGRAL_MATRIX_TYPES, \
+PH_FLOATING_POINT_MATRIX_TYPES
+
+/*!
+* Supported Types
+*/
+#define PH_SCALAR_TYPES \
+PH_INTEGRAL_SCALAR_TYPES, \
+PH_FLOATING_POINT_SCALAR_TYPES
+
+
+/*!
+* Supported Types
+*/
 #define PH_TYPES \
-PH_INTEGRAL_TYPES, \
-PH_FLOATING_POINT_TYPES
+PH_MATRIX_TYPES, \
+PH_SCALAR_TYPES
 
 
 //-------------------------------------------------------------

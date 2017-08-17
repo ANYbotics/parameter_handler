@@ -43,7 +43,10 @@
 
 #include <string>
 
+
 namespace parameter_handler {
+
+class ParameterInterface;
 
 class ParameterObserverInterface {
 
@@ -55,9 +58,9 @@ class ParameterObserverInterface {
 
   /**
    * @brief Notify observer of a parameter change
-   * @param name Name of the parameter that changed
+   * @param param Parameter that changed
    */
-  virtual void parameterChanged(const std::string & name) = 0;
+  virtual void parameterChanged(const ParameterInterface & param) = 0;
 
 };
 

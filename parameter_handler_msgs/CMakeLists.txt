@@ -6,6 +6,12 @@ find_package(catkin REQUIRED COMPONENTS
     std_msgs
 )
 
+add_message_files(
+   FILES
+    FloatingPointParameter.msg
+    IntegralParameter.msg
+)
+
 add_service_files(
   FILES
    SetIntegralParameter.srv

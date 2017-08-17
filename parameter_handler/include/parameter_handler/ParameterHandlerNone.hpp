@@ -65,7 +65,7 @@ class ParameterHandlerNone : public ParameterHandlerBase {
     return true;
   }
 
-  virtual void parameterChanged(const std::string & name) {
+  virtual void parameterChanged(const ParameterInterface & param) {
     return;
   }
 

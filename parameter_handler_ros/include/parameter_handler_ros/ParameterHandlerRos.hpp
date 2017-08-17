@@ -84,6 +84,8 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   bool getFloatingPointParameter(parameter_handler_msgs::GetFloatingPointParameterRequest &req,
                                  parameter_handler_msgs::GetFloatingPointParameterResponse &res);
 
+  virtual void parameterChanged(const parameter_handler::ParameterInterface & param);
+
  protected:
   ros::NodeHandle* nodeHandle_;
   ros::ServiceServer getParameterListService_;
@@ -91,6 +93,8 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   ros::ServiceServer setIntegralParameterService_;
   ros::ServiceServer getFloatingPointParameterService_;
   ros::ServiceServer setFloatingPointParameterService_;
+  ros::Publisher     notifyIntegralParameterChange_;
+  ros::Publisher     notifyFloatingPointParameterChange_;
 };
 
 } /* namespace parameter_handler */

@@ -73,7 +73,8 @@ class ParameterHandlerBase : public ParameterObserverInterface
     return false;
   }
 
-  virtual void parameterChanged(const std::string & name) {
+  virtual void parameterChanged(const ParameterInterface & param) {
+    MELO_INFO("CALLED");
     return;
   }
 

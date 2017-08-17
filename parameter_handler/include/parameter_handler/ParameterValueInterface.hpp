@@ -42,6 +42,10 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+#include <algorithm>
+
+#include <parameter_handler/ParameterObserverInterface.hpp>
 
 namespace parameter_handler {
 namespace internal {
@@ -60,6 +64,23 @@ class ParameterValueInterface {
   }
 
   virtual ParameterValuePtr clone() const = 0;
+
+  void addObserver(ParameterObserverInterface * observer) {
+    observers_.push_back(observer);
+  }
+
+  void removeObserver(ParameterObserverInterface * observer) {
+    auto it = std::find(observers_.begin(), observers_.end(), observer);
+    if (it != observers_.end()) { observers_.erase(it); }
+  }
+
+  const std::vector<ParameterObserverInterface*> & getObservers() {
+    return observers_;
+  }
+
+ private:
+  std::vector<ParameterObserverInterface*> observers_;
+
 };
 
 } // namespace internal

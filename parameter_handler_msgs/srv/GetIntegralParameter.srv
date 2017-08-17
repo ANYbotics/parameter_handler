@@ -1,7 +1,4 @@
 string name
 ---
-std_msgs/Int32MultiArray value_current
-std_msgs/Int32MultiArray value_min
-std_msgs/Int32MultiArray value_max
-std_msgs/Int32MultiArray value_default
+parameter_handler_msgs/IntegralParameter param
 bool success

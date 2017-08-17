@@ -42,6 +42,9 @@
 #include "parameter_handler_ros/ParameterHandlerRos.hpp"
 #include <parameter_handler/Parameter.hpp>
 
+#include <parameter_handler_msgs/FloatingPointParameter.h>
+#include <parameter_handler_msgs/IntegralParameter.h>
+
 namespace parameter_handler_ros {
 
 using namespace parameter_handler;
@@ -65,6 +68,8 @@ void ParameterHandlerRos::initializeServices() {
     getFloatingPointParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/get_floating_point_parameter", &ParameterHandlerRos::getFloatingPointParameter, this);
     setIntegralParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/set_integral_parameter", &ParameterHandlerRos::setIntegralParameter, this);
     setFloatingPointParameterService_ = nodeHandle_->advertiseService("parameter_handler_ros/set_floating_point_parameter", &ParameterHandlerRos::setFloatingPointParameter, this);
+    notifyIntegralParameterChange_ = nodeHandle_->advertise<parameter_handler_msgs::IntegralParameter>("parameter_handler_ros/notify_integral_parameter", 10, true);
+    notifyFloatingPointParameterChange_ = nodeHandle_->advertise<parameter_handler_msgs::FloatingPointParameter>("parameter_handler_ros/notify_floating_point_parameter", 10, true);
   }
   else {
     MELO_WARN("[ParameterHandlerRos] No nodehandle set.");
@@ -77,6 +82,8 @@ void ParameterHandlerRos::shutdown() {
   getFloatingPointParameterService_.shutdown();
   setIntegralParameterService_.shutdown();
   setFloatingPointParameterService_.shutdown();
+  notifyIntegralParameterChange_.shutdown();
+  notifyFloatingPointParameterChange_.shutdown();
 }
 
 void ParameterHandlerRos::setNodeHandle(ros::NodeHandle* nodeHandle) {
@@ -112,15 +119,15 @@ bool ParameterHandlerRos::setIntegralParameter(parameter_handler_msgs::SetIntegr
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = readScalarParamFromMessage<std_msgs::Int64MultiArray, PH_INTEGRAL_SCALAR_TYPES>(param, req.value) ||
-                  readMatrixParamFromMessage<std_msgs::Int64MultiArray, PH_INTEGRAL_MATRIX_TYPES>(param, req.value);
+    res.success = readScalarParamFromServiceRequest<parameter_handler_msgs::SetIntegralParameterRequest, PH_INTEGRAL_SCALAR_TYPES>(param, req) ||
+        readMatrixParamFromServiceRequest<parameter_handler_msgs::SetIntegralParameterRequest, PH_INTEGRAL_MATRIX_TYPES>(param, req);
 
     if(!res.success) {
-      ROS_ERROR("Reading parameter from msg failed.");
+      ROS_ERROR_STREAM("[PH_ROS] Reading parameter " << req.name << " from msg failed.");
     }
   }
   else {
-    ROS_ERROR("Parameter not found.");
+    ROS_ERROR_STREAM("[PH_ROS] Reading parameter " << req.name << " failed. Parameter not found!");
     res.success = false;
   }
 
@@ -134,16 +141,17 @@ bool ParameterHandlerRos::getIntegralParameter(parameter_handler_msgs::GetIntegr
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_INTEGRAL_SCALAR_TYPES>(param, res) ||
-                  writeMatrixParamToMessage<parameter_handler_msgs::GetIntegralParameterResponse, PH_INTEGRAL_MATRIX_TYPES>(param, res);
+
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::IntegralParameter, PH_INTEGRAL_SCALAR_TYPES>(param, res.param) ||
+        writeMatrixParamToMessage<parameter_handler_msgs::IntegralParameter, PH_INTEGRAL_MATRIX_TYPES>(param, res.param);
 
     if(!res.success) {
-      ROS_ERROR("Writing integral parameter to msg failed.");
+      ROS_ERROR_STREAM("[PH_ROS] Writing parameter " << req.name << " to msg failed.");
     }
 
   }
   else {
-    ROS_ERROR("Parameter not found.");
+    ROS_ERROR_STREAM("[PH_ROS] Writing parameter " << req.name << " failed. Parameter not found!");
     res.success = false;
   }
 
@@ -157,16 +165,15 @@ bool ParameterHandlerRos::setFloatingPointParameter(parameter_handler_msgs::SetF
   if (getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = readScalarParamFromMessage<std_msgs::Float64MultiArray, PH_FLOATING_POINT_SCALAR_TYPES>(param, req.value) ||
-                  readMatrixParamFromMessage<std_msgs::Float64MultiArray, PH_FLOATING_POINT_MATRIX_TYPES>(param, req.value);
+    res.success = readScalarParamFromServiceRequest<parameter_handler_msgs::SetFloatingPointParameterRequest, PH_FLOATING_POINT_SCALAR_TYPES>(param, req) ||
+        readMatrixParamFromServiceRequest<parameter_handler_msgs::SetFloatingPointParameterRequest, PH_FLOATING_POINT_MATRIX_TYPES>(param, req);
 
     if(!res.success) {
-      ROS_ERROR("Reading parameter from msg failed.");
+      ROS_ERROR_STREAM("[PH_ROS] Reading parameter " << req.name << " from msg failed.");
     }
-
   }
   else {
-    ROS_ERROR("Parameter not found.");
+    ROS_ERROR_STREAM("[PH_ROS] Reading parameter " << req.name << " failed. Parameter not found!");
     res.success = false;
   }
 
@@ -180,20 +187,37 @@ bool ParameterHandlerRos::getFloatingPointParameter(parameter_handler_msgs::GetF
   if(getParam(req.name, param)) {
 
     std::lock_guard<std::mutex> lock(mutexParams_);
-    res.success = writeScalarParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_FLOATING_POINT_SCALAR_TYPES>(param, res) ||
-                  writeMatrixParamToMessage<parameter_handler_msgs::GetFloatingPointParameterResponse, PH_FLOATING_POINT_MATRIX_TYPES>(param, res);
+
+    res.success = writeScalarParamToMessage<parameter_handler_msgs::FloatingPointParameter, PH_FLOATING_POINT_SCALAR_TYPES>(param, res.param) ||
+        writeMatrixParamToMessage<parameter_handler_msgs::FloatingPointParameter, PH_FLOATING_POINT_MATRIX_TYPES>(param, res.param);
 
     if(!res.success) {
-      ROS_ERROR("Writing floating point parameter to msg failed.");
+      ROS_ERROR_STREAM("[PH_ROS] Writing parameter " << req.name << " to msg failed.");
     }
 
   }
   else {
-    ROS_ERROR("Parameter not found.");
+    ROS_ERROR_STREAM("[PH_ROS] Writing parameter " << req.name << " failed. Parameter not found!");
     res.success = false;
   }
 
   return true;
 }
+
+void ParameterHandlerRos::parameterChanged(const parameter_handler::ParameterInterface & param) {
+  parameter_handler_std::ParameterHandlerStd::parameterChanged(param);
+  if( isType<PH_INTEGRAL_TYPES>(param) ) {
+    parameter_handler_msgs::IntegralParameter msg;
+    writeScalarParamToMessage<parameter_handler_msgs::IntegralParameter, PH_INTEGRAL_SCALAR_TYPES>(param, msg);
+    writeMatrixParamToMessage<parameter_handler_msgs::IntegralParameter, PH_INTEGRAL_MATRIX_TYPES>(param, msg);
+    notifyIntegralParameterChange_.publish(msg);
+  } else if( isType<PH_FLOATING_POINT_TYPES>(param) ){
+    parameter_handler_msgs::FloatingPointParameter msg;
+    writeScalarParamToMessage<parameter_handler_msgs::FloatingPointParameter, PH_FLOATING_POINT_SCALAR_TYPES>(param, msg);
+    writeMatrixParamToMessage<parameter_handler_msgs::FloatingPointParameter, PH_FLOATING_POINT_MATRIX_TYPES>(param, msg);
+    notifyFloatingPointParameterChange_.publish(msg);
+  }
+}
+
 
 } /* namespace parameter_handler */
