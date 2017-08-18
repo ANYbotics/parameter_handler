@@ -130,7 +130,7 @@ class ParameterInterface {
   {
     if (type_ == typeid(ValueType_)) {
       std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setValue(value);
-      for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -142,7 +142,7 @@ class ParameterInterface {
   {
     if (type_ == typeid(ValueType_)) {
       std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMinValue(value);
-      for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -154,7 +154,7 @@ class ParameterInterface {
   {
     if (type_ == typeid(ValueType_)) {
       std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMaxValue(value);
-      for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -166,7 +166,7 @@ class ParameterInterface {
   {
     if (type_ == typeid(ValueType_)) {
       std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setDefaultValue(value);
-      for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -182,6 +182,10 @@ class ParameterInterface {
     value_ = other.value_;
     name_ = other.name_;
     return *this;
+  }
+
+  void notifyObservers() {
+    for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
   }
 
   void addObserver(ParameterObserverInterface * observer) {

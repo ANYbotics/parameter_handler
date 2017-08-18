@@ -116,6 +116,7 @@ public:
 
   void setValue(const ValueType_& value) {
     getValuePtr()->setValue(value);
+    notifyObservers();
   }
 
   template< typename V_ = ValueType_>
@@ -123,6 +124,7 @@ public:
                 typename std::enable_if< std::is_base_of< Eigen::MatrixBase<V_>, V_ >::value>::type* = 0 /* is_eigen */ )
   {
     getValuePtr()->setValue(value, row, col);
+    notifyObservers();
   }
 
   void resetWithDefaultValueAndRelativeBounds(const ValueType_& value, const ValueType_& relativeUpperBound) {
@@ -130,22 +132,27 @@ public:
     getValuePtr()->setMaxValue(value+relativeUpperBound);
     getValuePtr()->setMinValue(value-relativeUpperBound);
     getValuePtr()->setValue(value);
+    notifyObservers();
   }
 
   void setDefaultValue(const ValueType_& value) {
     getValuePtr()->setDefaultValue(value);
+    notifyObservers();
   }
 
   void setMinValue(const ValueType_& value) {
     getValuePtr()->setMinValue(value);
+    notifyObservers();
   }
 
   void setMaxValue(const ValueType_& value) {
     getValuePtr()->setMaxValue(value);
+    notifyObservers();
   }
 
   void resetToDefault() {
     getValuePtr()->setValue(getValuePtr()->getDefaultValue());
+    notifyObservers();
   }
 
 protected:

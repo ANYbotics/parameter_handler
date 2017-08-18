@@ -77,6 +77,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     }
 
     params_.insert( { name, param });
+    params_[name].notifyObservers();
 
     return true;
   }
