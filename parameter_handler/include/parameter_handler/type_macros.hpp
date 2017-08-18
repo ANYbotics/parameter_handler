@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <Eigen/Core>
 
 //-------------------------------------------------------------
 //                DEFINE SUPPORTED TYPES
@@ -15,7 +16,7 @@
 /*!
  * Supported Integral Scalar Types
  */
-#define PH_ROS_INTEGRAL_SCALAR_TYPES \
+#define PH_INTEGRAL_SCALAR_TYPES \
 bool, \
 char, \
 char16_t, \
@@ -31,7 +32,7 @@ unsigned short int
 /*!
  *  Supported Integral Matrix Types
  */
-#define PH_ROS_INTEGRAL_MATRIX_TYPES \
+#define PH_INTEGRAL_MATRIX_TYPES \
 Eigen::Matrix3i, \
 Eigen::MatrixXi, \
 Eigen::Vector2i, \
@@ -42,21 +43,21 @@ Eigen::VectorXi
 /*!
 *  Supported Integral Types
 */
-#define PH_ROS_INTEGRAL_TYPES \
-PH_ROS_INTEGRAL_SCALAR_TYPES, \
-PH_ROS_INTEGRAL_MATRIX_TYPES
+#define PH_INTEGRAL_TYPES \
+PH_INTEGRAL_SCALAR_TYPES, \
+PH_INTEGRAL_MATRIX_TYPES
 
 /*!
  * Supported Floating Point Scalar Types
  */
-#define PH_ROS_FLOATING_POINT_SCALAR_TYPES  \
+#define PH_FLOATING_POINT_SCALAR_TYPES  \
 double, \
 float
 
 /*!
  * Supported Floating Point Matrix Types
  */
-#define PH_ROS_FLOATING_POINT_MATRIX_TYPES  \
+#define PH_FLOATING_POINT_MATRIX_TYPES  \
 Eigen::Matrix3f, \
 Eigen::MatrixXf, \
 Eigen::Vector2f, \
@@ -73,8 +74,32 @@ Eigen::VectorXd
 /*!
 * Supported Floating Point Types
 */
-#define PH_ROS_FLOATING_POINT_TYPES \
-PH_ROS_FLOATING_POINT_SCALAR_TYPES, \
-PH_ROS_FLOATING_POINT_MATRIX_TYPES
+#define PH_FLOATING_POINT_TYPES \
+PH_FLOATING_POINT_SCALAR_TYPES, \
+PH_FLOATING_POINT_MATRIX_TYPES
+
+
+/*!
+* Supported Types
+*/
+#define PH_MATRIX_TYPES \
+PH_INTEGRAL_MATRIX_TYPES, \
+PH_FLOATING_POINT_MATRIX_TYPES
+
+/*!
+* Supported Types
+*/
+#define PH_SCALAR_TYPES \
+PH_INTEGRAL_SCALAR_TYPES, \
+PH_FLOATING_POINT_SCALAR_TYPES
+
+
+/*!
+* Supported Types
+*/
+#define PH_TYPES \
+PH_MATRIX_TYPES, \
+PH_SCALAR_TYPES
+
 
 //-------------------------------------------------------------

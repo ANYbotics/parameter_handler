@@ -42,6 +42,7 @@
 #pragma once
 
 #include <parameter_handler/ParameterValue.hpp>
+
 #include <string>
 #include <memory>
 #include <typeindex>
@@ -128,7 +129,8 @@ class ParameterInterface {
   void setValue(const ValueType_& value)
   {
     if (type_ == typeid(ValueType_)) {
-      return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setValue(value);
+      std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setValue(value);
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -139,7 +141,8 @@ class ParameterInterface {
   void setMinValue(const ValueType_& value)
   {
     if (type_ == typeid(ValueType_)) {
-      return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMinValue(value);
+      std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMinValue(value);
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -150,7 +153,8 @@ class ParameterInterface {
   void setMaxValue(const ValueType_& value)
   {
     if (type_ == typeid(ValueType_)) {
-      return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMaxValue(value);
+      std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setMaxValue(value);
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -161,7 +165,8 @@ class ParameterInterface {
   void setDefaultValue(const ValueType_& value)
   {
     if (type_ == typeid(ValueType_)) {
-      return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setDefaultValue(value);
+      std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_)->setDefaultValue(value);
+      notifyObservers();
     }
     else {
       throw std::runtime_error("Parameter value type mismatch");
@@ -176,14 +181,25 @@ class ParameterInterface {
     type_ = other.type_;
     value_ = other.value_;
     name_ = other.name_;
-
     return *this;
   }
+
+  void notifyObservers() {
+    for(auto observer: value_->getObservers()) { observer->parameterChanged(*this); };
+  }
+
+  void addObserver(ParameterObserverInterface * observer) {
+    value_->addObserver(observer);
+  }
+
+  void removeObserver(ParameterObserverInterface * observer) {
+    value_->removeObserver(observer);
+  }
+
  protected:
   std::type_index type_;
   internal::ParameterValuePtr value_;
   std::string name_;
-
 };
 
 

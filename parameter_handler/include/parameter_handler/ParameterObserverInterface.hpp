@@ -33,55 +33,36 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 */
 /*
- * ParameterValueInterface.hpp
+ * ParameterObserverInterface.hpp
  *
- *  Created on: Sep 24, 2015
- *      Author: Christian Gehring, Ralf Kaestner
+ *  Created on: Sep 23, 2015
+ *      Author: Gabriel Hottiger
  */
 
 #pragma once
 
-#include <memory>
-#include <vector>
-#include <algorithm>
+#include <string>
 
-#include <parameter_handler/ParameterObserverInterface.hpp>
 
 namespace parameter_handler {
-namespace internal {
 
-class ParameterValueInterface;
+class ParameterInterface;
 
-typedef std::shared_ptr<ParameterValueInterface> ParameterValuePtr;
+class ParameterObserverInterface {
 
-class ParameterValueInterface {
  public:
-  ParameterValueInterface() {
+  //! Default Constructor
+  ParameterObserverInterface() = default;
+  //! Default Destructor
+  virtual ~ParameterObserverInterface() = default;
 
-  }
-  virtual ~ParameterValueInterface() {
-
-  }
-
-  virtual ParameterValuePtr clone() const = 0;
-
-  void addObserver(ParameterObserverInterface * observer) {
-    observers_.push_back(observer);
-  }
-
-  void removeObserver(ParameterObserverInterface * observer) {
-    auto it = std::find(observers_.begin(), observers_.end(), observer);
-    if (it != observers_.end()) { observers_.erase(it); }
-  }
-
-  const std::vector<ParameterObserverInterface*> & getObservers() {
-    return observers_;
-  }
-
- private:
-  std::vector<ParameterObserverInterface*> observers_;
+  /**
+   * @brief Notify observer of a parameter change
+   * @param param Parameter that changed
+   */
+  virtual void parameterChanged(const ParameterInterface & param) = 0;
 
 };
 
-} // namespace internal
-} // namespace parameter_handler
+
+} // namespace

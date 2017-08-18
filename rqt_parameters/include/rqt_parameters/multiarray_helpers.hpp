@@ -39,7 +39,7 @@ bool refreshParam( const std::string & paramName,
                    ros::ServiceClient* getParamClient,
                    QWidget * matrix)
 {
-  using PrimType = typename GetParamService_::Response::_value_current_type::_data_type::value_type;
+  using PrimType = typename GetParamService_::Response::_param_type::_value_current_type::_data_type::value_type;
 
   typename GetParamService_::Request req;
   typename GetParamService_::Response res;
@@ -50,11 +50,11 @@ bool refreshParam( const std::string & paramName,
     if(MatrixSpinBox<MatrixSpinBoxType_>* m = dynamic_cast< MatrixSpinBox<MatrixSpinBoxType_>* >(matrix))
     {
       // Check dimensions of the message
-      if(res.value_current.layout.dim.size() == 1 || res.value_current.layout.dim.size() == 2)
+      if(res.param.value_current.layout.dim.size() == 1 || res.param.value_current.layout.dim.size() == 2)
       {
         // Get matrix rows/cols and refresh the matrix spinbox to this size
-        int rows = res.value_current.layout.dim[0].size;
-        int cols = (res.value_current.layout.dim.size() == 2) ? res.value_current.layout.dim[1].size : 1;
+        int rows = res.param.value_current.layout.dim[0].size;
+        int cols = (res.param.value_current.layout.dim.size() == 2) ? res.param.value_current.layout.dim[1].size : 1;
         m->refresh(rows, cols);
 
         // Setup the spinboxes with the data from the message
@@ -62,9 +62,9 @@ bool refreshParam( const std::string & paramName,
         {
           for( int c = 0; c < cols; ++c )
           {
-            PrimType val = res.value_current.data[r*cols + c];
-            PrimType min = res.value_min.data[r*cols + c];
-            PrimType max = res.value_max.data[r*cols + c];
+            PrimType val = res.param.value_current.data[r*cols + c];
+            PrimType min = res.param.value_min.data[r*cols + c];
+            PrimType max = res.param.value_max.data[r*cols + c];
             unsigned int decimals = internal::setDecimals(m->getSpinbox(r,c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>() );
 
             QString tooltip = QString("Min: ") + QString::number(min, 'f', decimals) + QString(" / Max: ") + QString::number(max, 'f', decimals);
@@ -99,7 +99,7 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
                                   QWidget * matrix)
 {
   //! Type of the underlying message type ( e.g float64 / int64 )
-  using PrimType = typename GetParamService_::Response::_value_current_type::_data_type::value_type;
+  using PrimType = typename GetParamService_::Response::_param_type::_value_current_type::_data_type::value_type;
 
   ROS_INFO_STREAM("Change parameter " << paramName << ".");
 

@@ -121,6 +121,7 @@ class ParameterValue: public ParameterValueInterface {
    ValueType_ default_;
    ValueType_ valueMin_;
    ValueType_ valueMax_;
+
 };
 
 } // namspace internal

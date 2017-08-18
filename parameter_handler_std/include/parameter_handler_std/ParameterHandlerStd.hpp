@@ -43,6 +43,7 @@
 
 #include <parameter_handler/ParameterHandlerBase.hpp>
 #include <parameter_handler/ParameterInterface.hpp>
+#include <parameter_handler/helper_methods.hpp>
 #include <message_logger/message_logger.hpp>
 
 #include <vector>
@@ -60,8 +61,12 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
   ParameterHandlerStd();
   virtual ~ParameterHandlerStd();
 
-  virtual bool addParam(const std::string& name, parameter_handler::ParameterInterface& param) {
+  virtual bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose = false) {
     std::lock_guard<std::mutex> lock(mutexParams_);
+
+    // Set the name of the parameter and add observer
+    param.setName(name);
+    if(verbose) { param.addObserver(this); }
 
     auto paramIterator = params_.find(name);
 
@@ -72,11 +77,13 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
     }
 
     params_.insert( { name, param });
+    params_[name].notifyObservers();
+
     return true;
   }
 
-  virtual bool addParam(parameter_handler::ParameterInterface& param) {
-    return addParam(param.getName(), param);
+  virtual bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) {
+    return addParam(param.getName(), param, verbose);
   }
 
   virtual bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
@@ -95,6 +102,11 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
 
     return true;
 
+  }
+
+  virtual void parameterChanged(const parameter_handler::ParameterInterface & param) {
+    parameter_handler::printType<PH_TYPES>(param);
+    return;
   }
 
  protected:
