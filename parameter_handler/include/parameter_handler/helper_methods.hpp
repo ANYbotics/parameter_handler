@@ -37,11 +37,7 @@ bool isType(const parameter_handler::ParameterInterface & param) {
 template<typename T1>
 void printType(const parameter_handler::ParameterInterface & param) {
   if( param.getType() == typeid(T1) ){
-    MELO_INFO_STREAM("Changed parameter " << param.getName() << " to :" << std::endl <<
-                     "Current: " << param.getValue<T1>()<< std::endl <<
-                     "Default: " << param.getDefaultValue<T1>()<< std::endl <<
-                     "Minimum: " << param.getMinValue<T1>()<< std::endl <<
-                     "Maximum: " << param.getMaxValue<T1>() );
+    MELO_INFO_STREAM( "Changed parameter " << param.getName() << " to :" << param.getValue<T1>() );
   }
 }
 
