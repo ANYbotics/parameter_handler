@@ -54,9 +54,24 @@ class ParameterValue: public ParameterValueInterface {
  public:
   typedef ValueType_ ValueType;
  public:
-  ParameterValue()
+  template<typename V = ValueType_>
+  ParameterValue(typename std::enable_if< !std::is_base_of< Eigen::MatrixBase<V>, V >::value>::type* = 0)
+      : value_(),
+        valueMin_(),
+        valueMax_(),
+        default_()
   {
-    internal::ParameterValueTraits<ParameterValue<ValueType_> >::init(*this);
+    internal::ParameterValueTraits<ParameterValue<V> >::init(*this);
+  }
+
+  template<typename V = ValueType_>
+  ParameterValue(typename std::enable_if< std::is_base_of< Eigen::MatrixBase<V>, V >::value>::type* = 0)
+      : value_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
+        valueMin_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
+        valueMax_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
+        default_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) )
+  {
+    internal::ParameterValueTraits<ParameterValue<V> >::init(*this);
   }
 
   ParameterValue(const ValueType_& param, const ValueType_& min, const ValueType_& max)
