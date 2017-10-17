@@ -132,17 +132,22 @@ bool readMatrixFromMessage(MatrixType_ & matrix, const MultiArrayMsg_ & msg) {
     int cols = ( msg.layout.dim.size() == 2 ) ? msg.layout.dim[1].size : 1;
 
     // Resize matrix if possible
-    if( (matrix.rows() != rows) && (MatrixType_::RowsAtCompileTime == Eigen::Dynamic) ) {
-      matrix.resize(rows, matrix.cols());
-    } else {
-      MELO_ERROR_STREAM("[PH_ROS]: Wrong number of rows and can not resize matrix.")
-      return false;
+    if( (matrix.rows() != rows) ) {
+      if( MatrixType_::RowsAtCompileTime == Eigen::Dynamic ) {
+        matrix.resize(rows, matrix.cols());
+      } else {
+        MELO_ERROR_STREAM("[PH_ROS]: Wrong number of rows and can not resize matrix.")
+        return false;
+      }
     }
-    if( (matrix.cols() != cols) && (MatrixType_::ColsAtCompileTime == Eigen::Dynamic) ) {
-      matrix.resize(matrix.rows(), cols);
-    } else {
-      MELO_ERROR_STREAM("[PH_ROS]: Wrong number of cols and can not resize matrix.")
-      return false;
+
+    if( (matrix.cols() != cols) ) {
+      if ( MatrixType_::ColsAtCompileTime == Eigen::Dynamic ) {
+        matrix.resize(matrix.rows(), cols);
+      } else {
+        MELO_ERROR_STREAM("[PH_ROS]: Wrong number of cols and can not resize matrix.")
+        return false;
+      }
     }
 
     for( int r = 0; r < rows; ++r ) {
