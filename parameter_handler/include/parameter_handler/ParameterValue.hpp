@@ -43,6 +43,8 @@
 
 #include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValueTraits.hpp"
+#include "parameter_handler/type_traits.hpp"
+
 #include <limits>
 #include <type_traits>
 
@@ -55,7 +57,7 @@ class ParameterValue: public ParameterValueInterface {
   typedef ValueType_ ValueType;
  public:
   template<typename V = ValueType_>
-  ParameterValue(typename std::enable_if< !std::is_base_of< Eigen::MatrixBase<V>, V >::value>::type* = 0)
+  ParameterValue(typename std::enable_if< !traits::is_fixed_size_eigen_matrix<V>::value >::type* = 0)
       : value_(),
         valueMin_(),
         valueMax_(),
@@ -65,7 +67,7 @@ class ParameterValue: public ParameterValueInterface {
   }
 
   template<typename V = ValueType_>
-  ParameterValue(typename std::enable_if< std::is_base_of< Eigen::MatrixBase<V>, V >::value>::type* = 0)
+  ParameterValue(typename std::enable_if< traits::is_fixed_size_eigen_matrix<V>::value >::type* = 0)
       : value_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
         valueMin_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
         valueMax_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
