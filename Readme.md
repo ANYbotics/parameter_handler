@@ -16,7 +16,7 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 ## Building
 
-[![Build Status](http://rsl-ci.ethz.ch/buildStatus/icon?job=parameter_handler)](http://rsl-ci.ethz.ch/job/parameter_handler/)
+[![Build Status](https://ci.leggedrobotics.com/buildStatus/icon?job=bitbucket_leggedrobotics/parameter_handler/master)](https://ci.leggedrobotics.com/job/bitbucket_leggedrobotics/job/parameter_handler/job/master/)
 
 In order to install, clone the latest version from this repository into your catkin workspace and compile the packages.
 
