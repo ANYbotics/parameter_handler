@@ -26,7 +26,7 @@ IF(DOXYGEN)
       parameter_handler_std
       parameter_handler_msgs
       rqt_parameters
-    DEPENDS doxygen
+    DEPENDS
   )
 
   # Find parameter_handler for documentation
