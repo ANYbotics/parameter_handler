@@ -7,7 +7,7 @@ A parameter handler is a tool to tune parameters defined in other classes.
 
 [Documentation](http://docs.leggedrobotics.com/parameter_handler_doc/)
 
-The software has been tested under ROS Indigo and Ubuntu 14.04.
+The software has been tested under ROS Kinetic and Ubuntu 16.04.
 
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
