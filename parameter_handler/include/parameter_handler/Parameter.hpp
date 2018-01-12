@@ -155,6 +155,17 @@ public:
     notifyObservers();
   }
 
+  bool load(TiXmlElement* rootElement) override {
+    ValueType_ v(getValue());
+    bool success = tinyxml_tools::loadParameter(getName(), v, rootElement);
+    setValue(v);
+    return success;
+  }
+
+  bool store(TiXmlElement* rootElement) const override {
+    return tinyxml_tools::writeParameter(getName(), getValue(), rootElement);
+  }
+
 protected:
   std::shared_ptr<internal::ParameterValue<ValueType_> > getValuePtr() {
     return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_);

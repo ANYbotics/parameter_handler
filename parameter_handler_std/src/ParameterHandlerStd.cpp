@@ -41,18 +41,83 @@
 
 #include "parameter_handler_std/ParameterHandlerStd.hpp"
 
+#include "tinyxml_tools/tinyxml_tools.hpp"
+#include <tinyxml.h>
+
 namespace parameter_handler_std {
 
-ParameterHandlerStd::ParameterHandlerStd()
-    : params_()
-{
+bool ParameterHandlerStd::addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose) {
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  // Set the name of the parameter and add observer
+  param.setName(name);
+  if(verbose) { param.addObserver(this); }
+
+  auto paramIterator = params_.find(name);
+
+  if (!(paramIterator == params_.end())) {
+    MELO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
+    paramIterator->second = param;
+    return true;
+  }
+
+  params_.insert( { name, param });
+  params_[name].notifyObservers();
+
+  return true;
+}
+
+bool ParameterHandlerStd::addParam(parameter_handler::ParameterInterface& param, bool verbose) {
+  return addParam(param.getName(), param, verbose);
+}
+
+bool ParameterHandlerStd::getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
+
+
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  auto paramIterator = params_.find(name);
+
+  if (paramIterator == params_.end()) {
+    MELO_INFO_STREAM("Key '" << name << "' was not found.");
+    return false;
+  }
+
+  param = paramIterator->second;
+
+  return true;
 
 }
 
-ParameterHandlerStd::~ParameterHandlerStd()
-{
-
+void ParameterHandlerStd::parameterChanged(const parameter_handler::ParameterInterface & param) {
+  parameter_handler::printType<PH_TYPES>(param);
+  return;
 }
 
+bool ParameterHandlerStd::storeParams(const std::string & filename) const {
+  TiXmlDocument doc;
+  auto * root = new TiXmlElement("Parameters");
+  doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
+  doc.LinkEndChild(root);
+  bool success = true;
+  for(const auto & param : params_) {
+    success = param.second.store(root) && success;
+  }
+  return doc.SaveFile( filename ) && success;
+}
+
+bool ParameterHandlerStd::loadParams(const std::string & filename) {
+  TiXmlDocument doc;
+  TiXmlHandle docHandle(&doc), rootHandle(docHandle);
+  if(!doc.LoadFile(filename) || !tinyxml_tools::getChildHandle(docHandle, rootHandle, "Root") || rootHandle.ToElement() == nullptr) {
+    MELO_WARN_STREAM("Could not load document " << filename << ". Does tag 'Root' exist?");
+    return false;
+  }
+  bool success = true;
+  for(auto & param : params_) {
+    success = param.second.load(rootHandle.ToElement()) && success;
+  }
+  return success;
+}
 
 } /* namespace */

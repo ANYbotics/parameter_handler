@@ -58,56 +58,18 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
  public:
   typedef std::unordered_map<std::string, parameter_handler::ParameterInterface> ParameterList;
  public:
-  ParameterHandlerStd();
-  virtual ~ParameterHandlerStd();
+  ParameterHandlerStd() = default;
+  ~ParameterHandlerStd() override = default;
 
-  virtual bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose = false) {
-    std::lock_guard<std::mutex> lock(mutexParams_);
+  bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose = false) override;
 
-    // Set the name of the parameter and add observer
-    param.setName(name);
-    if(verbose) { param.addObserver(this); }
+  bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) override;
+  bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) override;
 
-    auto paramIterator = params_.find(name);
+  void parameterChanged(const parameter_handler::ParameterInterface & param);
 
-    if (!(paramIterator == params_.end())) {
-      MELO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
-      paramIterator->second = param;
-      return true;
-    }
-
-    params_.insert( { name, param });
-    params_[name].notifyObservers();
-
-    return true;
-  }
-
-  virtual bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) {
-    return addParam(param.getName(), param, verbose);
-  }
-
-  virtual bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
-
-
-    std::lock_guard<std::mutex> lock(mutexParams_);
-
-    auto paramIterator = params_.find(name);
-
-    if (paramIterator == params_.end()) {
-      MELO_INFO_STREAM("Key '" << name << "' was not found.");
-      return false;
-    }
-
-    param = paramIterator->second;
-
-    return true;
-
-  }
-
-  virtual void parameterChanged(const parameter_handler::ParameterInterface & param) {
-    parameter_handler::printType<PH_TYPES>(param);
-    return;
-  }
+  bool storeParams(const std::string & filename) const override;
+  bool loadParams(const std::string & filename) override;
 
  protected:
   ParameterList params_;

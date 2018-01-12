@@ -47,6 +47,8 @@
 #include <memory>
 #include <typeindex>
 
+#include <tinyxml_tools/tinyxml_tools.hpp>
+
 namespace parameter_handler {
 
 class ParameterInterface {
@@ -195,6 +197,15 @@ class ParameterInterface {
   void removeObserver(ParameterObserverInterface * observer) {
     value_->removeObserver(observer);
   }
+
+  virtual bool load(TiXmlElement* rootElement) {
+    return true;
+  }
+
+  virtual bool store(TiXmlElement* rootElement) const {
+    return true;
+  }
+
 
  protected:
   std::type_index type_;

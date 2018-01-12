@@ -5,13 +5,14 @@ add_definitions(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
                 message_logger
+                tinyxml_tools
                 parameter_handler
 )
 
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES parameter_handler_std
-  CATKIN_DEPENDS message_logger parameter_handler
+  CATKIN_DEPENDS message_logger tinyxml_tools parameter_handler
 #  DEPENDS system_lib
 )
 
