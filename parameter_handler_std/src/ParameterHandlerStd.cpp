@@ -94,11 +94,24 @@ void ParameterHandlerStd::parameterChanged(const parameter_handler::ParameterInt
   return;
 }
 
-bool ParameterHandlerStd::storeParams(const std::string & filename) const {
+bool ParameterHandlerStd::storeParams(const std::string & filename, const bool append) const {
   TiXmlDocument doc;
-  auto * root = new TiXmlElement("Parameters");
-  doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
-  doc.LinkEndChild(root);
+  TiXmlElement* root = nullptr;
+
+  // Load file to append
+  if(append) {
+    doc.LoadFile(filename);
+    root = doc.RootElement();
+  }
+
+  // Add root if not already existing
+  if(root == nullptr) {
+    root = new TiXmlElement("Parameters");
+    doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
+    doc.LinkEndChild(root);
+  }
+
+  // Push back elements
   bool success = true;
   for(const auto & param : params_) {
     parameter_handler::storeType<PH_TYPES>(param.second, root);
@@ -108,14 +121,14 @@ bool ParameterHandlerStd::storeParams(const std::string & filename) const {
 
 bool ParameterHandlerStd::loadParams(const std::string & filename) {
   TiXmlDocument doc;
-  TiXmlHandle docHandle(&doc), rootHandle(docHandle);
-  if(!doc.LoadFile(filename) || !tinyxml_tools::getChildHandle(docHandle, rootHandle, "Root") || rootHandle.ToElement() == nullptr) {
-    MELO_WARN_STREAM("Could not load document " << filename << ". Does tag 'Root' exist?");
+  if(!doc.LoadFile(filename) || doc.RootElement() == nullptr ) {
+    MELO_WARN_STREAM("Could not load document " << filename << ".");
     return false;
   }
+  TiXmlHandle rootHandle(doc.RootElement());
   bool success = true;
   for(auto & param : params_) {
-    parameter_handler::loadType<PH_TYPES>(param.second, rootHandle.ToElement());
+    parameter_handler::loadType<PH_TYPES>(param.second, rootHandle);
   }
   return success;
 }

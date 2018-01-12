@@ -68,10 +68,10 @@ bool storeType(const parameter_handler::ParameterInterface & param, TiXmlElement
 }
 
 template<typename T1>
-bool loadType(parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+bool loadType(parameter_handler::ParameterInterface & param, const TiXmlHandle& rootHandle) {
   if( param.getType() == typeid(T1) ){
     T1 v(param.getValue<T1>());
-    bool success =  tinyxml_tools::loadParameter(param.getName(), v, rootElement);
+    bool success =  tinyxml_tools::loadParameter(param.getName(), v, rootHandle);
     param.setValue<T1>(v);
     return success;
   }
@@ -79,11 +79,11 @@ bool loadType(parameter_handler::ParameterInterface & param, TiXmlElement* rootE
 }
 
 template <typename T1, typename T2, typename... Tn>
-bool loadType(parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+bool loadType(parameter_handler::ParameterInterface & param, const TiXmlHandle& rootHandle) {
   if( param.getType() == typeid(T1) ){
-    return loadType<T1>(param, rootElement);
+    return loadType<T1>(param, rootHandle);
   } else {
-    return loadType<T2, Tn...>(param, rootElement);
+    return loadType<T2, Tn...>(param, rootHandle);
   }
 }
 

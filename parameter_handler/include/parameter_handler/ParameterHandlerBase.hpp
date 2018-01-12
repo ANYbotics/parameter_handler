@@ -69,7 +69,7 @@ class ParameterHandlerBase : public ParameterObserverInterface
     return false;
   }
 
-  virtual bool storeParams(const std::string & filename) const {
+  virtual bool storeParams(const std::string & filename, bool append = false) const {
   }
 
   virtual bool loadParams(const std::string & filename) {

@@ -68,7 +68,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
 
   void parameterChanged(const parameter_handler::ParameterInterface & param);
 
-  bool storeParams(const std::string & filename) const override;
+  bool storeParams(const std::string & filename, bool append = false) const override;
   bool loadParams(const std::string & filename) override;
 
  protected:

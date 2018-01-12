@@ -41,9 +41,9 @@ struct element<parameter_handler::Parameter<T>> {
   // Read trait
   static bool read(type& value, const TiXmlElement* element, const stringType& name, const type& def) {
     T v(value.getValue());
-    bool success = traits::element<T>::read(v, element, name, value.getDefaultValue());
+    if(!traits::element<T>::read(v, element, name, value.getDefaultValue())) { return false; }
     value.setValue(v);
-    return success;
+    return true;
   }
 
   // Write trait

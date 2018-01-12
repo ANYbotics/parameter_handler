@@ -155,6 +155,46 @@ public:
     notifyObservers();
   }
 
+  bool load(const std::string& filename) {
+    TiXmlDocument doc;
+    if(!doc.LoadFile(filename) || doc.RootElement() == nullptr) {
+      MELO_WARN_STREAM("Could not load document " << filename << ".");
+      return false;
+    }
+    TiXmlHandle rootHandle(doc.RootElement());
+    return tinyxml_tools::loadParameter(getName(), *this, rootHandle);
+  }
+
+  bool store(const std::string& filename, bool append = false) const {
+    TiXmlDocument doc;
+    TiXmlElement* root = nullptr;
+
+    // Load file to append
+    if(append) {
+      doc.LoadFile(filename);
+      root = doc.RootElement();
+    }
+
+    // Add root if not already existing
+    if(root == nullptr) {
+      root = new TiXmlElement("Parameters");
+      doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
+      doc.LinkEndChild(root);
+    }
+
+    bool success = tinyxml_tools::writeParameter(getName(), *this, root);
+
+    return doc.SaveFile( filename ) && success;
+  }
+
+  bool load(TiXmlElement* rootElement) {
+    return tinyxml_tools::loadParameter(getName(), *this, rootElement);
+  }
+
+  bool store(TiXmlElement* rootElement) const {
+    return tinyxml_tools::writeParameter(getName(), *this, rootElement);
+  }
+
 protected:
   std::shared_ptr<internal::ParameterValue<ValueType_> > getValuePtr() {
     return std::static_pointer_cast<internal::ParameterValue<ValueType_> >(value_);
