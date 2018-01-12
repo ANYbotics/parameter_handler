@@ -101,7 +101,7 @@ bool ParameterHandlerStd::storeParams(const std::string & filename) const {
   doc.LinkEndChild(root);
   bool success = true;
   for(const auto & param : params_) {
-    success = param.second.store(root) && success;
+    parameter_handler::storeType<PH_TYPES>(param.second, root);
   }
   return doc.SaveFile( filename ) && success;
 }
@@ -115,7 +115,7 @@ bool ParameterHandlerStd::loadParams(const std::string & filename) {
   }
   bool success = true;
   for(auto & param : params_) {
-    success = param.second.load(rootHandle.ToElement()) && success;
+    parameter_handler::loadType<PH_TYPES>(param.second, rootHandle.ToElement());
   }
   return success;
 }

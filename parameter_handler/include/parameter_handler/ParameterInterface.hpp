@@ -198,15 +198,6 @@ class ParameterInterface {
     value_->removeObserver(observer);
   }
 
-  virtual bool load(TiXmlElement* rootElement) {
-    return true;
-  }
-
-  virtual bool store(TiXmlElement* rootElement) const {
-    return true;
-  }
-
-
  protected:
   std::type_index type_;
   internal::ParameterValuePtr value_;

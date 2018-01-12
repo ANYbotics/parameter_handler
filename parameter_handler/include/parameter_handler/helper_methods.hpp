@@ -50,4 +50,41 @@ void printType(const parameter_handler::ParameterInterface & param) {
   }
 }
 
+template<typename T1>
+bool storeType(const parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+  if( param.getType() == typeid(T1) ){
+    return tinyxml_tools::writeParameter(param.getName(), param.getValue<T1>(), rootElement);
+  }
+  return false;
+}
+
+template <typename T1, typename T2, typename... Tn>
+bool storeType(const parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+  if( param.getType() == typeid(T1) ){
+    return storeType<T1>(param, rootElement);
+  } else {
+    return storeType<T2, Tn...>(param, rootElement);
+  }
+}
+
+template<typename T1>
+bool loadType(parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+  if( param.getType() == typeid(T1) ){
+    T1 v(param.getValue<T1>());
+    bool success =  tinyxml_tools::loadParameter(param.getName(), v, rootElement);
+    param.setValue<T1>(v);
+    return success;
+  }
+  return false;
+}
+
+template <typename T1, typename T2, typename... Tn>
+bool loadType(parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+  if( param.getType() == typeid(T1) ){
+    return loadType<T1>(param, rootElement);
+  } else {
+    return loadType<T2, Tn...>(param, rootElement);
+  }
+}
+
 }
