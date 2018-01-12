@@ -156,14 +156,11 @@ public:
   }
 
   bool load(TiXmlElement* rootElement) override {
-    ValueType_ v(getValue());
-    bool success = tinyxml_tools::loadParameter(getName(), v, rootElement);
-    setValue(v);
-    return success;
+    return tinyxml_tools::loadParameter(getName(), *this, rootElement);
   }
 
   bool store(TiXmlElement* rootElement) const override {
-    return tinyxml_tools::writeParameter(getName(), getValue(), rootElement);
+    return tinyxml_tools::writeParameter(getName(), *this, rootElement);
   }
 
 protected:
