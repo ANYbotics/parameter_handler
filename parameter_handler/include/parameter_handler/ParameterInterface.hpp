@@ -47,8 +47,6 @@
 #include <memory>
 #include <typeindex>
 
-#include <tinyxml_tools/tinyxml_tools.hpp>
-
 namespace parameter_handler {
 
 class ParameterInterface {

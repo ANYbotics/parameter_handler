@@ -40,9 +40,7 @@
  */
 
 #include "parameter_handler_std/ParameterHandlerStd.hpp"
-
 #include "tinyxml_tools/tinyxml_tools.hpp"
-#include <tinyxml.h>
 
 namespace parameter_handler_std {
 
@@ -95,42 +93,29 @@ void ParameterHandlerStd::parameterChanged(const parameter_handler::ParameterInt
 }
 
 bool ParameterHandlerStd::storeParams(const std::string & filename, const bool append) const {
-  TiXmlDocument doc;
-  TiXmlElement* root = nullptr;
-
-  // Load file to append
-  if(append) {
-    doc.LoadFile(filename);
-    root = doc.RootElement();
+  tinyxml_tools::DocumentHandleXML doc;
+  auto mode = append ? tinyxml_tools::DocumentMode::APPEND : tinyxml_tools::DocumentMode::WRITE;
+  if( doc.create(filename, mode) ) {
+    // Push back elements
+    bool success = true;
+    for(const auto & param : params_) {
+      success = parameter_handler::storeType<PH_TYPES>(param.second, doc) && success;
+    }
+    return doc.save() && success;
   }
-
-  // Add root if not already existing
-  if(root == nullptr) {
-    root = new TiXmlElement("Parameters");
-    doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
-    doc.LinkEndChild(root);
-  }
-
-  // Push back elements
-  bool success = true;
-  for(const auto & param : params_) {
-    parameter_handler::storeType<PH_TYPES>(param.second, root);
-  }
-  return doc.SaveFile( filename ) && success;
+  return false;
 }
 
 bool ParameterHandlerStd::loadParams(const std::string & filename) {
-  TiXmlDocument doc;
-  if(!doc.LoadFile(filename) || doc.RootElement() == nullptr ) {
-    MELO_WARN_STREAM("Could not load document " << filename << ".");
-    return false;
+  tinyxml_tools::DocumentHandleXML doc;
+  if( doc.create(filename, tinyxml_tools::DocumentMode::READ) ) {
+    bool success = true;
+    for(auto & param : params_) {
+      success = parameter_handler::loadType<PH_TYPES>(param.second, doc) && success;
+    }
+    return success;
   }
-  TiXmlHandle rootHandle(doc.RootElement());
-  bool success = true;
-  for(auto & param : params_) {
-    parameter_handler::loadType<PH_TYPES>(param.second, rootHandle);
-  }
-  return success;
+  return false;
 }
 
 } /* namespace */

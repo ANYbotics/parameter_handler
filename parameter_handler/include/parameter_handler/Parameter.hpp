@@ -45,6 +45,8 @@
 #include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValue.hpp"
 
+#include "tinyxml_tools/tinyxml_tools.hpp"
+
 #include "message_logger/message_logger.hpp"
 
 namespace parameter_handler {
@@ -156,43 +158,28 @@ public:
   }
 
   bool load(const std::string& filename) {
-    TiXmlDocument doc;
-    if(!doc.LoadFile(filename) || doc.RootElement() == nullptr) {
-      MELO_WARN_STREAM("Could not load document " << filename << ".");
-      return false;
+    tinyxml_tools::DocumentHandleXML doc;
+    if( doc.create(filename, tinyxml_tools::DocumentMode::READ)) {
+      return doc.read(getName(), *this);
     }
-    TiXmlHandle rootHandle(doc.RootElement());
-    return tinyxml_tools::loadParameter(getName(), *this, rootHandle);
+    return false;
   }
 
   bool store(const std::string& filename, bool append = false) const {
-    TiXmlDocument doc;
-    TiXmlElement* root = nullptr;
-
-    // Load file to append
-    if(append) {
-      doc.LoadFile(filename);
-      root = doc.RootElement();
+    tinyxml_tools::DocumentHandleXML doc;
+    auto mode = append ? tinyxml_tools::DocumentMode::APPEND : tinyxml_tools::DocumentMode::WRITE;
+    if( doc.create(filename, mode) && doc.write(getName(), *this) ) {
+      return doc.save();
     }
-
-    // Add root if not already existing
-    if(root == nullptr) {
-      root = new TiXmlElement("Parameters");
-      doc.LinkEndChild( new TiXmlDeclaration("1.0", "", "" ) );
-      doc.LinkEndChild(root);
-    }
-
-    bool success = tinyxml_tools::writeParameter(getName(), *this, root);
-
-    return doc.SaveFile( filename ) && success;
+    return false;
   }
 
-  bool load(TiXmlElement* rootElement) {
-    return tinyxml_tools::loadParameter(getName(), *this, rootElement);
+  bool load(const tinyxml_tools::DocumentHandleXML& doc) {
+    return doc.read(getName(), *this);
   }
 
-  bool store(TiXmlElement* rootElement) const {
-    return tinyxml_tools::writeParameter(getName(), *this, rootElement);
+  bool store(tinyxml_tools::DocumentHandleXML& doc) const {
+    return doc.write(getName(), *this);
   }
 
 protected:

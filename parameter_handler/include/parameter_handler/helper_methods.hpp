@@ -9,6 +9,9 @@
 #include "parameter_handler/type_macros.hpp"
 #include "parameter_handler/ParameterInterface.hpp"
 
+// tinyxml_tools
+#include "tinyxml_tools/tinyxml_tools.hpp"
+
 // message logger
 #include "message_logger/message_logger.hpp"
 
@@ -51,27 +54,27 @@ void printType(const parameter_handler::ParameterInterface & param) {
 }
 
 template<typename T1>
-bool storeType(const parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+bool storeType(const parameter_handler::ParameterInterface & param, tinyxml_tools::DocumentHandleXML& doc) {
   if( param.getType() == typeid(T1) ){
-    return tinyxml_tools::writeParameter(param.getName(), param.getValue<T1>(), rootElement);
+    return doc.write(param.getName(), param.getValue<T1>());
   }
   return false;
 }
 
 template <typename T1, typename T2, typename... Tn>
-bool storeType(const parameter_handler::ParameterInterface & param, TiXmlElement* rootElement) {
+bool storeType(const parameter_handler::ParameterInterface & param, tinyxml_tools::DocumentHandleXML& doc) {
   if( param.getType() == typeid(T1) ){
-    return storeType<T1>(param, rootElement);
+    return storeType<T1>(param, doc);
   } else {
-    return storeType<T2, Tn...>(param, rootElement);
+    return storeType<T2, Tn...>(param, doc);
   }
 }
 
 template<typename T1>
-bool loadType(parameter_handler::ParameterInterface & param, const TiXmlHandle& rootHandle) {
+bool loadType(parameter_handler::ParameterInterface & param, const tinyxml_tools::DocumentHandleXML& doc) {
   if( param.getType() == typeid(T1) ){
     T1 v(param.getValue<T1>());
-    bool success =  tinyxml_tools::loadParameter(param.getName(), v, rootHandle);
+    bool success =  doc.read(param.getName(), v);
     param.setValue<T1>(v);
     return success;
   }
@@ -79,11 +82,11 @@ bool loadType(parameter_handler::ParameterInterface & param, const TiXmlHandle& 
 }
 
 template <typename T1, typename T2, typename... Tn>
-bool loadType(parameter_handler::ParameterInterface & param, const TiXmlHandle& rootHandle) {
+bool loadType(parameter_handler::ParameterInterface & param, const tinyxml_tools::DocumentHandleXML& doc) {
   if( param.getType() == typeid(T1) ){
-    return loadType<T1>(param, rootHandle);
+    return loadType<T1>(param, doc);
   } else {
-    return loadType<T2, Tn...>(param, rootHandle);
+    return loadType<T2, Tn...>(param, doc);
   }
 }
 
