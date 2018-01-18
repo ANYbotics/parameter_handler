@@ -41,6 +41,7 @@
 
 #pragma once
 
+#include "parameter_handler/tinyxml_tools_traits.hpp"
 #include "parameter_handler/ParameterHandlerBase.hpp"
 #include "parameter_handler/Parameter.hpp"
 #include <memory>

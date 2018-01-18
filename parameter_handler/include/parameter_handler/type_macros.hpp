@@ -19,14 +19,9 @@
 #define PH_INTEGRAL_SCALAR_TYPES \
 bool, \
 char, \
-char16_t, \
-char32_t, \
-wchar_t, \
-signed char, \
 short int, \
 int, \
 long int, \
-unsigned char, \
 unsigned short int
 
 /*!
