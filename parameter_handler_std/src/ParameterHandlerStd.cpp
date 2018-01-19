@@ -40,19 +40,82 @@
  */
 
 #include "parameter_handler_std/ParameterHandlerStd.hpp"
+#include "tinyxml_tools/tinyxml_tools.hpp"
 
 namespace parameter_handler_std {
 
-ParameterHandlerStd::ParameterHandlerStd()
-    : params_()
-{
+bool ParameterHandlerStd::addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose) {
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  // Set the name of the parameter and add observer
+  param.setName(name);
+  if(verbose) { param.addObserver(this); }
+
+  auto paramIterator = params_.find(name);
+
+  if (!(paramIterator == params_.end())) {
+    MELO_WARN_STREAM("Key '" << name << "' was already inserted in ParameterInterface list. Overwriting reference!");
+    paramIterator->second = param;
+    return true;
+  }
+
+  params_.insert( { name, param });
+  params_[name].notifyObservers();
+
+  return true;
+}
+
+bool ParameterHandlerStd::addParam(parameter_handler::ParameterInterface& param, bool verbose) {
+  return addParam(param.getName(), param, verbose);
+}
+
+bool ParameterHandlerStd::getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
+
+
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  auto paramIterator = params_.find(name);
+
+  if (paramIterator == params_.end()) {
+    MELO_INFO_STREAM("Key '" << name << "' was not found.");
+    return false;
+  }
+
+  param = paramIterator->second;
+
+  return true;
 
 }
 
-ParameterHandlerStd::~ParameterHandlerStd()
-{
-
+void ParameterHandlerStd::parameterChanged(const parameter_handler::ParameterInterface & param) {
+  parameter_handler::printType<PH_TYPES>(param);
+  return;
 }
 
+bool ParameterHandlerStd::storeParams(const std::string & filename, const bool append) const {
+  tinyxml_tools::DocumentHandleXML doc;
+  auto mode = append ? tinyxml_tools::DocumentMode::APPEND : tinyxml_tools::DocumentMode::WRITE;
+  if( doc.create(filename, mode) ) {
+    // Push back elements
+    bool success = true;
+    for(const auto & param : params_) {
+      success = parameter_handler::storeType<PH_TYPES>(param.second, doc) && success;
+    }
+    return doc.save() && success;
+  }
+  return false;
+}
+
+bool ParameterHandlerStd::loadParams(const std::string & filename) {
+  tinyxml_tools::DocumentHandleXML doc;
+  if( doc.create(filename, tinyxml_tools::DocumentMode::READ) ) {
+    bool success = true;
+    for(auto & param : params_) {
+      success = parameter_handler::loadType<PH_TYPES>(param.second, doc) && success;
+    }
+    return success;
+  }
+  return false;
+}
 
 } /* namespace */

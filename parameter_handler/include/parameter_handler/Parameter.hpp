@@ -45,6 +45,8 @@
 #include "parameter_handler/ParameterValueInterface.hpp"
 #include "parameter_handler/ParameterValue.hpp"
 
+#include "tinyxml_tools/tinyxml_tools.hpp"
+
 #include "message_logger/message_logger.hpp"
 
 namespace parameter_handler {
@@ -153,6 +155,31 @@ public:
   void resetToDefault() {
     getValuePtr()->setValue(getValuePtr()->getDefaultValue());
     notifyObservers();
+  }
+
+  bool load(const std::string& filename) {
+    tinyxml_tools::DocumentHandleXML doc;
+    if( doc.create(filename, tinyxml_tools::DocumentMode::READ)) {
+      return doc.read(getName(), *this);
+    }
+    return false;
+  }
+
+  bool store(const std::string& filename, bool append = false) const {
+    tinyxml_tools::DocumentHandleXML doc;
+    auto mode = append ? tinyxml_tools::DocumentMode::APPEND : tinyxml_tools::DocumentMode::WRITE;
+    if( doc.create(filename, mode) && doc.write(getName(), *this) ) {
+      return doc.save();
+    }
+    return false;
+  }
+
+  bool load(const tinyxml_tools::DocumentHandleXML& doc) {
+    return doc.read(getName(), *this);
+  }
+
+  bool store(tinyxml_tools::DocumentHandleXML& doc) const {
+    return doc.write(getName(), *this);
   }
 
 protected:

@@ -50,12 +50,8 @@ namespace parameter_handler {
 class ParameterHandlerBase : public ParameterObserverInterface
 {
  public:
-  ParameterHandlerBase() {
-
-  }
-  virtual ~ParameterHandlerBase() {
-
-  }
+  ParameterHandlerBase() = default;
+  ~ParameterHandlerBase() override = default;
 
   virtual bool cleanup() {
     return true;
@@ -73,9 +69,13 @@ class ParameterHandlerBase : public ParameterObserverInterface
     return false;
   }
 
-  virtual void parameterChanged(const ParameterInterface & param) {
-    MELO_INFO("CALLED");
-    return;
+  virtual bool storeParams(const std::string & filename, bool append = false) const {
+  }
+
+  virtual bool loadParams(const std::string & filename) {
+  }
+
+  void parameterChanged(const ParameterInterface & param) override {
   }
 
 };

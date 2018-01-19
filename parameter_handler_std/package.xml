@@ -10,6 +10,7 @@
   <author email="gehrinch@ethz.ch">Christian Gehring</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>message_logger</depend>
+  <depend>tinyxml_tools</depend>
   <depend>parameter_handler</depend>
   <depend>gtest</depend>
 </package>
