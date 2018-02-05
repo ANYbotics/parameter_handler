@@ -56,12 +56,8 @@ typedef std::shared_ptr<ParameterValueInterface> ParameterValuePtr;
 
 class ParameterValueInterface {
  public:
-  ParameterValueInterface() {
-
-  }
-  virtual ~ParameterValueInterface() {
-
-  }
+  ParameterValueInterface() = default;
+  virtual ~ParameterValueInterface() = default;
 
   virtual ParameterValuePtr clone() const = 0;
 

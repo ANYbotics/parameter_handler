@@ -111,8 +111,6 @@ bool writeMatrixParamToMessage(const parameter_handler::ParameterInterface & par
 
 template <typename ScalarType_, typename MultiArrayMsg_>
 bool readScalarFromMessage(ScalarType_ & scalar, const MultiArrayMsg_ & msg) {
-  using PrimType = typename MultiArrayMsg_::_data_type::value_type;
-
   if( (msg.layout.dim.size() == 1 && msg.layout.dim[0].size == 1) ||
       (msg.layout.dim.size() == 2 && msg.layout.dim[0].size == 1 && msg.layout.dim[1].size == 1 ) ) {
     scalar = static_cast<ScalarType_>(msg.data[0]);
@@ -124,8 +122,6 @@ bool readScalarFromMessage(ScalarType_ & scalar, const MultiArrayMsg_ & msg) {
 
 template <typename MatrixType_, typename MultiArrayMsg_>
 bool readMatrixFromMessage(MatrixType_ & matrix, const MultiArrayMsg_ & msg) {
-  using PrimType = typename MultiArrayMsg_::_data_type::value_type;
-
   // Handle eigen matrices
   if(msg.layout.dim.size() == 1 || msg.layout.dim.size() == 2) {
     int rows = msg.layout.dim[0].size;
