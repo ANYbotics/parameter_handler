@@ -78,8 +78,8 @@ class MatrixSpinBox: public QWidget {
       }
 
       // Add them to the grid
-      for(int r = 0; r<rows_; ++r) {
-        for(int c = 0; c<cols_; ++c) {
+      for(unsigned int r = 0; r<rows_; ++r) {
+        for(unsigned int c = 0; c<cols_; ++c) {
           grid_.addWidget(getSpinbox(r,c).get(), r , c, Qt::AlignTop);
         }
       }
