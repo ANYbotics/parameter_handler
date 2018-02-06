@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(parameter_handler_std)
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++11 -Wall -Werror)
 
 find_package(catkin REQUIRED COMPONENTS
                 message_logger

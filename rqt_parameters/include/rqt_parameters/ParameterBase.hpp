@@ -31,12 +31,11 @@ class ParameterBase: public QObject {
                   matrixSpinBoxParamValue(nullptr),
                   pushButtonChangeParam(nullptr),
                   name_(name),
-                  grid_(grid),
                   getParameterClient_(getParameterClient),
-                  setParameterClient_(setParameterClient)
+                  setParameterClient_(setParameterClient),
+                  grid_(grid)
 
   {
-
   }
 
   virtual ~ParameterBase() {

@@ -59,9 +59,9 @@ class ParameterValue: public ParameterValueInterface {
   template<typename V = ValueType_>
   ParameterValue(typename std::enable_if< !traits::is_fixed_size_eigen_matrix<V>::value >::type* = 0)
       : value_(),
+        default_(),
         valueMin_(),
-        valueMax_(),
-        default_()
+        valueMax_()
   {
     internal::ParameterValueTraits<ParameterValue<V> >::init(*this);
   }
@@ -69,23 +69,21 @@ class ParameterValue: public ParameterValueInterface {
   template<typename V = ValueType_>
   ParameterValue(typename std::enable_if< traits::is_fixed_size_eigen_matrix<V>::value >::type* = 0)
       : value_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
+        default_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
         valueMin_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
-        valueMax_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) ),
-        default_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) )
+        valueMax_( V::Zero(V::RowsAtCompileTime, V::ColsAtCompileTime) )
   {
     internal::ParameterValueTraits<ParameterValue<V> >::init(*this);
   }
 
   ParameterValue(const ValueType_& param, const ValueType_& min, const ValueType_& max)
       : value_(param),
+        default_(param),
         valueMin_(min),
-        valueMax_(max),
-        default_(param)
+        valueMax_(max)
   { }
 
-  virtual ~ParameterValue() {
-
-  }
+  ~ParameterValue() override = default;
 
   ParameterValuePtr clone() const {
     return ParameterValuePtr(new ParameterValue<ValueType_>(*this));

@@ -90,6 +90,7 @@ bool refreshParam( const std::string & paramName,
     return false;
   }
 
+  return true;
 }
 
 template <typename MatrixSpinBoxType_, typename GetParamService_, typename SetParamService_>
@@ -165,6 +166,7 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
     return false;
   }
 
+  return true;
 }
 
 }
