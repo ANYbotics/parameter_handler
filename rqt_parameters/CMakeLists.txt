@@ -30,8 +30,8 @@ catkin_python_setup()
 ###########
 # sources #
 ###########
-set(rqt_parameters_SRCS
-    src/rqt_parameters/ParametersPlugin.cpp
+set(${PROJECT_NAME}_SRCS
+    src/${PROJECT_NAME}/ParametersPlugin.cpp
 )
 ###########
 
@@ -40,13 +40,13 @@ set(rqt_parameters_SRCS
 ###########
 # headers #
 ###########
-set(rqt_parameters_HDRS
-    include/rqt_parameters/ParametersPlugin.hpp
-    include/rqt_parameters/MatrixSpinBox.hpp
-    include/rqt_parameters/ParameterBase.hpp
-    include/rqt_parameters/ParameterFloat64Matrix.hpp
-    include/rqt_parameters/ParameterInt32Matrix.hpp
-    include/rqt_parameters/multiarray_helpers.hpp
+set(${PROJECT_NAME}_HDRS
+    include/${PROJECT_NAME}/ParametersPlugin.hpp
+    include/${PROJECT_NAME}/MatrixSpinBox.hpp
+    include/${PROJECT_NAME}/ParameterBase.hpp
+    include/${PROJECT_NAME}/ParameterFloat64Matrix.hpp
+    include/${PROJECT_NAME}/ParameterInt32Matrix.hpp
+    include/${PROJECT_NAME}/multiarray_helpers.hpp
 )
 ###########
 
@@ -55,38 +55,54 @@ set(rqt_parameters_HDRS
 ############
 # ui files #
 ############
-set(rqt_parameters_UIS
+set(${PROJECT_NAME}_UIS
     resource/parameters_plugin.ui
 )
 ############
 
-
-
-set(rqt_parameters_INCLUDE_DIRECTORIES
-    include
-    ${CMAKE_CURRENT_BINARY_DIR}
+set(ui_INCLUDE_DIR
+  "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/${PROJECT_NAME}"
 )
 
+set(${PROJECT_NAME}_INCLUDE_DIRECTORIES
+  include
+  ${ui_INCLUDE_DIR}/..
+)
+
+if(NOT EXISTS ${ui_INCLUDE_DIR})
+  file(MAKE_DIRECTORY ${ui_INCLUDE_DIR})
+endif()
+
 catkin_package(
-    INCLUDE_DIRS ${rqt_parameters_INCLUDE_DIRECTORIES}
-    LIBRARIES rqt_parameters
+    INCLUDE_DIRS
+      ${${PROJECT_NAME}_INCLUDE_DIRECTORIES}
+    LIBRARIES ${PROJECT_NAME}
     CATKIN_DEPENDS roscpp rqt_gui rqt_gui_cpp parameter_handler_msgs std_srvs
 )
 
-if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
-  qt5_wrap_cpp(rqt_parameters_MOCS ${rqt_parameters_HDRS})
-  qt5_wrap_ui(rqt_parameters_UIS_H ${rqt_parameters_UIS})
+include_directories(
+  ${${PROJECT_NAME}_INCLUDE_DIRECTORIES}
+  ${catkin_INCLUDE_DIRS}
+  )
+
+
+if ("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  include_directories(${Qt5Widgets_INCLUDE_DIRS})
+  add_definitions(${Qt5Widgets_DEFINITIONS})
+  qt5_wrap_cpp(${PROJECT_NAME}_MOCS ${${PROJECT_NAME}_HDRS})
 else()
-  qt4_wrap_cpp(rqt_parameters_MOCS ${rqt_parameters_HDRS})
-  qt4_wrap_ui(rqt_parameters_UIS_H ${rqt_parameters_UIS})
+  qt4_wrap_cpp(${PROJECT_NAME}_MOCS ${${PROJECT_NAME}_HDRS})
 endif()
 
-
-include_directories(
-    ${rqt_parameters_INCLUDE_DIRECTORIES}
-    ${catkin_INCLUDE_DIRS}
-)
-
+# ensure generated header files are being created in the devel space
+set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
+set(CMAKE_CURRENT_BINARY_DIR ${ui_INCLUDE_DIR})
+if("${qt_gui_cpp_USE_QT_MAJOR_VERSION} " STREQUAL "5 ")
+  qt5_wrap_ui(${PROJECT_NAME}_UIS_H ${${PROJECT_NAME}_UIS})
+else()
+  qt4_wrap_ui(${PROJECT_NAME}_UIS_H ${${PROJECT_NAME}_UIS})
+endif()
+set(CMAKE_CURRENT_BINARY_DIR "${_cmake_current_binary_dir}")
 
 add_library(rqt_parameters
     ${rqt_parameters_SRCS}
@@ -124,7 +140,7 @@ install(TARGETS rqt_parameters
     RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(PROGRAMS scripts/rqt_parameters
+install(PROGRAMS scripts/${PROJECT_NAME}
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
