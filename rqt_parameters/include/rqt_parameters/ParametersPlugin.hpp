@@ -9,6 +9,7 @@
 
 // rqt_parameters
 #include <rqt_parameters/ParameterBase.hpp>
+#include <rqt_parameters/ui_parameters_plugin.h>
 
 // parameter_handler_msgs
 #include <parameter_handler_msgs/GetIntegralParameter.h>
@@ -25,7 +26,6 @@
 
 // Rqt
 #include <rqt_gui_cpp/plugin.h>
-#include <ui_parameters_plugin.h>
 
 // ros
 #include <ros/ros.h>
