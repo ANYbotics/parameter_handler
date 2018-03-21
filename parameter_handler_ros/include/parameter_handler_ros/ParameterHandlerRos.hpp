@@ -61,13 +61,13 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
 {
  public:
   ParameterHandlerRos();
-  virtual ~ParameterHandlerRos();
+  ~ParameterHandlerRos() override = default;
   void initializeServices();
   void shutdown();
 
   void setNodeHandle(ros::NodeHandle* nodeHandle);
 
-  virtual bool cleanup();
+  bool cleanup() override;
 
   bool getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
                         parameter_handler_msgs::GetParameterList::Response &res);
@@ -84,7 +84,7 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   bool getFloatingPointParameter(parameter_handler_msgs::GetFloatingPointParameterRequest &req,
                                  parameter_handler_msgs::GetFloatingPointParameterResponse &res);
 
-  virtual void parameterChanged(const parameter_handler::ParameterInterface & param);
+  void parameterChanged(const parameter_handler::ParameterInterface & param) override;
 
  protected:
   ros::NodeHandle* nodeHandle_;
