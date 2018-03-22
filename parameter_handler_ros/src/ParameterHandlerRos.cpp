@@ -55,11 +55,6 @@ ParameterHandlerRos::ParameterHandlerRos():
 
 }
 
-ParameterHandlerRos::~ParameterHandlerRos()
-{
-  this->shutdown();
-}
-
 void ParameterHandlerRos::initializeServices() {
 
   if(nodeHandle_) {
