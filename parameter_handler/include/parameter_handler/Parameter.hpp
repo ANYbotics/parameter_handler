@@ -193,4 +193,17 @@ protected:
 
 };
 
+template<typename T>
+struct is_parameter : std::false_type { };
+
+template<typename U>
+struct is_parameter<parameter_handler::Parameter<U>> : std::true_type { };
+
+template<typename T, typename ValueType>
+struct is_parameter_of_type : std::false_type { };
+
+template<typename U, typename ValueType>
+struct is_parameter_of_type<parameter_handler::Parameter<U>, ValueType> : std::is_same<U, ValueType> { };
+
+
 }
