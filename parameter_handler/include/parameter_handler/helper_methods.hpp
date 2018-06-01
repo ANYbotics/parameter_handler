@@ -37,6 +37,21 @@ bool isType(const parameter_handler::ParameterInterface & param) {
   }
 }
 
+template<typename >
+constexpr bool checkTypeSupport() {
+  return false;
+}
+
+template <typename TestType, typename T, typename... Tn>
+constexpr bool checkTypeSupport() {
+  return std::is_same<typename std::decay<TestType>::type, T>::value ? true : checkTypeSupport<TestType, Tn...>();
+}
+
+template<typename T>
+constexpr bool isTypeSupported() {
+  return checkTypeSupport<T, PH_TYPES>();
+}
+
 template<typename T1>
 void printType(const parameter_handler::ParameterInterface & param) {
   if( param.getType() == typeid(T1) ){
