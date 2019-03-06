@@ -69,6 +69,25 @@ bool ParameterHandlerStd::addParam(parameter_handler::ParameterInterface& param,
   return addParam(param.getName(), param, verbose);
 }
 
+bool ParameterHandlerStd::resetParam(parameter_handler::ParameterInterface& param, bool verbose) {
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  auto name = param.getName();
+  if(verbose) { param.addObserver(this); }
+
+  auto paramIterator = params_.find(name);
+
+  if (paramIterator == params_.end()) {
+    MELO_WARN_STREAM("Key '" << name << "' is not present in ParameterInterface list.");
+    return false;
+  }
+
+  paramIterator->second = param;
+  params_[name].notifyObservers();
+
+  return true;
+}
+
 bool ParameterHandlerStd::getParam(const std::string& name, parameter_handler::ParameterInterface& param) {
 
 

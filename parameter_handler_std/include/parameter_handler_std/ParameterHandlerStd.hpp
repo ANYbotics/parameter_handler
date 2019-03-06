@@ -64,6 +64,7 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
   bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose = false) override;
 
   bool addParam(parameter_handler::ParameterInterface& param, bool verbose = false) override;
+  bool resetParam(parameter_handler::ParameterInterface& param, bool verbose = false);
   bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) override;
 
   void parameterChanged(const parameter_handler::ParameterInterface & param);
