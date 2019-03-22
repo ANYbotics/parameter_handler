@@ -47,6 +47,7 @@
 namespace parameter_handler {
 
 class ParameterInterface;
+class RemoteParameterInterface;
 
 class ParameterObserverInterface {
 
