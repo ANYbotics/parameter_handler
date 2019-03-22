@@ -20,6 +20,7 @@ include_directories(${catkin_INCLUDE_DIRS})
 
 add_library(parameter_handler_ros
   src/ParameterHandlerRos.cpp
+  src/ParameterClientRos.cpp
 )
 
 add_dependencies(parameter_handler_ros ${catkin_EXPORTED_TARGETS})
