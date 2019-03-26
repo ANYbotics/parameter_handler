@@ -12,7 +12,7 @@
 #include <parameter_handler_msgs/SetIntegralParameter.h>
 
 // parameter_handler_ros
-#include <parameter_handler/helper_methods.hpp>
+#include <parameter_handler_ros/helper_methods.hpp>
 #include <parameter_handler_ros/ParameterClientRos.hpp>
 
 namespace parameter_handler_ros {
@@ -76,8 +76,8 @@ bool ParameterClientRos::cleanup() {
 // template <typename ValueType_>
 // bool setParameter(const std::string& name, const ValueType_& value) {}
 
-// bool sendIntegralParameter(const parameter_handler::RemoteParameterInterface& param) {
-//   if (!parameter_handler::isType<parameter_handler::parameter_handler::PH_INTEGRAL_TYPES>(param)) {
+// bool sendIntegralParameter(const parameter_handler::ParameterInterface& param) {
+//   if (!parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(param)) {
 //     MELO_ERROR_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of integral type!");
 //     return false;
 //   }
@@ -88,8 +88,8 @@ bool ParameterClientRos::cleanup() {
 //   return true;
 // }
 
-// bool sendIntegralParameter(const parameter_handler::RemoteParameterInterface& param) {
-//   if (!parameter_handler::isType<parameter_handler::parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
+// bool sendIntegralParameter(const parameter_handler::ParameterInterface& param) {
+//   if (!parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
 //     MELO_ERROR_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of floating point type!");
 //     return false;
 //   }
@@ -100,8 +100,8 @@ bool ParameterClientRos::cleanup() {
 //   return true;
 // }
 
-bool ParameterClientRos::getIntegralParameter(const std::string& name, parameter_handler::RemoteParameterInterface& param) {
-  if (!parameter_handler::isType<parameter_handler::PH_FLOATING_INTEGRAL_TYPES>(param)) {
+bool ParameterClientRos::getIntegralParameter(const std::string& name, parameter_handler::ParameterInterface& param) {
+  if (!parameter_handler::isType<PH_INTEGRAL_TYPES>(param)) {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of integral type.");
     return false;
   }
@@ -113,14 +113,14 @@ bool ParameterClientRos::getIntegralParameter(const std::string& name, parameter
                                                        << ".");
     return false;
   } else {
-    param.setValue(getIntegralParamSrv.response.param.value_current);
+    //param.setValue(getIntegralParamSrv.response.param.value_current);
     // TODO: solve other stuff?
     return true;
   }
 }
 
-bool ParameterClientRos::getIntegralParameter(parameter_handler::RemoteParameterInterface& param) {
-  if (!parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(param)) {
+bool ParameterClientRos::getIntegralParameter(parameter_handler::ParameterInterface& param) {
+  if (!parameter_handler::isType<PH_INTEGRAL_TYPES>(param)) {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of integral type.");
     return false;
   }
@@ -132,14 +132,14 @@ bool ParameterClientRos::getIntegralParameter(parameter_handler::RemoteParameter
                                                        << ".");
     return false;
   } else {
-    param.setValue(getIntegralParamSrv.response.param.value_current);
+    //param.setValue(getIntegralParamSrv.response.param.value_current);
     // TODO: solve other stuff?
     return true;
   }
 }
 
-bool ParameterClientRos::getFloatingPointParameter(const std::string& name, parameter_handler::RemoteParameterInterface& param) {
-  if (!parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
+bool ParameterClientRos::getFloatingPointParameter(const std::string& name, parameter_handler::ParameterInterface& param) {
+  if (!parameter_handler::isType<PH_FLOATING_POINT_TYPES>(param)) {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of floating type.");
     return false;
   }
@@ -151,14 +151,14 @@ bool ParameterClientRos::getFloatingPointParameter(const std::string& name, para
                                                        << ".");
     return false;
   } else {
-    param.setValue(getIntegralParamSrv.response.param.value_current);
+    //param.setValue(getIntegralParamSrv.response.param.value_current);
     // TODO: solve other stuff?
     return true;
   }
 }
 
-bool ParameterClientRos::getFloatingPointParameter(parameter_handler::RemoteParameterInterface& param) {
-  if (!parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
+bool ParameterClientRos::getFloatingPointParameter(parameter_handler::ParameterInterface& param) {
+  if (!parameter_handler::isType<PH_FLOATING_POINT_TYPES>(param)) {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " is not of floating point type.");
     return false;
   }
@@ -170,7 +170,7 @@ bool ParameterClientRos::getFloatingPointParameter(parameter_handler::RemotePara
                                                        << ".");
     return false;
   } else {
-    param.setValue(getIntegralParamSrv.response.param.value_current);
+    //param.setValue(getIntegralParamSrv.response.param.value_current);
     // TODO: solve other stuff?
     return true;
   }
@@ -178,10 +178,10 @@ bool ParameterClientRos::getFloatingPointParameter(parameter_handler::RemotePara
 
 // bool ParameterClientRos::getParameterList() {
 //   for (auto& parameter : params_) {
-//     bool integralType = parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(parameter.second);
+//     bool integralType = parameter_handler::isType<PH_INTEGRAL_TYPES>(parameter.second);
 
 //     // Only integral and floating point types are supported
-//     if (integralType || parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(parameter.second)) {
+//     if (integralType || parameter_handler::isType<PH_FLOATING_POINT_TYPES>(parameter.second)) {
 //       res.parameters.push_back(parameter.first);
 //       res.isIntegral.push_back(integralType);
 //     }
@@ -190,8 +190,8 @@ bool ParameterClientRos::getFloatingPointParameter(parameter_handler::RemotePara
 // }
 
 void ParameterClientRos::integralParameterChangeCallback(const parameter_handler_msgs::IntegralParameterConstPtr& msg) {
-  for (auto& parameter : connectedParameters_) {
-    if ((parameter.getName() == msg->name) && parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(parameter)) {
+  for (auto parameter : connectedParameters_) {
+    if ((parameter->getName() == msg->name) && parameter_handler::isType<PH_INTEGRAL_TYPES>(*parameter)) {
       // parameter.setM
 
     } else {
@@ -202,11 +202,11 @@ void ParameterClientRos::integralParameterChangeCallback(const parameter_handler
 }
 
 void ParameterClientRos::floatingPointParameterChangeCallback(const parameter_handler_msgs::FloatingPointParameterConstPtr& msg) {
-  auto it = std::find_if(connectedParameters_.begin(), connectedParameters_.end(), [](parameter_handler::RemoteParameterInterface* param) {
-    (param->getName() == msg->name) && parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(*param)
+  auto foundParam = std::find_if(connectedParameters_.begin(), connectedParameters_.end(), [msg](parameter_handler::ParameterInterface* param) {
+    return (param->getName() == msg->name) && parameter_handler::isType<PH_FLOATING_POINT_TYPES>(*param);
   });
-  if (it != connectedParameters_.end()) {
-    connectedParameters_[it]->setValue(msg->value_current);
+  if (foundParam != connectedParameters_.end()) {
+    //(*foundParam)->setValue(msg->value_current); // TODO(paco): implement with helping methods
     // connectedParameters_[it].setValue(msg->value_current)
   } else {
     MELO_DEBUG_STREAM("[ParameterClientRos] Floating point parameter " << msg->name
@@ -215,10 +215,10 @@ void ParameterClientRos::floatingPointParameterChangeCallback(const parameter_ha
   return;
 }
 
-void ParameterClientRos::parameterChanged(const parameter_handler::RemoteParameterInterface& param) {
-  if (parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(param)) {
+void ParameterClientRos::parameterChanged(const parameter_handler::ParameterInterface& param) {
+  if (parameter_handler::isType<PH_INTEGRAL_TYPES>(param)) {
     //sendIntegralParameter(param);
-  } else if (parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
+  } else if (parameter_handler::isType<PH_FLOATING_POINT_TYPES>(param)) {
     //sendFloatingPointParameter(param);
   } else {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " could not be updated due to unknown type!");
@@ -226,20 +226,20 @@ void ParameterClientRos::parameterChanged(const parameter_handler::RemoteParamet
   return;
 }
 
-bool ParameterClientRos::connectRemoteParameter(parameter_handler::RemoteParameterInterface& param) {
+bool ParameterClientRos::connectRemoteParameter(parameter_handler::ParameterInterface& param) {
   if (!hasParameter(param.getName())) {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " could not be found in server " << serverNamespace_ << ".");
     return false;
   }
-  if (parameter_handler::isType<parameter_handler::PH_INTEGRAL_TYPES>(param)) {
+  if (parameter_handler::isType<PH_INTEGRAL_TYPES>(param)) {
     getIntegralParameter(param);
-  } else if (parameter_handler::isType<parameter_handler::PH_FLOATING_POINT_TYPES>(param)) {
+  } else if (parameter_handler::isType<PH_FLOATING_POINT_TYPES>(param)) {
     getFloatingPointParameter(param);
   } else {
     MELO_WARN_STREAM("[ParameterClientRos] Parameter " << param.getName() << " could not be connected due to unknown type!");
     return false;
   }
-  param.addObserver(&this);
+  param.addObserver(this);
   connectedParameters_.push_back(&param);
   return true;
 }

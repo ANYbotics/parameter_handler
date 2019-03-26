@@ -45,21 +45,21 @@ class ParameterClientRos : public parameter_handler::ParameterObserverInterface 
   // template<typename ValueType_>
   // bool setParameter(const std::string& name, const ValueType_& value);
 
-  bool sendIntegralParameter(const parameter_handler::RemoteParameterInterface& param);
+  bool sendIntegralParameter(const parameter_handler::ParameterInterface& param);
 
-  bool getIntegralParameter(const std::string& name, parameter_handler::RemoteParameterInterface& param);
+  bool getIntegralParameter(const std::string& name, parameter_handler::ParameterInterface& param);
 
-  bool getIntegralParameter(parameter_handler::RemoteParameterInterface& param);
+  bool getIntegralParameter(parameter_handler::ParameterInterface& param);
 
   bool sendFloatingPointParameter(const std::string& name);
 
-  bool getFloatingPointParameter(const std::string& name, parameter_handler::RemoteParameterInterface& param);
+  bool getFloatingPointParameter(const std::string& name, parameter_handler::ParameterInterface& param);
 
-  bool getFloatingPointParameter(parameter_handler::RemoteParameterInterface& param);
+  bool getFloatingPointParameter(parameter_handler::ParameterInterface& param);
   
-  void parameterChanged(const parameter_handler::RemoteParameterInterface& param) override;
+  void parameterChanged(const parameter_handler::ParameterInterface& param) override;
 
-  bool connectRemoteParameter(parameter_handler::RemoteParameterInterface& param);
+  bool connectRemoteParameter(parameter_handler::ParameterInterface& param);
 
  protected:
   ros::NodeHandle* nodeHandle_;
@@ -76,7 +76,7 @@ class ParameterClientRos : public parameter_handler::ParameterObserverInterface 
   void integralParameterChangeCallback(const parameter_handler_msgs::IntegralParameterConstPtr& msg);
   void floatingPointParameterChangeCallback(const parameter_handler_msgs::FloatingPointParameterConstPtr& msg);
 
-  std::vector<parameter_handler::RemoteParameterInterface*> connectedParameters_; 
+  std::vector<parameter_handler::ParameterInterface*> connectedParameters_; 
 
 };
 
