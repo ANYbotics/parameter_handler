@@ -63,14 +63,6 @@ class ParameterObserverInterface {
    */
   virtual void parameterChanged(const ParameterInterface & param) = 0;
 
-  /**
-   * @brief Notify observer of a remote parameter change
-   * @param remoteParam Remote parameter that changed
-   */
-  virtual void parameterChanged(const RemoteParameterInterface & remoteParam);
-
-
-
 };
 
 

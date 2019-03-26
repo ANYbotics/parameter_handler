@@ -14,24 +14,20 @@
 
 namespace parameter_handler {
 
-class RemoteParameterInterface : ParameterInterface {
+class RemoteParameterInterface : public ParameterInterface {
  protected:
   RemoteParameterInterface(const std::type_index& type, const internal::ParameterValuePtr& value, const std::string& name = std::string()) :
-    type_(type),
-    value_(value),
-    name_(name)
+    ParameterInterface(type, value, name)
   {
   }
  public:
   RemoteParameterInterface() :
-    type_(typeid(void))
+    ParameterInterface()
   {
   }
 
   RemoteParameterInterface(const RemoteParameterInterface& other) :
-    type_(other.type_),
-    value_(other.value_),
-    name_(other.name_)
+   ParameterInterface(other)
   {
   }
   virtual ~RemoteParameterInterface() {}
