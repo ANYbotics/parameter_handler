@@ -8,6 +8,7 @@
 // parameter handler
 #include "parameter_handler/type_macros.hpp"
 #include "parameter_handler/ParameterInterface.hpp"
+#include "parameter_handler/RemoteParameterInterface.hpp"
 
 // tinyxml_tools
 #include "tinyxml_tools/tinyxml_tools.hpp"
@@ -30,6 +31,24 @@ bool isType(const parameter_handler::ParameterInterface & param) {
 
 template <typename T1, typename T2, typename... Tn>
 bool isType(const parameter_handler::ParameterInterface & param) {
+  if( param.getType() == typeid(T1) ){
+    return true;
+  } else {
+    return isType<T2, Tn...>(param);
+  }
+}
+
+template<typename T1>
+bool isType(const parameter_handler::RemoteParameterInterface & param) {
+  if( param.getType() == typeid(T1) ){
+    return true;
+  } else {
+    return false;
+  }
+}
+
+template <typename T1, typename T2, typename... Tn>
+bool isType(const parameter_handler::RemoteParameterInterface & param) {
   if( param.getType() == typeid(T1) ){
     return true;
   } else {
