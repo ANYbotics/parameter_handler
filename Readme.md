@@ -16,20 +16,18 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 ## Building
 
-[![Build Status](https://ci.leggedrobotics.com/buildStatus/icon?job=bitbucket_leggedrobotics/parameter_handler/master)](https://ci.leggedrobotics.com/job/bitbucket_leggedrobotics/job/parameter_handler/job/master/)
-
 In order to install, clone the latest version from this repository into your catkin workspace and compile the packages.
 
 ### Dependencies
-* **[kindr](https://github.com/ethz-asl/kindr):** Kinematics and Dynamics for Robotics
-* **[kindr_ros](https://github.com/ethz-asl/kindr_ros):** kindr ROS wrapper
-* **[message_logger](https://bitbucket.org/leggedrobotics/message_logger):** Message logging utility
+* **[kindr](https://github.com/anybotics/kindr):** Kinematics and Dynamics for Robotics
+* **[kindr_ros](https://github.com/anybotics/kindr_ros):** kindr ROS wrapper
+* **[message_logger](https://github.com/anybotics/message_logger):** Message logging utility
 * **Eigen3:** Linear alegra library
 * **gtest:** Google's unit testing framework
 
 ## Usage
 
-Please report bugs and request features using the [Issue Tracker](https://github.com/ethz-asl/ros_best_practices/issues).
+Please report bugs and request features using the [Issue Tracker](https://github.com/anybotics/parameter_handler/issues).
 
 ### Packages
 * **parameter_handler:** Interface to parameter handler
@@ -38,5 +36,3 @@ Please report bugs and request features using the [Issue Tracker](https://github
 * **parameter_handler_ros:** An implementation of the parameter handler that uses ROS
 * **parameter_handler_std:** An implementation of the parameter handler that is independent of ROS
 * **rqt_parameters:** RQT plugin that provides a GUI for the parameter_handler_ros
-
-
