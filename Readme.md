@@ -13,6 +13,14 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author(s):** Christian Gehring, Gabriel Hottiger, C. Dario Bellicoso
 
+### Differences to ROS dynamic_reconfigure
+
+[ROS dynamic_reconfigure](http://wiki.ros.org/dynamic_reconfigure) can read and write parameters of nodes at run-time.
+The tool has the following drawbacks compared to the parameter_handler packages:
+
+* The client is not dynamically reconnecting when the server is restarted
+* It requires a lot of overhead code.
+* It does not support Eigen and kindr types.
 
 ## Building
 
