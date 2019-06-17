@@ -30,8 +30,8 @@ In order to install, clone the latest version from this repository into your cat
 * **[kindr](https://github.com/anybotics/kindr):** Kinematics and Dynamics for Robotics
 * **[kindr_ros](https://github.com/anybotics/kindr_ros):** kindr ROS wrapper
 * **[message_logger](https://github.com/anybotics/message_logger):** Message logging utility
-* **Eigen3:** Linear alegra library
-* **gtest:** Google's unit testing framework
+* **[Eigen3](https://eigen.tuxfamily.org):** Linear alegra library
+* **[gtest](https://github.com/google/googletest):** Google's unit testing framework
 
 ## Usage
 
