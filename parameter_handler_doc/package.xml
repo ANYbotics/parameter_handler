@@ -6,7 +6,7 @@
   <maintainer email="cgehring@anybotics.com">Christian Gehring</maintainer>
   <license>BSD</license>
   <author email="ghottiger@anybotics.com">Gabriel Hottiger</author>
-  <url type="website">https://bitbucket.org/leggedrobotics/parameter_handler</url>
+  <url>https://github.com/anybotics/parameter_handler</url>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>parameter_handler</depend>
   <depend>parameter_handler_ros</depend>

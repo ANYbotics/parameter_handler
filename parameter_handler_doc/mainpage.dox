@@ -44,7 +44,7 @@ This library is written extensively using C++11.
 \section dependencies Dependencies
 The core and std library of the parameter handler are non ROS dependent. And only require the following dependencies:
 <ul>
-  <li><a href="https://bitbucket.org/leggedrobotics/message_logger">message_logger</a></li>
+  <li><a href="https://github.com/anybotics/message_logger">message_logger</a></li>
   <li><a href="http://eigen.tuxfamily.org">Eigen</a></li>
 </ul>
 
