@@ -3,6 +3,7 @@ project(parameter_handler_std)
 
 add_definitions(-std=c++11 -Wall -Werror)
 
+
 find_package(catkin REQUIRED COMPONENTS
                 message_logger
                 tinyxml_tools
