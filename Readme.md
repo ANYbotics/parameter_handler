@@ -5,7 +5,7 @@
 These packages provide an interface for a parameter handler and some default parameter handlers.
 A parameter handler is a tool to tune parameters defined in other classes.
 
-[Documentation](http://docs.leggedrobotics.com/parameter_handler_doc/)
+[Documentation](https://opensource.docs.anymal.com/doxygen/parameter_handler_doc/master/)
 
 The software has been tested under ROS Melodic and Ubuntu 18.04.
 

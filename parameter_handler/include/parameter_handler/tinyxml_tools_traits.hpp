@@ -19,8 +19,8 @@
 #include <Eigen/Core>
 
 // STL
-#include <string>
 #include <array>
+#include <string>
 #include <vector>
 
 namespace tinyxml_tools {
@@ -28,7 +28,7 @@ namespace tinyxml_tools {
 namespace traits {
 
 //! Element trait for primitive types
-template<typename T>
+template <typename T>
 struct element<parameter_handler::Parameter<T>> {
   // Types
   using type = parameter_handler::Parameter<T>;
@@ -40,7 +40,7 @@ struct element<parameter_handler::Parameter<T>> {
 };
 
 //! Element trait for parameters
-template<typename T>
+template <typename T>
 struct elementXML<parameter_handler::Parameter<T>> {
   // Forward types
   using Base = element<parameter_handler::Parameter<T>>;
@@ -50,7 +50,9 @@ struct elementXML<parameter_handler::Parameter<T>> {
   // Read trait
   static bool read(type& value, const TiXmlElement* element, const stringType& name, const type& def) {
     T v(value.getValue());
-    if(!traits::elementXML<T>::read(v, element, name, value.getDefaultValue())) { return false; }
+    if (!traits::elementXML<T>::read(v, element, name, value.getDefaultValue())) {
+      return false;
+    }
     value.setValue(v);
     return true;
   }
@@ -61,6 +63,6 @@ struct elementXML<parameter_handler::Parameter<T>> {
   }
 };
 
-} // traits
+}  // namespace traits
 
-} // tinyxml_tools
+}  // namespace tinyxml_tools

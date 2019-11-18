@@ -1,15 +1,24 @@
 <?xml version="1.0"?>
+
 <package format="2">
+
   <name>parameter_handler_msgs</name>
   <version>0.3.0</version>
   <description>The parameter_handler package</description>
-  <maintainer email="cgehring@anybotics.com">Christian Gehring</maintainer>
+  <url>https://github.com/anybotics/parameter_handler</url>
+
   <license>BSD</license>
+  <maintainer email="ghottiger@anybotics.com">Gabriel Hottiger</maintainer>
   <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
   <author email="cgehring@anybotics.com">Christian Gehring</author>
-  <url>https://github.com/anybotics/parameter_handler</url>
+  <author email="ghottiger@anybotics.com">Gabriel Hottiger</author>
+
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>message_generation</build_depend>
-  <exec_depend>message_runtime</exec_depend>
+
   <depend>std_msgs</depend>
+
+  <build_depend>message_generation</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+
 </package>

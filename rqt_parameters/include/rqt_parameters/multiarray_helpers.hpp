@@ -11,9 +11,9 @@
 #include "rqt_parameters/MatrixSpinBox.hpp"
 
 // Qt
-#include <QWidget>
-#include <QSpinBox>
 #include <QDoubleSpinBox>
+#include <QSpinBox>
+#include <QWidget>
 
 // ros
 #include <ros/ros.h>
@@ -26,19 +26,20 @@ namespace rqt_parameters {
 namespace multi_array_helpers {
 
 namespace internal {
-  template<typename T> unsigned int setDecimals(T & sb, std::false_type /* is_double_spinbox */ ) { return 0; }
-  template<typename T> unsigned int setDecimals(T & sb, std::true_type /* is_double_spinbox */ ) {
-    unsigned int decimals = 4;
-    sb->setDecimals(decimals);
-    return decimals;
-  }
+template <typename T>
+unsigned int setDecimals(T& sb, std::false_type /* is_double_spinbox */) {
+  return 0;
 }
+template <typename T>
+unsigned int setDecimals(T& sb, std::true_type /* is_double_spinbox */) {
+  unsigned int decimals = 4;
+  sb->setDecimals(decimals);
+  return decimals;
+}
+}  // namespace internal
 
 template <typename MatrixSpinBoxType_, typename GetParamService_>
-bool refreshParam( const std::string & paramName,
-                   ros::ServiceClient* getParamClient,
-                   QWidget * matrix)
-{
+bool refreshParam(const std::string& paramName, ros::ServiceClient* getParamClient, QWidget* matrix) {
   using PrimType = typename GetParamService_::Response::_param_type::_value_current_type::_data_type::value_type;
 
   typename GetParamService_::Request req;
@@ -47,45 +48,39 @@ bool refreshParam( const std::string & paramName,
   req.name = paramName;
   if (getParamClient->exists() && getParamClient->call(req, res) && res.success) {
     // Try a dynamic cast to the correct spinbox type
-    if(MatrixSpinBox<MatrixSpinBoxType_>* m = dynamic_cast< MatrixSpinBox<MatrixSpinBoxType_>* >(matrix))
-    {
+    if (MatrixSpinBox<MatrixSpinBoxType_>* m = dynamic_cast<MatrixSpinBox<MatrixSpinBoxType_>*>(matrix)) {
       // Check dimensions of the message
-      if(res.param.value_current.layout.dim.size() == 1 || res.param.value_current.layout.dim.size() == 2)
-      {
+      if (res.param.value_current.layout.dim.size() == 1 || res.param.value_current.layout.dim.size() == 2) {
         // Get matrix rows/cols and refresh the matrix spinbox to this size
         int rows = res.param.value_current.layout.dim[0].size;
         int cols = (res.param.value_current.layout.dim.size() == 2) ? res.param.value_current.layout.dim[1].size : 1;
         m->refresh(rows, cols);
 
         // Setup the spinboxes with the data from the message
-        for( int r = 0; r < rows; ++r )
-        {
-          for( int c = 0; c < cols; ++c )
-          {
-            PrimType val = res.param.value_current.data[r*cols + c];
-            PrimType min = res.param.value_min.data[r*cols + c];
-            PrimType max = res.param.value_max.data[r*cols + c];
-            unsigned int decimals = internal::setDecimals(m->getSpinbox(r,c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>() );
+        for (int r = 0; r < rows; ++r) {
+          for (int c = 0; c < cols; ++c) {
+            PrimType val = res.param.value_current.data[r * cols + c];
+            PrimType min = res.param.value_min.data[r * cols + c];
+            PrimType max = res.param.value_max.data[r * cols + c];
+            unsigned int decimals = internal::setDecimals(m->getSpinbox(r, c), std::is_same<MatrixSpinBoxType_, QDoubleSpinBox>());
 
-            QString tooltip = QString("Min: ") + QString::number(min, 'f', decimals) + QString(" / Max: ") + QString::number(max, 'f', decimals);
-            m->getSpinbox(r,c)->setToolTip(tooltip);
-            m->getSpinbox(r,c)->setRange(min, max);
-            m->getSpinbox(r,c)->setValue(val);
-            m->getSpinbox(r,c)->setSingleStep(std::fabs( (max - min) / 10.0) );
+            QString tooltip =
+                QString("Min: ") + QString::number(min, 'f', decimals) + QString(" / Max: ") + QString::number(max, 'f', decimals);
+            m->getSpinbox(r, c)->setToolTip(tooltip);
+            m->getSpinbox(r, c)->setRange(min, max);
+            m->getSpinbox(r, c)->setValue(val);
+            m->getSpinbox(r, c)->setSingleStep(std::fabs((max - min) / 10.0));
           }
         }
-      }
-      else {
+      } else {
         ROS_ERROR_STREAM("Wrong dimension for matrix.");
         return false;
       }
-    }
-    else {
+    } else {
       ROS_ERROR_STREAM("MatrixSpinBox has wrong type.");
       return false;
     }
-  }
-  else {
+  } else {
     ROS_WARN_STREAM("Could not get parameter " << paramName);
     return false;
   }
@@ -94,11 +89,8 @@ bool refreshParam( const std::string & paramName,
 }
 
 template <typename MatrixSpinBoxType_, typename GetParamService_, typename SetParamService_>
-bool pushButtonChangeParamPressed(const std::string & paramName,
-                                  ros::ServiceClient* getParamClient,
-                                  ros::ServiceClient* setParamClient,
-                                  QWidget * matrix)
-{
+bool pushButtonChangeParamPressed(const std::string& paramName, ros::ServiceClient* getParamClient, ros::ServiceClient* setParamClient,
+                                  QWidget* matrix) {
   //! Type of the underlying message type ( e.g float64 / int64 )
   using PrimType = typename GetParamService_::Response::_param_type::_value_current_type::_data_type::value_type;
 
@@ -111,7 +103,7 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
   reqGet.name = paramName;
 
   // Get parameter from parameter handler ros
-  if(!getParamClient->call(reqGet, resGet) || !resGet.success){
+  if (!getParamClient->call(reqGet, resGet) || !resGet.success) {
     ROS_ERROR_STREAM("Could not get parameter " << paramName);
     return false;
   }
@@ -122,16 +114,14 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
 
   req.name = paramName;
 
-
   // Try a dynamic cast to the correct spinbox type
-  if(MatrixSpinBox<MatrixSpinBoxType_>* m = dynamic_cast< MatrixSpinBox<MatrixSpinBoxType_>* >(matrix))
-  {
+  if (MatrixSpinBox<MatrixSpinBoxType_>* m = dynamic_cast<MatrixSpinBox<MatrixSpinBoxType_>*>(matrix)) {
     // Add matrix data dimension
     std::size_t rows = m->rows();
     std::size_t cols = m->cols();
-    std::size_t size = rows*cols;
+    std::size_t size = rows * cols;
 
-    if(size > 0) {
+    if (size > 0) {
       // Fill layout with matrix dimensions
       req.value.layout.dim.resize(2);
       req.value.layout.dim[0].label = "rows";
@@ -143,25 +133,23 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
 
       // Fill data vector
       req.value.data.resize(size);
-      for( std::size_t r = 0; r < rows; ++r ) {
-        for( std::size_t c = 0; c < cols; ++c ) {
-          req.value.data[r*cols + c] = static_cast<PrimType>(m->getSpinbox(r,c)->value());
+      for (std::size_t r = 0; r < rows; ++r) {
+        for (std::size_t c = 0; c < cols; ++c) {
+          req.value.data[r * cols + c] = static_cast<PrimType>(m->getSpinbox(r, c)->value());
         }
       }
 
-    }
-    else {
+    } else {
       ROS_ERROR_STREAM("Matrix size is zero.");
       return false;
     }
-  }
-  else {
+  } else {
     ROS_ERROR_STREAM("MatrixSpinBox has wrong type.");
     return false;
   }
 
   // Set parameter to parameter handler ros
-  if(!setParamClient->call(req, res) || !res.success) {
+  if (!setParamClient->call(req, res) || !res.success) {
     ROS_ERROR_STREAM("Could not set parameter " << paramName);
     return false;
   }
@@ -169,6 +157,6 @@ bool pushButtonChangeParamPressed(const std::string & paramName,
   return true;
 }
 
-}
+}  // namespace multi_array_helpers
 
-}
+}  // namespace rqt_parameters

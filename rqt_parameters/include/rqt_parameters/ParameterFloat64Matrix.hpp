@@ -8,9 +8,9 @@
 #pragma once
 
 // rqt_parameters
+#include "rqt_parameters/MatrixSpinBox.hpp"
 #include "rqt_parameters/ParameterBase.hpp"
 #include "rqt_parameters/multiarray_helpers.hpp"
-#include "rqt_parameters/MatrixSpinBox.hpp"
 
 // parameter_handler_msgs
 #include <parameter_handler_msgs/GetFloatingPointParameter.h>
@@ -25,42 +25,37 @@
 namespace rqt_parameters {
 
 //! This class provides implements a float64 multi array parameter type
-class ParameterFloat64Matrix: public ParameterBase {
- Q_OBJECT;
+class ParameterFloat64Matrix : public ParameterBase {
+  Q_OBJECT
+
  public:
-  ParameterFloat64Matrix( const std::string& name,
-                        QGridLayout* grid,
-                        ros::ServiceClient* getParameterClient,
-                        ros::ServiceClient* setParameterClient):
-                          ParameterBase(name, grid, getParameterClient, setParameterClient)
-  {
+  ParameterFloat64Matrix(const std::string& name, QGridLayout* grid, ros::ServiceClient* getParameterClient,
+                         ros::ServiceClient* setParameterClient)
+      : ParameterBase(name, grid, getParameterClient, setParameterClient) {}
 
-  }
-
-  virtual ~ParameterFloat64Matrix() {
+  virtual ~ParameterFloat64Matrix(){
 
   };
 
-  public slots:
-    //! React to a change button press
-    void pushButtonChangeParamPressed() {
-      using parameter_handler_msgs::GetFloatingPointParameter;
-      using parameter_handler_msgs::SetFloatingPointParameter;
+ public slots:
+  //! React to a change button press
+  void pushButtonChangeParamPressed() {
+    using parameter_handler_msgs::GetFloatingPointParameter;
+    using parameter_handler_msgs::SetFloatingPointParameter;
 
-      multi_array_helpers::pushButtonChangeParamPressed<QDoubleSpinBox, GetFloatingPointParameter, SetFloatingPointParameter>(
-          name_, getParameterClient_, setParameterClient_, matrixSpinBoxParamValue);
-    }
+    multi_array_helpers::pushButtonChangeParamPressed<QDoubleSpinBox, GetFloatingPointParameter, SetFloatingPointParameter>(
+        name_, getParameterClient_, setParameterClient_, matrixSpinBoxParamValue);
+  }
 
-    //! Refresh the parameter
-    void refreshParam() {
-      using parameter_handler_msgs::GetFloatingPointParameter;
-      multi_array_helpers::refreshParam<QDoubleSpinBox, GetFloatingPointParameter>( name_, getParameterClient_, matrixSpinBoxParamValue);
-    }
+  //! Refresh the parameter
+  void refreshParam() {
+    using parameter_handler_msgs::GetFloatingPointParameter;
+    multi_array_helpers::refreshParam<QDoubleSpinBox, GetFloatingPointParameter>(name_, getParameterClient_, matrixSpinBoxParamValue);
+  }
 
-  protected:
-    //! Factory method
-    virtual QWidget* createMatrixSpinBox(QWidget* parent) { return new MatrixSpinBox<QDoubleSpinBox>(parent); }
-
+ protected:
+  //! Factory method
+  virtual QWidget* createMatrixSpinBox(QWidget* parent) { return new MatrixSpinBox<QDoubleSpinBox>(parent); }
 };
 
-} // end namespace
+}  // namespace rqt_parameters

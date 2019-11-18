@@ -8,10 +8,10 @@
 #pragma once
 
 // Qt
-#include <QWidget>
 #include <QGridLayout>
-#include <QPushButton>
 #include <QLabel>
+#include <QPushButton>
+#include <QWidget>
 
 // ros
 #include <ros/ros.h>
@@ -19,24 +19,20 @@
 namespace rqt_parameters {
 
 //! This class draws and handles a double parameter.
-class ParameterBase: public QObject {
+class ParameterBase : public QObject {
   Q_OBJECT
  public:
-  ParameterBase(const std::string& name,
-                QGridLayout* grid,
-                ros::ServiceClient* getParameterClient,
-                ros::ServiceClient* setParameterClient):
-                  labelParamNumber(nullptr),
-                  labelParamName(nullptr),
-                  matrixSpinBoxParamValue(nullptr),
-                  pushButtonChangeParam(nullptr),
-                  name_(name),
-                  getParameterClient_(getParameterClient),
-                  setParameterClient_(setParameterClient),
-                  grid_(grid)
+  ParameterBase(const std::string& name, QGridLayout* grid, ros::ServiceClient* getParameterClient, ros::ServiceClient* setParameterClient)
+      : labelParamNumber(nullptr),
+        labelParamName(nullptr),
+        matrixSpinBoxParamValue(nullptr),
+        pushButtonChangeParam(nullptr),
+        name_(name),
+        getParameterClient_(getParameterClient),
+        setParameterClient_(setParameterClient),
+        grid_(grid)
 
-  {
-  }
+  {}
 
   virtual ~ParameterBase() {
     // Disconnect the button signal
@@ -62,7 +58,7 @@ class ParameterBase: public QObject {
     // Setup the label to the current row number ( e.g. 5) )
     labelParamNumber = new QLabel(widget);
     labelParamNumber->setObjectName(QString::fromStdString(std::string{"labelParamNumber"} + name_));
-    labelParamNumber->setText(QString::number(iRow)+QString::fromUtf8(")"));
+    labelParamNumber->setText(QString::number(iRow) + QString::fromUtf8(")"));
 
     // Setup the parameter name label (width is fixed to the longest parameter name)
     labelParamName = new QLabel(widget);
@@ -82,10 +78,10 @@ class ParameterBase: public QObject {
     pushButtonChangeParam->setMaximumWidth(60);
 
     // Add the widgets to the grid layout and top align them
-    grid_->addWidget(labelParamNumber,         iRow, 0, 1, 1, Qt::AlignTop);
-    grid_->addWidget(labelParamName,           iRow, 1, 1, 1, Qt::AlignTop);
-    grid_->addWidget(matrixSpinBoxParamValue,  iRow, 2, 1, 1, Qt::AlignTop);
-    grid_->addWidget(pushButtonChangeParam,    iRow, 3, 1, 1, Qt::AlignTop);
+    grid_->addWidget(labelParamNumber, iRow, 0, 1, 1, Qt::AlignTop);
+    grid_->addWidget(labelParamName, iRow, 1, 1, 1, Qt::AlignTop);
+    grid_->addWidget(matrixSpinBoxParamValue, iRow, 2, 1, 1, Qt::AlignTop);
+    grid_->addWidget(pushButtonChangeParam, iRow, 3, 1, 1, Qt::AlignTop);
 
     // Connect signal pressed of change push button
     connect(pushButtonChangeParam, SIGNAL(pressed()), this, SLOT(pushButtonChangeParamPressed()));
@@ -125,7 +121,6 @@ class ParameterBase: public QObject {
   ros::ServiceClient* setParameterClient_;
   //! Grid layout that holds parameter blocks
   QGridLayout* grid_;
-
 };
 
-} // end namespace
+}  // namespace rqt_parameters

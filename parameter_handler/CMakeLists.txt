@@ -1,58 +1,104 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5.1)
 project(parameter_handler)
 
-add_definitions(-std=c++11 -Wall -Werror)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 11)
+add_compile_options(-Wall -Wextra -Wpedantic)
 
-find_package(Eigen3 REQUIRED)
-
-find_package(catkin REQUIRED COMPONENTS
+set(CATKIN_PACKAGE_DEPENDENCIES
   message_logger
   tinyxml_tools
 )
 
-catkin_package(
-  INCLUDE_DIRS include ${EIGEN3_INCLUDE_DIR}
-  LIBRARIES parameter_handler
-  CATKIN_DEPENDS message_logger tinyxml_tools
-#  DEPENDS system_lib
+find_package(catkin REQUIRED
+  COMPONENTS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
 )
+
+find_package(Eigen3 REQUIRED)
+
+###################################
+## catkin specific configuration ##
+###################################
+
+catkin_package(
+  INCLUDE_DIRS
+    include
+    ${EIGEN3_INCLUDE_DIR}
+  LIBRARIES
+    ${PROJECT_NAME}
+  CATKIN_DEPENDS
+    ${CATKIN_PACKAGE_DEPENDENCIES}
+)
+
+###########
+## Build ##
+###########
 
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
-  ${EIGEN3_INCLUDE_DIR}
+  SYSTEM
+    ${catkin_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIR}
 )
 
-add_library(parameter_handler
+add_library(${PROJECT_NAME}
   src/parameter_handler.cpp
 )
 
-add_dependencies(parameter_handler ${catkin_EXPORTED_TARGETS})
-
-target_link_libraries(parameter_handler
-  ${catkin_LIBRARIES}
-)
-
-catkin_add_gtest(test_parameter_handler
-  test/test_main.cpp
-  test/Parameter_tests.cpp
-)
-
-add_dependencies(test_parameter_handler 
+add_dependencies(${PROJECT_NAME}
   ${catkin_EXPORTED_TARGETS}
 )
 
-target_link_libraries(test_parameter_handler
-  parameter_handler
+target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
 
-install(TARGETS parameter_handler
+#############
+## Install ##
+#############
+
+install(
+  TARGETS
+    ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(DIRECTORY include/${PROJECT_NAME}/
+install(
+  DIRECTORY
+    include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
+
+##########
+## Test ##
+##########
+
+if(CATKIN_ENABLE_TESTING)
+  catkin_add_gtest(test_${PROJECT_NAME}
+    test/test_main.cpp
+    test/Parameter_tests.cpp
+  )
+
+  if(TARGET test_${PROJECT_NAME})
+    target_link_libraries(test_${PROJECT_NAME}
+      ${PROJECT_NAME}
+      ${catkin_LIBRARIES}
+    )
+    find_package(cmake_code_coverage QUIET)
+    if(cmake_code_coverage_FOUND)
+      add_gtest_coverage()
+    endif(cmake_code_coverage_FOUND)
+  endif()
+endif()
+
+#################
+## Clang Tools ##
+#################
+
+find_package(cmake_clang_tools QUIET)
+if(cmake_clang_tools_FOUND)
+  add_default_clang_tooling()
+endif(cmake_clang_tools_FOUND)

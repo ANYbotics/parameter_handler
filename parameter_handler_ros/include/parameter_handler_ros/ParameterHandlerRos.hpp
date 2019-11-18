@@ -41,24 +41,22 @@
 
 #pragma once
 
-
-#include <ros/ros.h>
-#include <parameter_handler_msgs/SetIntegralParameter.h>
-#include <parameter_handler_msgs/GetIntegralParameter.h>
-#include <parameter_handler_msgs/SetFloatingPointParameter.h>
 #include <parameter_handler_msgs/GetFloatingPointParameter.h>
+#include <parameter_handler_msgs/GetIntegralParameter.h>
 #include <parameter_handler_msgs/GetParameterList.h>
+#include <parameter_handler_msgs/SetFloatingPointParameter.h>
+#include <parameter_handler_msgs/SetIntegralParameter.h>
+#include <ros/ros.h>
 
 #include <parameter_handler/type_macros.hpp>
-#include <parameter_handler_std/ParameterHandlerStd.hpp>
 #include <parameter_handler_ros/helper_methods.hpp>
+#include <parameter_handler_std/ParameterHandlerStd.hpp>
 
 #include <mutex>
 
 namespace parameter_handler_ros {
 
-class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
-{
+class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd {
  public:
   ParameterHandlerRos();
   ~ParameterHandlerRos() override = default;
@@ -69,22 +67,21 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
 
   bool cleanup() override;
 
-  bool getParameterList(parameter_handler_msgs::GetParameterList::Request &req,
-                        parameter_handler_msgs::GetParameterList::Response &res);
+  bool getParameterList(parameter_handler_msgs::GetParameterList::Request& req, parameter_handler_msgs::GetParameterList::Response& res);
 
-  bool setIntegralParameter(parameter_handler_msgs::SetIntegralParameterRequest &req,
-                            parameter_handler_msgs::SetIntegralParameterResponse &res);
+  bool setIntegralParameter(parameter_handler_msgs::SetIntegralParameterRequest& req,
+                            parameter_handler_msgs::SetIntegralParameterResponse& res);
 
-  bool getIntegralParameter(parameter_handler_msgs::GetIntegralParameterRequest &req,
-                            parameter_handler_msgs::GetIntegralParameterResponse &res);
+  bool getIntegralParameter(parameter_handler_msgs::GetIntegralParameterRequest& req,
+                            parameter_handler_msgs::GetIntegralParameterResponse& res);
 
-  bool setFloatingPointParameter(parameter_handler_msgs::SetFloatingPointParameterRequest &req,
-                                 parameter_handler_msgs::SetFloatingPointParameterResponse &res);
+  bool setFloatingPointParameter(parameter_handler_msgs::SetFloatingPointParameterRequest& req,
+                                 parameter_handler_msgs::SetFloatingPointParameterResponse& res);
 
-  bool getFloatingPointParameter(parameter_handler_msgs::GetFloatingPointParameterRequest &req,
-                                 parameter_handler_msgs::GetFloatingPointParameterResponse &res);
+  bool getFloatingPointParameter(parameter_handler_msgs::GetFloatingPointParameterRequest& req,
+                                 parameter_handler_msgs::GetFloatingPointParameterResponse& res);
 
-  void parameterChanged(const parameter_handler::ParameterInterface & param) override;
+  void parameterChanged(const parameter_handler::ParameterInterface& param) override;
 
  protected:
   ros::NodeHandle* nodeHandle_;
@@ -93,8 +90,8 @@ class ParameterHandlerRos : public parameter_handler_std::ParameterHandlerStd
   ros::ServiceServer setIntegralParameterService_;
   ros::ServiceServer getFloatingPointParameterService_;
   ros::ServiceServer setFloatingPointParameterService_;
-  ros::Publisher     notifyIntegralParameterChange_;
-  ros::Publisher     notifyFloatingPointParameterChange_;
+  ros::Publisher notifyIntegralParameterChange_;
+  ros::Publisher notifyFloatingPointParameterChange_;
 };
 
-} /* namespace parameter_handler */
+}  // namespace parameter_handler_ros
