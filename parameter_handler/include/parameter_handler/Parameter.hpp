@@ -54,7 +54,7 @@ namespace parameter_handler {
 template <typename ValueType_>
 class Parameter : public ParameterInterface {
  public:
-  explicit Parameter(const ValueType_& value = ValueType_())
+  Parameter(const ValueType_& value = ValueType_())
       : ParameterInterface(typeid(ValueType_), internal::ParameterValuePtr(new internal::ParameterValue<ValueType_>())) {
     getValuePtr()->setValue(value);
     getValuePtr()->setDefaultValue(value);
