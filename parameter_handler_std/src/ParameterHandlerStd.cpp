@@ -86,6 +86,22 @@ bool ParameterHandlerStd::getParam(const std::string& name, parameter_handler::P
   return true;
 }
 
+bool ParameterHandlerStd::removeParam(const std::string& name) {
+  std::lock_guard<std::mutex> lock(mutexParams_);
+
+  auto paramIterator = params_.find(name);
+
+  if (paramIterator != params_.end()) {
+    paramIterator->second.removeObserver(this);
+    params_.erase(paramIterator);
+  } else {
+    MELO_WARN_STREAM("Key '" << name << "' was not found.");
+    return false;
+  }
+
+  return true;
+}
+
 void ParameterHandlerStd::parameterChanged(const parameter_handler::ParameterInterface& param) {
   parameter_handler::printType<PH_TYPES>(param);
 }

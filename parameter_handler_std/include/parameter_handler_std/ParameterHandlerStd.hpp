@@ -65,11 +65,15 @@ class ParameterHandlerStd : public parameter_handler::ParameterHandlerBase {
   bool addParam(const std::string& name, parameter_handler::ParameterInterface& param, bool verbose) override;
 
   bool addParam(parameter_handler::ParameterInterface& param, bool verbose) override;
+
   bool getParam(const std::string& name, parameter_handler::ParameterInterface& param) override;
+
+  bool removeParam(const std::string& name) override;
 
   void parameterChanged(const parameter_handler::ParameterInterface& param) override;
 
   bool storeParams(const std::string& filename, bool append) const override;
+
   bool loadParams(const std::string& filename) override;
 
  protected:

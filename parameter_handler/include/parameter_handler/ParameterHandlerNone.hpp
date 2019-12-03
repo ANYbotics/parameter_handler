@@ -56,6 +56,8 @@ class ParameterHandlerNone : public ParameterHandlerBase {
 
   bool getParam(const std::string& /*name*/, ParameterInterface& /*param*/) override { return true; }
 
+  bool removeParam(const std::string& /*name*/) override { return true; };
+
   void parameterChanged(const ParameterInterface& /*param*/) override {}
 };
 

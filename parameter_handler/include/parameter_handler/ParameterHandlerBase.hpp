@@ -64,6 +64,10 @@ class ParameterHandlerBase : public ParameterObserverInterface {
 
   virtual bool getParam(const std::string& /*name*/, ParameterInterface& /*param*/) { return false; }
 
+  virtual bool removeParam(const std::string& /*name*/) { return false; };
+
+  virtual bool removeParam(const ParameterInterface& param) { return removeParam(param.getName()); };
+
   bool storeParams(const std::string& filename) const { return storeParams(filename, false); }
 
   virtual bool storeParams(const std::string& /*filename*/, bool /*append*/) const { return false; }
