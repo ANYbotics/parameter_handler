@@ -89,6 +89,7 @@ bool ParameterHandlerStd::getParam(const std::string& name, parameter_handler::P
 bool ParameterHandlerStd::removeParam(const std::string& name) {
   std::lock_guard<std::mutex> lock(mutexParams_);
 
+  MELO_DEBUG_STREAM("Removing parameter " << name << " from the parameter handler.");
   auto paramIterator = params_.find(name);
 
   if (paramIterator != params_.end()) {
