@@ -3,7 +3,8 @@
   <name>parameter_handler_doc</name>
   <version>0.3.0</version>
   <description>The parameter handler documentation package</description>
-  <maintainer email="cgehring@anybotics.com">Christian Gehring</maintainer>
+  <maintainer email="ghottiger@anybotics.com">Gabriel Hottiger</maintainer>
+  <maintainer email="msuetterlin@anybotics.com">Marco Sütterlin</maintainer>
   <license>BSD</license>
   <author email="ghottiger@anybotics.com">Gabriel Hottiger</author>
   <url>https://github.com/anybotics/parameter_handler</url>
