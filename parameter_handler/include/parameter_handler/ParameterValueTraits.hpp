@@ -80,6 +80,14 @@ class ParameterValueTraits<ParameterValue<ValueType_>, typename std::enable_if<s
   }
 };
 
+template <>
+class ParameterValueTraits<ParameterValue<std::string>> {
+ public:
+  inline static void init(ParameterValue<std::string>& /*param*/) {}
+
+  inline static std::string setValue(ParameterValue<std::string>& /*param*/, const std::string& value) { return value; }
+};
+
 template <typename ValueType_>
 class ParameterValueTraits<ParameterValue<ValueType_>,
                            typename std::enable_if<std::is_base_of<Eigen::MatrixBase<ValueType_>, ValueType_>::value>::type> {

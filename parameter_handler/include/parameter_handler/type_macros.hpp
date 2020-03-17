@@ -34,6 +34,11 @@
 #define PH_FLOATING_POINT_SCALAR_TYPES double, float
 
 /*!
+ * Supported Object Types
+ */
+#define PH_OBJECT_TYPES std::string
+
+/*!
  * Supported Floating Point Matrix Types
  */
 #define PH_FLOATING_POINT_MATRIX_TYPES                                                                                                    \
@@ -58,6 +63,6 @@
 /*!
  * Supported Types
  */
-#define PH_TYPES PH_MATRIX_TYPES, PH_SCALAR_TYPES
+#define PH_TYPES PH_MATRIX_TYPES, PH_SCALAR_TYPES, PH_OBJECT_TYPES
 
 //-------------------------------------------------------------
