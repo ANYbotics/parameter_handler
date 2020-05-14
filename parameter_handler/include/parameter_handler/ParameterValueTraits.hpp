@@ -136,20 +136,13 @@ class ParameterValueTraits<ParameterValue<ValueType_>,
   }
 };
 
-// template<>
-// class ParameterValueTraits< ParameterValue<bool> > {
-// public:
-//  inline static void init(ParameterValue<bool>& param) {
-//    param.setValue(std::numeric_limits<bool>::min());
-//    param.setDefaultValue(std::numeric_limits<bool>::min());
-//    param.setMinValue(-std::numeric_limits<bool>::max());
-//    param.setMaxValue(std::numeric_limits<bool>::max());
-//  }
-//
-//  inline static bool setValue(ParameterValue<bool>& param, const bool& value) {
-//    return value;
-//  }
-//};
+template <>
+class ParameterValueTraits<ParameterValue<bool>> {
+ public:
+  inline static void init(ParameterValue<bool>& /*param*/) {}
+
+  inline static bool setValue(ParameterValue<bool>& /*param*/, const bool& value) { return value; }
+};
 
 } /* namespace internal */
 }  // namespace parameter_handler
