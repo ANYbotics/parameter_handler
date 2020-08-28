@@ -22,6 +22,11 @@
   <depend>parameter_handler_msgs</depend>
   <depend>std_srvs</depend>
 
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
+
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
+
   <export>
     <architecture_inent/>
     <rqt_gui plugin="${prefix}/plugin.xml"/>

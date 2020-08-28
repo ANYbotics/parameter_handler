@@ -21,9 +21,12 @@
   <depend>parameter_handler_std</depend>
   <depend>roscpp</depend>
 
-  <build_depend>cmake_clang_tools</build_depend>
+<!--   <build_depend>cmake_clang_tools</build_depend> -->
   <build_depend>eigen</build_depend>
 
   <build_export_depend>eigen</build_export_depend>
+
+<!--   <test_depend>cmake_code_coverage</test_depend> -->
+  <test_depend>gtest</test_depend>
 
 </package>
