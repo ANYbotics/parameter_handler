@@ -7,8 +7,6 @@ A parameter handler is a tool to tune parameters defined in other classes.
 
 [Documentation](https://opensource.docs.anymal.com/doxygen/parameter_handler_doc/master/)
 
-The software has been tested under ROS Melodic and Ubuntu 18.04.
-
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author(s):** Christian Gehring, Gabriel Hottiger, C. Dario Bellicoso
