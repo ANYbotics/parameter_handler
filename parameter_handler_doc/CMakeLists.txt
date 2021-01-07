@@ -29,15 +29,18 @@ IF(DOXYGEN)
     DEPENDS
   )
 
+  # This is important to resolve the symlink of this doc package and allows to refer to packages in subfolders and READMEs outside of a package.
+  get_filename_component(REAL_PACKAGE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/" REALPATH)
+
   # Set some environment variables
-  set(DOXYGEN_SOURCE_DIRS "\"${CMAKE_CURRENT_SOURCE_DIR}/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${CMAKE_CURRENT_SOURCE_DIR}/../parameter_handler/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${CMAKE_CURRENT_SOURCE_DIR}/../parameter_handler_msgs/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${CMAKE_CURRENT_SOURCE_DIR}/../parameter_handler_ros/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${CMAKE_CURRENT_SOURCE_DIR}/../parameter_handler_std/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${CMAKE_CURRENT_SOURCE_DIR}/../rqt_parameters/\"")
+  set(DOXYGEN_SOURCE_DIRS "\"${REAL_PACKAGE_PATH}/\"")
+  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler/\"")
+  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_msgs/\"")
+  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_ros/\"")
+  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_std/\"")
+  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../rqt_parameters/\"")
   Set(DOCSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doc)
-  Set(DOXYGEN_IMAGE_DIRS "\"${CMAKE_CURRENT_SOURCE_DIR}/figures/\"" )
+  Set(DOXYGEN_IMAGE_DIRS "\"${REAL_PACKAGE_PATH}/figures/\"" )
   Set(HTML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doc/html)
   MAKE_DIRECTORY(${HTML_DIR})
 
@@ -56,6 +59,10 @@ IF(DOXYGEN)
 
   # Unset cache files
   unset(${DOXYGEN_SOURCE_DIRS} CACHE)
+  unset(${DOCSOURCE_DIR} CACHE)
+  unset(${DOXYGEN_IMAGE_DIRS} CACHE)
+  unset(${HTML_DIR} CACHE)
+  unset(${REAL_PACKAGE_PATH} CACHE)
 
 
 ELSE(DOXYGEN)
