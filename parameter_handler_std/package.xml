@@ -3,7 +3,7 @@
 <package format="2">
 
   <name>parameter_handler_std</name>
-  <version>0.3.1</version>
+  <version>0.3.2</version>
   <description>The parameter_handler_std package</description>
   <url>https://github.com/anybotics/parameter_handler</url>
 
