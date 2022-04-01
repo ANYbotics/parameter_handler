@@ -33,26 +33,54 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- * parameter_handler.hpp
+ * StagedParameter.hpp
  *
- *  Created on: Apr 23, 2015
- *      Author: Dario Bellicoso, Christian Gehring
+ *  Created on: Mar 16, 2022
+ *      Author: Magnus Gaertner
  */
 
 #pragma once
 
-#include <memory>
 #include "parameter_handler/Parameter.hpp"
-#include "parameter_handler/ParameterHandlerBase.hpp"
-#include "parameter_handler/StagedParameter.hpp"
-#include "parameter_handler/tinyxml_tools_traits.hpp"
 
 namespace parameter_handler {
 
-//! Reference to the parameter list
-extern std::shared_ptr<ParameterHandlerBase> handler;
+/**
+ * Opposed to Parameter, StagedParameter provides a staged frontend to read values.
+ * I.e a setValue() is only visible in getValue once updateValue is called.
+ */
+template <typename ValueType_>
+class StagedParameter : public Parameter<ValueType_> {
+ public:
+  using BASE = Parameter<ValueType_>;
 
-//! Set handler none
-void setParameterHandlerNone();
+  StagedParameter(const ValueType_& value = ValueType_()) : BASE{value} { value_ = BASE::getValue(); }
+
+  StagedParameter(const ValueType_& value, const ValueType_& min, const ValueType_& max) : BASE{value, min, max} {
+    value_ = BASE::getValue();
+  }
+
+  StagedParameter(const std::string& name, const ValueType_& value, const ValueType_& min, const ValueType_& max)
+      : BASE{name, value, min, max} {
+    value_ = BASE::getValue();
+  }
+
+  StagedParameter(const StagedParameter<ValueType_>& other) : ParameterInterface(other) {}
+
+  explicit StagedParameter(const ParameterInterface& other) : ParameterInterface(other) {
+    if (BASE::getType() != typeid(ValueType_)) {
+      throw std::runtime_error("Parameter value type mismatch");
+    }
+  }
+
+  ~StagedParameter() override = default;
+
+  ValueType_ getValue() { return value_; }
+
+  void updateValue() { value_ = BASE::getValue(); }
+
+ private:
+  ValueType_ value_;
+};
 
 }  // namespace parameter_handler

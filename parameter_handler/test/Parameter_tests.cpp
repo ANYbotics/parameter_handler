@@ -7,6 +7,7 @@
 
 #include <gtest/gtest.h>
 #include "parameter_handler/Parameter.hpp"
+#include "parameter_handler/StagedParameter.hpp"
 
 using ParameterValueTypes = ::testing::Types<double, int, bool>;
 
@@ -43,4 +44,13 @@ TEST(ParameterTest, testInt) {  // NOLINT
   parameter_handler::Parameter<int> paramInt;
   paramInt.setValue(4);
   EXPECT_EQ(4, paramInt.getValue());
+}
+
+TEST(ParameterTest, testStagedInt) {  // NOLINT
+  parameter_handler::StagedParameter<int> paramInt{4};
+  EXPECT_EQ(4, paramInt.getValue());
+  paramInt.setValue(2);
+  EXPECT_EQ(4, paramInt.getValue());
+  paramInt.updateValue();
+  EXPECT_EQ(2, paramInt.getValue());
 }
