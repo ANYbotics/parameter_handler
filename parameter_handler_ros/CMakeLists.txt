@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5.1)
 project(parameter_handler_ros)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options(-Wall -Wextra -Wpedantic)
 
 set(CATKIN_PACKAGE_DEPENDENCIES
@@ -79,22 +79,34 @@ install(
 #############
 
 if(CATKIN_ENABLE_TESTING)
-  catkin_add_gtest(test_${PROJECT_NAME}
+  find_package(rostest)
+
+  add_rostest_gtest(test_${PROJECT_NAME}
+    test/ros_interface.test
+    test/rostest_main.cpp
     test/test_${PROJECT_NAME}.cpp
-    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/test
+  )
+  target_link_libraries(test_${PROJECT_NAME}
+    ${PROJECT_NAME}
+    ${catkin_LIBRARIES}
+    ${rostest_LIBRARIES}
   )
 
-  if(TARGET test_${PROJECT_NAME})
-    target_link_libraries( test_${PROJECT_NAME}
-      ${PROJECT_NAME}
-      ${catkin_LIBRARIES}
-      gtest_main
+  target_include_directories(test_${PROJECT_NAME} PRIVATE
+    include
+  )
+
+  target_include_directories(test_${PROJECT_NAME} SYSTEM PUBLIC
+    ${catkin_INCLUDE_DIRS}
+    ${rostest_INCLUDE_DIRS}
+  )
+
+  find_package(cmake_code_coverage QUIET)
+  if(cmake_code_coverage_FOUND)
+    add_rostest_coverage(
+      TEST_BUILD_TARGETS test_${PROJECT_NAME}
     )
-    find_package(cmake_code_coverage QUIET)
-    if(cmake_code_coverage_FOUND)
-      add_gtest_coverage()
-    endif(cmake_code_coverage_FOUND)
-  endif()
+  endif(cmake_code_coverage_FOUND)
 endif()
 
 #################

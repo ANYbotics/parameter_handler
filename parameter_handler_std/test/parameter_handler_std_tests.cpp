@@ -18,6 +18,7 @@ TEST(ParameterTest, testDouble) {  // NOLINT
   paramInt.setValue(4);
   EXPECT_EQ(4, paramInt.getValue());
 }
+
 TEST(ParameterHandlerStd, test) {  // NOLINT
   parameter_handler_std::ParameterHandlerStd handler;
   parameter_handler::ParameterHandlerBase* baseHandler = &handler;

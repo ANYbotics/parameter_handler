@@ -64,6 +64,28 @@ The parameter can then easily be added to the handler.
 parameter_handler::handler->addParam(myDoubleParam_);
 \endcode
 
+For convenience you can register whole parameter structs at once:
+
+\code{c}
+struct HandledParameters {
+  ph::Parameter<double> param1_{"param1", 0.0, std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
+  ph::Parameter<int> param2_{"param2", 0, -10, 10};
+  ph::Parameter<bool> param3_{"param3", false, false, true};
+};
+HandledParameters parameters;
+
+/*
+ * Equivalent to:
+ *
+ * bool success{true};
+ * success &= parameter_handler::handler->addParam(parameters.param1_);
+ * success &= parameter_handler::handler->addParam(parameters.param2_);
+ * success &= parameter_handler::handler->addParam(parameters.param3_);
+ */
+bool success{ph::registerParameterStruct(parameters)};
+
+\endcode
+
 <H3>Cleanup the parameter handler</H3>
 You should shutdown the parameter handler in the destructor of your main application.
 E.g the parameter handler ros should shutdown all ros communication as long as the nodehandle is still valid.

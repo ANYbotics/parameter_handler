@@ -4,7 +4,7 @@ project(parameter_handler_doc)
 #--------------------------#
 # Documentation
 
-set(CMAKE_CXX_FLAGS "-std=c++11")
+set(CMAKE_CXX_STANDARD 11)
 
 find_package(Doxygen)
 
@@ -56,6 +56,8 @@ IF(DOXYGEN)
     VERBATIM
   )
   #ADD_CUSTOM_TARGET(doc ${DOXYGEN} ${DOCSOURCE_DIR}/doxygen.config)
+
+  message("Documentation for ${PROJECT_NAME} generated at ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/index.html")
 
   # Unset cache files
   unset(${DOXYGEN_SOURCE_DIRS} CACHE)

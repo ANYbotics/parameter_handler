@@ -5,11 +5,17 @@
  *      Author: Christian Gehring
  */
 
+#include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <parameter_handler/ParameterHandlerNone.hpp>
+#include <parameter_handler/helper_methods.hpp>
+#include <parameter_handler/parameter_handler.hpp>
 #include "parameter_handler/Parameter.hpp"
 #include "parameter_handler/StagedParameter.hpp"
 
 using ParameterValueTypes = ::testing::Types<double, int, bool>;
+using ::testing::_;
+using ::testing::UnorderedElementsAre;
 
 template <typename ValueType_>
 class ParameterTest : public ::testing::Test {
@@ -54,3 +60,38 @@ TEST(ParameterTest, testStagedInt) {  // NOLINT
   paramInt.updateValue();
   EXPECT_EQ(2, paramInt.getValue());
 }
+
+#ifdef USE_BOOST_PFR
+struct HandledParameters {
+  parameter_handler::Parameter<double> param1_{"param1", 0.0, std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
+  parameter_handler::Parameter<int> param2_{"param2", 0, -10, 10};
+  parameter_handler::Parameter<bool> param3_{"param3", false, false, true};
+};
+
+/**
+ * A small helper to check which parameters get registered.
+ */
+class ParameterHandlerTest : public parameter_handler::ParameterHandlerNone {
+ public:
+  bool addParam(parameter_handler::ParameterInterface& param, bool /*verbose*/) override {
+    parameterNamesAdded_.push_back(param.getName());
+    return true;
+  }
+  const auto& getAddedParameterNames() const { return parameterNamesAdded_; }
+
+ private:
+  std::list<std::string> parameterNamesAdded_;
+};
+
+TEST(ParameterTestOptional, testRegisterParameterStruct) {  // NOLINT
+  std::shared_ptr<ParameterHandlerTest> parameterHandlerTest{new ParameterHandlerTest()};
+  parameter_handler::handler = parameterHandlerTest;
+
+  // Instantiate a struct of parameters and register it.
+  HandledParameters parameters;
+  parameter_handler::registerParameterStruct(parameters);
+
+  EXPECT_THAT(parameterHandlerTest->getAddedParameterNames(), UnorderedElementsAre("param1", "param2", "param3"));
+}
+
+#endif

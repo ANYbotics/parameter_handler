@@ -16,6 +16,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <!--  Optional dependency: <depend>boost_pfr</depend>-->
   <depend>message_logger</depend>
   <depend>tinyxml_tools</depend>
 

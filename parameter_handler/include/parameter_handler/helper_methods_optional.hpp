@@ -33,28 +33,33 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  */
 /*
- * parameter_handler.hpp
+ * parameter_handler_optional.hpp
  *
- *  Created on: Apr 23, 2015
- *      Author: Dario Bellicoso, Christian Gehring
+ *  Created on: Mar 18, 2022
+ *      Author: Magnus Gaertner
  */
-
 #pragma once
+#include "parameter_handler/parameter_handler.hpp"
 
-#include <memory>
-
-#include <boost/align.hpp>
-#include "parameter_handler/Parameter.hpp"
-#include "parameter_handler/ParameterHandlerBase.hpp"
-#include "parameter_handler/StagedParameter.hpp"
-#include "parameter_handler/tinyxml_tools_traits.hpp"
+#include <boost/pfr.hpp>
 
 namespace parameter_handler {
 
-//! Reference to the parameter list
-extern std::shared_ptr<ParameterHandlerBase> handler;
+template <typename StructOfParametersT>
+bool registerParameterStruct(StructOfParametersT& parameters) {
+  bool success = true;
+  boost::pfr::for_each_field(parameters, [&success](auto& parameter) {
+    success &= parameter_handler::handler->addParam(static_cast<ParameterInterface&>(parameter));
+  });
+  return success;
+}
 
-//! Set handler none
-void setParameterHandlerNone();
+template <typename StructOfParametersT>
+bool removeParametersStruct(StructOfParametersT& parameters) {
+  bool success = true;
+  boost::pfr::for_each_field(parameters,
+                             [&success](auto& parameter) { success &= parameter_handler::handler->removeParam(parameter.getName()); });
+  return success;
+}
 
 }  // namespace parameter_handler

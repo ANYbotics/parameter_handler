@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <test pkg="parameter_handler_ros" type="test_parameter_handler_ros" test-name="test_parameter_handler_ros" time-limit="100.0"/>
+</launch>

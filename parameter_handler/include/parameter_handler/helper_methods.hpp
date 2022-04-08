@@ -6,6 +6,9 @@
  */
 
 // parameter handler
+#ifdef USE_BOOST_PFR
+#include "parameter_handler/helper_methods_optional.hpp"
+#endif
 #include "parameter_handler/ParameterInterface.hpp"
 #include "parameter_handler/type_macros.hpp"
 
