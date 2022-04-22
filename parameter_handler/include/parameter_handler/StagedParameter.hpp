@@ -65,9 +65,9 @@ class StagedParameter : public Parameter<ValueType_> {
     value_ = BASE::getValue();
   }
 
-  StagedParameter(const StagedParameter<ValueType_>& other) : ParameterInterface(other) {}
+  StagedParameter(const StagedParameter<ValueType_>& other) : BASE(other) { value_ = BASE::getValue(); }
 
-  explicit StagedParameter(const ParameterInterface& other) : ParameterInterface(other) {
+  explicit StagedParameter(const ParameterInterface& other) : BASE(other) {
     if (BASE::getType() != typeid(ValueType_)) {
       throw std::runtime_error("Parameter value type mismatch");
     }
@@ -75,7 +75,7 @@ class StagedParameter : public Parameter<ValueType_> {
 
   ~StagedParameter() override = default;
 
-  ValueType_ getValue() { return value_; }
+  ValueType_ getValue() const { return value_; }
 
   void updateValue() { value_ = BASE::getValue(); }
 
