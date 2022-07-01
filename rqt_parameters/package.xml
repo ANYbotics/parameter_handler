@@ -3,7 +3,7 @@
 <package format="2">
 
   <name>rqt_parameters</name>
-  <version>0.3.6</version>
+  <version>0.3.7</version>
   <description>The rqt_parameters package</description>
 
   <license>BSD</license>
