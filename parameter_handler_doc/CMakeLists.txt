@@ -4,7 +4,7 @@ project(parameter_handler_doc)
 #--------------------------#
 # Documentation
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(Doxygen)
 
