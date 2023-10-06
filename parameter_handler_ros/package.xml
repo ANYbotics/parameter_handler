@@ -3,7 +3,7 @@
 <package format="2">
 
   <name>parameter_handler_ros</name>
-  <version>0.3.15</version>
+  <version>0.3.16</version>
   <description>The parameter_handler_std package</description>
   <url type="website">https://bitbucket.org/leggedrobotics/parameter_handler</url>
 
