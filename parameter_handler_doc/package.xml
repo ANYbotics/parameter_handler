@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>parameter_handler_doc</name>
-  <version>0.3.18</version>
+  <version>0.3.19</version>
   <description>The parameter handler documentation package</description>
   <maintainer email="ghottiger@anybotics.com">Gabriel Hottiger</maintainer>
   <maintainer email="msuetterlin@anybotics.com">Marco Sütterlin</maintainer>
