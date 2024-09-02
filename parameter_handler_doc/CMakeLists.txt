@@ -14,7 +14,6 @@ IF(DOXYGEN)
     parameter_handler_ros
     parameter_handler_std
     parameter_handler_msgs
-    rqt_parameters
   )
 
   catkin_package(
@@ -25,7 +24,6 @@ IF(DOXYGEN)
       parameter_handler_ros
       parameter_handler_std
       parameter_handler_msgs
-      rqt_parameters
     DEPENDS
   )
 
@@ -38,7 +36,6 @@ IF(DOXYGEN)
   set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_msgs/\"")
   set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_ros/\"")
   set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../parameter_handler_std/\"")
-  set(DOXYGEN_SOURCE_DIRS "${DOXYGEN_SOURCE_DIRS} \"${REAL_PACKAGE_PATH}/../rqt_parameters/\"")
   Set(DOCSOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doc)
   Set(DOXYGEN_IMAGE_DIRS "\"${REAL_PACKAGE_PATH}/figures/\"" )
   Set(HTML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/doc/html)

@@ -13,7 +13,6 @@
   <depend>parameter_handler_ros</depend>
   <depend>parameter_handler_std</depend>
   <depend>parameter_handler_msgs</depend>
-  <depend>rqt_parameters</depend>
   <build_depend>doxygen</build_depend>
 
 </package>

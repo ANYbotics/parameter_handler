@@ -41,4 +41,3 @@ Please report bugs and request features using the [Issue Tracker](https://github
 * **parameter_handler_msgs:** ROS messages used by parameter_handler_ros
 * **parameter_handler_ros:** An implementation of the parameter handler that uses ROS
 * **parameter_handler_std:** An implementation of the parameter handler that is independent of ROS
-* **rqt_parameters:** RQT plugin that provides a GUI for the parameter_handler_ros
