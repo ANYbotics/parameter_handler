@@ -49,6 +49,7 @@ struct elementXML<parameter_handler::Parameter<T>> {
 
   // Read trait
   static bool read(type& value, const TiXmlElement* element, const stringType& name, const type& def) {
+    (void)def;
     T v(value.getValue());
     if (!traits::elementXML<T>::read(v, element, name, value.getDefaultValue())) {
       return false;

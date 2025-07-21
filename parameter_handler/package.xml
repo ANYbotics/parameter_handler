@@ -1,31 +1,28 @@
-<?xml version="1.0"?>
-
-<package format="2">
+<?xml version='1.0' encoding='utf-8'?>
+<package format="3">
 
   <name>parameter_handler</name>
   <version>0.3.24</version>
   <description>The parameter_handler package</description>
-  <url>https://github.com/anybotics/parameter_handler</url>
-
-  <license>BSD</license>
-  <maintainer email="ghottiger@anybotics.com">Gabriel Hottiger</maintainer>
-  <maintainer email="msuetterlin@anybotics.com">Marco Sütterlin</maintainer>
   <author email="bellicoso@mavt.ethz.ch">Dario Bellicoso</author>
   <author email="cgehring@anybotics.com">Christian Gehring</author>
   <author email="ghottiger@anybotics.com">Gabriel Hottiger</author>
-
-  <buildtool_depend>catkin</buildtool_depend>
-
-  <!--  Optional dependency: <depend>boost_pfr</depend>-->
+  <maintainer email="ghottiger@anybotics.com">Gabriel Hottiger</maintainer>
+  <maintainer email="msuetterlin@anybotics.com">Marco Sütterlin</maintainer>
+  <license>BSD</license>
+  <url>https://github.com/anybotics/parameter_handler</url>
+  <buildtool_depend condition="$ROS_VERSION == 1">catkin</buildtool_depend>
+  <buildtool_depend condition="$ROS_VERSION == 2">ament_cmake</buildtool_depend>
+<!--   <build_depend condition="$ROS_VERSION == 1">cmake_clang_tools</build_depend> -->
+  <build_depend>eigen</build_depend>
+  <build_export_depend>eigen</build_export_depend>
   <depend>message_logger</depend>
   <depend>tinyxml_tools</depend>
-
-<!--   <build_depend>cmake_clang_tools</build_depend> -->
-  <build_depend>eigen</build_depend>
-
-  <build_export_depend>eigen</build_export_depend>
-
-<!--   <test_depend>cmake_code_coverage</test_depend> -->
-  <test_depend>gtest</test_depend>
-
+  <depend condition="$ROS_VERSION == 2">boost_pfr</depend>
+<!--   <test_depend condition="$ROS_VERSION == 1">cmake_code_coverage</test_depend> -->
+  <test_depend condition="$ROS_VERSION == 1">gtest</test_depend>
+  <test_depend condition="$ROS_VERSION == 2">ament_cmake_gtest</test_depend>
+  <export>
+    <build_type condition="$ROS_VERSION == 2">ament_cmake</build_type>
+  </export>
 </package>

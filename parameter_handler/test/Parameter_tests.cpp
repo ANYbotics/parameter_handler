@@ -24,9 +24,17 @@ class ParameterTest : public ::testing::Test {
   using Value = ValueType_;
 };
 
+#ifndef ROS2_BUILD
 TYPED_TEST_CASE(ParameterTest, ParameterValueTypes);
+#else  // ROS2_BUILD
+TYPED_TEST_SUITE(ParameterTest, ParameterValueTypes);  // NOLINT
+#endif
 
+#ifndef ROS2_BUILD
 TEST(ParameterTest, setters) {  // NOLINT
+#else
+TYPED_TEST(ParameterTest, setters) {                   // NOLINT
+#endif
   parameter_handler::Parameter<double> param;
   param.setValue(1.0);
   EXPECT_EQ(1.0, param.getValue());
@@ -46,13 +54,21 @@ TEST(ParameterTest, setters) {  // NOLINT
   EXPECT_ANY_THROW(paramInterface.getValue<int>());    // NOLINT
 }
 
+#ifndef ROS2_BUILD
 TEST(ParameterTest, testInt) {  // NOLINT
+#else
+TYPED_TEST(ParameterTest, testInt) {                   // NOLINT
+#endif
   parameter_handler::Parameter<int> paramInt;
   paramInt.setValue(4);
   EXPECT_EQ(4, paramInt.getValue());
 }
 
+#ifndef ROS2_BUILD
 TEST(ParameterTest, testStagedInt) {  // NOLINT
+#else
+TYPED_TEST(ParameterTest, testStagedInt) {             // NOLINT
+#endif
   parameter_handler::StagedParameter<int> paramInt{4};
   EXPECT_EQ(4, paramInt.getValue());
   paramInt.setValue(2);
