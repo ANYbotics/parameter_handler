@@ -1,55 +1,61 @@
-/*! \page page_use_para Use the parameter handler in your program
+# Use the Parameter Handler in Your Program
 
-<H3>Access the parameter handler</H3>
-The parameter handler is stored as a global shared pointer and accessible from your executable or helper library using the following lines of code.
-\code{c}
+## Access the Global Handler
+
+The parameter handler is stored in a global shared pointer:
+
+```cpp
 #include "parameter_handler/parameter_handler.hpp"
-parameter_handler::handler->
-\endcode
 
+parameter_handler::handler->...
+```
 
-<H3>Set the parameter handler</H3>
-In the source file of your main application you should set the parameter handler type. Three
-parameter handlers are provided:
+## Select the Handler Type
 
-<H5>ParameterHandlerNone</H5>
-This is an empty implementation of the parameter handler.
-\code{c}
+Available implementations:
+
+### `ParameterHandlerNone`
+
+```cpp
 #include "parameter_handler/parameter_handler.hpp"
 parameter_handler::setParameterHandlerNone();
-\endcode
+```
 
-<H5>ParameterHandlerStd</H5>
-The ParameterHandlerStd allows setting/getting parameters from everywhere in the current application.
-\code{c}
+### `ParameterHandlerStd`
+
+```cpp
 #include "parameter_handler_std/parameter_handler_std.hpp"
 parameter_handler_std::setParameterHandlerStd();
-\endcode
+```
 
-<H5>ParameterHandlerRos</H5>
-The ros implementation of the parameter handler additionally provides services that allow setting/getting the parameters via ros.
-It can be used in combination with the rqt plugin.
-\code{c}
+### `ParameterHandlerRos`
+
+```cpp
 #include "parameter_handler_ros/parameter_handler_ros.hpp"
 parameter_handler_ros::setParameterHandlerRos(&nh);
-\endcode
+```
 
-<H3>Add variables to the parameter handler</H3>
-A parameter must be of the templated type parameter_handler::Parameter.
-\code{c}
+The ROS implementation adds service-based access and was historically used with
+an RQT GUI.
+
+## Define and Register Parameters
+
+Parameters use the templated `parameter_handler::Parameter<T>` type:
+
+```cpp
 parameter_handler::Parameter<T> myParam_;
-\endcode
-Where T stands for any of the supported types (see below). <BR>
-The parameter can be initialized as follows:
-\code{c}
-// Initializer list
-MyConstructor():
-  myDoubleParam_ ("myDouble",    33.33,  11.11,  66.66)
-{
-}
+```
 
-// Copy constructor
-myDoubleParam_ = parameter_handler::Parameter<double>("myDouble",    33.33,  11.11,  66.66);
+Example initialization patterns:
+
+```cpp
+// Initializer list
+MyConstructor()
+    : myDoubleParam_("myDouble", 33.33, 11.11, 66.66) {}
+
+// Assignment
+myDoubleParam_ =
+    parameter_handler::Parameter<double>("myDouble", 33.33, 11.11, 66.66);
 
 // Setters
 myDoubleParam_.setName("myDouble");
@@ -57,80 +63,45 @@ myDoubleParam_.setValue(33.33);
 myDoubleParam_.setDefaultValue(33.33);
 myDoubleParam_.setMinValue(11.11);
 myDoubleParam_.setMaxValue(66.66);
-\endcode
+```
 
-The parameter can then easily be added to the handler.
-\code{c}
+Register a parameter with:
+
+```cpp
 parameter_handler::handler->addParam(myDoubleParam_);
-\endcode
+```
 
-For convenience you can register whole parameter structs at once:
+You can also register an entire struct of parameters in one call:
 
-\code{c}
+```cpp
 struct HandledParameters {
-  ph::Parameter<double> param1_{"param1", 0.0, std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max()};
+  ph::Parameter<double> param1_{
+      "param1", 0.0, std::numeric_limits<double>::lowest(),
+      std::numeric_limits<double>::max()};
   ph::Parameter<int> param2_{"param2", 0, -10, 10};
   ph::Parameter<bool> param3_{"param3", false, false, true};
 };
+
 HandledParameters parameters;
-
-/*
- * Equivalent to:
- *
- * bool success{true};
- * success &= parameter_handler::handler->addParam(parameters.param1_);
- * success &= parameter_handler::handler->addParam(parameters.param2_);
- * success &= parameter_handler::handler->addParam(parameters.param3_);
- */
 bool success{ph::registerParameterStruct(parameters)};
+```
 
-\endcode
+## Cleanup
 
-<H3>Cleanup the parameter handler</H3>
-You should shutdown the parameter handler in the destructor of your main application.
-E.g the parameter handler ros should shutdown all ros communication as long as the nodehandle is still valid.
-\code{c}
+Shut the handler down in the destructor of the owning application:
+
+```cpp
 parameter_handler::handler->cleanup();
-\endcode
+```
 
-<H3>Supported types</H3>
-The currently supported types are:
-  <ul>
-  <li><B>Integral Types</B></li><BR>
-    <I>bool<BR>
-       char<BR>
-       char16_t<BR>
-       char32_t<BR>
-       wchar_t<BR>
-       signed char<BR>
-       short int<BR>
-       int<BR>
-       long int<BR>
-       unsigned char<BR>
-       unsigned short int</I>
-  <li><B>Floating Point Types</B></li><BR>
-    <I>float<BR>
-       double</I>
-  <li><B>Eigen Integral Types</B></li><BR>
-  <I>Eigen::Matrix3i <BR>
-     Eigen::MatrixXi <BR>
-     Eigen::Vector2i <BR>
-     Eigen::Vector3i <BR>
-     Eigen::Vector4i <BR>
-     Eigen::VectorXi </I>
-  <li><B>Eigen Floating Point Types</B></li><BR>
-  <I>Eigen::Matrix3f <BR>
-     Eigen::MatrixXf <BR>
-     Eigen::Vector2f <BR>
-     Eigen::Vector3f <BR>
-     Eigen::Vector4f <BR>
-     Eigen::VectorXf <BR>
-     Eigen::Matrix3d <BR>
-     Eigen::MatrixXd <BR>
-     Eigen::Vector2d <BR>
-     Eigen::Vector3d <BR>
-     Eigen::Vector4d <BR>
-     Eigen::VectorXd </I>
-  </ul>
+## Supported Types
 
-*/
+The handler supports:
+
+- integral scalar types such as `bool`, `char`, `short`, `int`, and their
+  unsigned variants
+- floating-point types such as `float` and `double`
+- Eigen integer matrices and vectors such as `Eigen::Matrix3i` and
+  `Eigen::VectorXi`
+- Eigen floating-point matrices and vectors such as `Eigen::Matrix3d`,
+  `Eigen::Vector3f`, and `Eigen::VectorXd`

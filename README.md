@@ -9,6 +9,13 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author(s):** Christian Gehring, Gabriel Hottiger, C. Dario Bellicoso
 
+## Additional Docs
+
+- [Overview and getting started](parameter_handler/docs/mainpage.md)
+- [Use the parameter handler](parameter_handler/docs/page_use_para.md)
+- [Extend the parameter handler](parameter_handler/docs/page_extend_para.md)
+- [Legacy RQT GUI](parameter_handler_ros/docs/page_rqt_gui.md)
+
 ### Differences to ROS dynamic_reconfigure
 
 [ROS dynamic_reconfigure](http://wiki.ros.org/dynamic_reconfigure) can read and write parameters of nodes at run-time.

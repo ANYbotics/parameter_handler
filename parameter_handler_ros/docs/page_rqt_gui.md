@@ -1,25 +1,28 @@
-/*! \page page_rqt_gui Rqt GUI
+# Parameter Handler RQT GUI
 
-The parameter tuning GUI has several functionalities:
-<ul>
-  <li> The 'Filter'-Textfield; can be used to search the parameters for matching names.</li>
-  <li> 'Refresh'-Button; Gets parameter information for all parameters from the parameter handler.  </li>
-  <li> 'Change'-Button; Changes all parameters in the current selection.  </li>
-  <li> 'Namespace'-ComboBox; Namespace of the parameter handler you want to edit.</li>
-</ul>
-Note: The 'Namespace'-ComboBox is an editable combo box which allows adding of valid namespaces, this
-means that all services must be provided under that namespace. The list of valid
-namespaces is also stored when closing the plugin. Enter 'clear' to clear all namespaces.
+This page documents the legacy Parameter Handler RQT GUI that was used together
+with `parameter_handler_ros`.
 
-An element of the parameter list has the following entries:
-<ul>
-  <li> 'Nr'-Label; The elements are enumerated in alphabetical order</li>
-  <li> 'Name'-Label; The parameter name.</li>
-  <li> 'Parameter Value'-Spinbox; A spinbox for every entry in the matrix to change the parameter value</li><BR>
-        Hovering over the spinbox shows the min/max values of the parameter.
-  <li> 'Change'-Button; Changes the parameter.  </li>
-</ul>
+## Main Controls
 
-\image html varsGUI.png "Rqt GUI Log Variable Settings"
+- `Filter`: search parameters by name
+- `Refresh`: reload parameter information from the handler
+- `Change`: apply pending edits for the current selection
+- `Namespace`: select the namespace of the parameter handler to edit
 
-*/
+The `Namespace` combo box is editable, so additional valid namespaces can be
+added manually. All services must exist under that namespace. The GUI stores the
+list of namespaces when it closes. Enter `clear` to remove the saved entries.
+
+## Parameter List Entries
+
+Each row in the parameter list contains:
+
+- `Nr`: alphabetical index
+- `Name`: parameter name
+- `Parameter Value`: one spin box per matrix entry
+- `Change`: apply the modified value
+
+Hovering over a value field shows the configured minimum and maximum values.
+
+![RQT GUI Parameter Settings](figures/varsGUI.png)

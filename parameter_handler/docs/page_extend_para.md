@@ -1,18 +1,22 @@
-/*! \page page_extend_para Extend the parameter handler with additional types
-<H3> Add a new type to the parameter handler </H3>
-<ul>
-<li> Add traits for your new type to ParameterValueTraits.hpp</li><BR>
-NOTE: Even though min/max values are defined, they don't have to be used
-in the traits.<BR> E.g. Strings could have min=max="" the value would not be checked
-against it.
-<li> Add a new services to ParameterHandlerRos.hpp that allow setting/getting of the parameter type</li>
-<li> Add these services in the rqt_plugin and define your custom visualization type, deriving from ParameterBase.hpp</li>
-</ul>
+# Extend the Parameter Handler With Additional Types
 
-<H3> Add a new Eigen Matrix type to the parameter handler </H3>
-The parameter handler basically supports all Eigen matrix types. However, if you
-want to use matrices in the rqt_gui or publish them over the ParameterHandlerRos, you
-have to add the matrix type to type_macros.hpp. Only the matrix types of supported scalar
-types can be added!
+## Add a New Type
 
-*/
+To add a new parameter type:
+
+1. Add traits for the new type to `ParameterValueTraits.hpp`.
+2. Extend `ParameterHandlerRos.hpp` with services that can set and get the new
+   type.
+3. Add the corresponding GUI support and visualization widgets for that type.
+
+Even if min and max values are part of the parameter definition, a trait does
+not have to enforce them. For example, strings could use `min = max = ""`
+without interpreting those limits.
+
+## Add a New Eigen Matrix Type
+
+The parameter handler already supports many Eigen matrix types. If you also
+want to expose a matrix type through the ROS interface or the RQT GUI, add it
+to `type_macros.hpp`.
+
+Only matrix types whose scalar types are already supported can be added there.
