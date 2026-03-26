@@ -5,8 +5,6 @@
 These packages provide an interface for a parameter handler and some default parameter handlers.
 A parameter handler is a tool to tune parameters defined in other classes.
 
-[Documentation](https://opensource.docs.anymal.com/doxygen/parameter_handler_doc/master/)
-
 The source code is released under a [BSD 3-Clause license](LICENSE).
 
 **Author(s):** Christian Gehring, Gabriel Hottiger, C. Dario Bellicoso
@@ -37,7 +35,6 @@ Please report bugs and request features using the [Issue Tracker](https://github
 
 ### Packages
 * **parameter_handler:** Interface to parameter handler
-* **parameter_handler_doc:** Doxygen documentation
 * **parameter_handler_msgs:** ROS messages used by parameter_handler_ros
 * **parameter_handler_ros:** An implementation of the parameter handler that uses ROS
 * **parameter_handler_std:** An implementation of the parameter handler that is independent of ROS
