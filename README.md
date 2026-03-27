@@ -12,9 +12,9 @@ The source code is released under a [BSD 3-Clause license](LICENSE).
 ## Additional Docs
 
 - [Overview and getting started](parameter_handler/docs/mainpage.md)
-- [Use the parameter handler](parameter_handler/docs/page_use_para.md)
-- [Extend the parameter handler](parameter_handler/docs/page_extend_para.md)
-- [Legacy RQT GUI](parameter_handler_ros/docs/page_rqt_gui.md)
+- [Use the parameter handler](parameter_handler/docs/use_para.md)
+- [Extend the parameter handler](parameter_handler/docs/extend_para.md)
+- [Legacy RQT GUI](parameter_handler_ros/docs/rqt_gui.md)
 
 ### Differences to ROS dynamic_reconfigure
 

@@ -42,6 +42,6 @@ catkin build parameter_handler
 
 ## Further Documentation
 
-- [Use the parameter handler in your program](page_use_para.md)
-- [Extend the parameter handler with additional types](page_extend_para.md)
-- [Legacy RQT GUI](../../parameter_handler_ros/docs/page_rqt_gui.md)
+- [Use the parameter handler in your program](use_para.md)
+- [Extend the parameter handler with additional types](extend_para.md)
+- [Legacy RQT GUI](../../parameter_handler_ros/docs/rqt_gui.md)
